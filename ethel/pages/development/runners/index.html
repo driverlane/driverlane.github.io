@@ -122,79 +122,55 @@
       <div class="docs-body section">
         <div class="container is-fluid">
           
-<h4 class="title is-4">Overview</h4>
+<p class="title is-4">Runner development</p>
 <div class="content">
 
-  <p>Ethel is focused on moving or updating data in content management solutions, like file systems, SharePoint, Content
-    Server, Documentum, etc.
-  </p>
+  <p>Check the <code>runners/src/runners/templates</code> folder for examples of extract, transform and load runners.</p>
 
-  <p>Ethel uses small task runners to provide reuseable components to perform the various parts of the updates. Task
-    runners are organised in a job. The job details the order of the task runners and their configuration. Each task
-    runner handles a discrete part of the job definition, such as traversing a file system, uploading a file to a target
-    system, or adding metadata to the task definition that is needed to upload a file successfully.</p>
-
-  <p>Task runners are separated into three types:
+  <p>All runners have access to a number of useful functions via the task and logging services as well as the base
+    BaseRunner class.</p>
+  <p id="task-runner" class="subtitle is-5 docs-subhead">Task runner base class</p>
   <ul>
-    <li><i>extractors</i> - connect to a data source, extract the data and create tasks to be processed by transfomers
-      and
-      loaders. They may do actions like copying the source document to a staging location, but they should not change
-      either the source or target systems.</li>
-    <li><i>transformers</i> - update the data in the task to allow the loader to complete it's work. It's expected
-      that transformers will often be job specific components. These exist to allow extractors and loaders to be
-      relatively static, reuseable components.</li>
-    <li><i>loaders</i> - take the information in the task and create or update an object in a target system.</li>
+    <li>config - the full job config object</li>
+    <li>logger - the logger service</li>
+    <li>task - the config object for this task runner</li>
+    <li>taskService - the TaskService object</li>
+    <li>getNextRunner - returns the next task runner defined in the job</li>
+    <li>hashGet - creates a hash of the value supplied</li>
+    <li>processTask - this is the stub function called by the server that should be overloaded in each runner</li>
+    <li>raiseNextTask - starts the next task runner defined in the job</li>
+    <li>stateSave - saves the state on the current task</li>
+    <li>toCamelCase - converts a string with spaces to camel case</li>
+    <li>wait - simple sleep function</li>
   </ul>
-  </p>
 
-  <p>A relatively simple job definition is:</p>
-  <pre>
-  {
-    "name": "Employee files production",
-    "runners": {
-      "extract": [
-        {
-          "type": "FileSystemExtractor",
-          "config": {
-            "extractLocation": "E:\\Staging",
-            "hashName": "prod-finance-data"
-          }
-        }
-      ],
-      "load": [
-        { "type": "AcmeFinanceTransformer" },
-        {
-          "type": "EDMSLoader",
-          "config": {
-            "connection": {
-              "name": "EDMSConnections",
-              "key": "ProdConnection"
-            }
-          }
-        }
-      ]
-    },
-    "id": "Bveo3Lge8-Fg_-UZb9LV4"
-  }
-  </pre>
+  <p id="task-service" class="subtitle is-5 docs-subhead">Task service</p>
+  <ul>
+    <li>cache - an optional object that implements the CacheProvider interface</li>
+    <li>lookupAdd - adds a lookup. Set encrypted to true if it is an encrypted lookup</li>
+    <li>lookupDelete - deletes a lookup</li>
+    <li>lookupGet - gets a lookup</li>
+    <li>lookupGetValue - gets the value stored on a lookup</li>
+    <li>lookupUpdate - updates a lookup. Set encrypted to true if it is an encrypted lookup.</li>
+    <li>stateSave - saves the state on the current task</li>
+    <li>taskRaise - general method for raising a new task. Multiple examples in existing runners</li>
+  </ul>
 
-  <p>In this example, files in the staging directory are scanned and a task created for each file using the
-    FileSystemExtractor task runner. The AcmeFinanceTransformer task runner then processes each file, adding metadata
-    required by the target system to the data captured previously. Then the EDMSLoader task runner uses the data
-    provided
-    by the previous runners and the connection details in the configuration to connect to the target solution and upload
-    the file.</p>
+  <p id="logger-service" class="subtitle is-5 docs-subhead">Logger-service</p>
+  <p>Use <i>this.logger.verbose('...'), this.logger.debug('...')</i>, etc. to log information to the verbose, debug,
+    log, warn and error log levels. These levels are used to stay lin line with those used in Nest.js.</p>
 
-  <p>An instance of a job is called a run. A job can have one or many runs depending on the configuration. The run
-    contains the outcomes for each task. The run is where you find information on failed or suspended tasks as well as
-    the
-    time taken to complete an individual task and the various stages of the run.</p>
+  <p id="lookups" class="subtitle is-5 docs-subhead">Lookups</p>
+  <p>Lookups provide a way of storing values in an in-memory cache or the database for later use. Use the lookup
+    functions on the task service.</p>
+  <ul>
+    <li>lookupAdd - adds a lookup. Supplying a time to live value will use an in-memory cache if one is available.</li>
+    <li>lookupDelete - deletes the specified lookup</li>
+    <li>lookupGet - returns the specified lookup</li>
+    <li>lookupUpdate - updates the specified lookup</li>
+  </ul>
 
-  <p>Click on the <a href="/pages/basic/jobs/">Jobs and runs</a> page for more information on jobs and runs.</p>
-  <p>Click on the <a href="/pages/basic/client/">Client</a> page for more information on using the ethel client to
-    create jobs and track runs.</p>
-
-  </div>
+</div>
         </div>
       </div>
     </section>

@@ -122,79 +122,95 @@
       <div class="docs-body section">
         <div class="container is-fluid">
           
-<h4 class="title is-4">Overview</h4>
+<h4 class="title is-4">Jobs and runs</h4>
 <div class="content">
 
-  <p>Ethel is focused on moving or updating data in content management solutions, like file systems, SharePoint, Content
-    Server, Documentum, etc.
-  </p>
-
-  <p>Ethel uses small task runners to provide reuseable components to perform the various parts of the updates. Task
-    runners are organised in a job. The job details the order of the task runners and their configuration. Each task
-    runner handles a discrete part of the job definition, such as traversing a file system, uploading a file to a target
-    system, or adding metadata to the task definition that is needed to upload a file successfully.</p>
-
-  <p>Task runners are separated into three types:
   <ul>
-    <li><i>extractors</i> - connect to a data source, extract the data and create tasks to be processed by transfomers
-      and
-      loaders. They may do actions like copying the source document to a staging location, but they should not change
-      either the source or target systems.</li>
-    <li><i>transformers</i> - update the data in the task to allow the loader to complete it's work. It's expected
-      that transformers will often be job specific components. These exist to allow extractors and loaders to be
-      relatively static, reuseable components.</li>
-    <li><i>loaders</i> - take the information in the task and create or update an object in a target system.</li>
+    <li><a href="/pages/basic/jobs/#job-config">Job configuration</a></li>
+    <li><a href="/pages/basic/jobs/#runners">Runners</a></li>
+    <li><a href="/pages/basic/jobs/#notifications">Notifications</a></li>
+    <li><a href="/pages/basic/jobs/#schedule">Schedule</a></li>
   </ul>
-  </p>
 
-  <p>A relatively simple job definition is:</p>
+  <p id="job-config" class="subtitle is-5 docs-subhead">Job configuration</p>
+  <p>A job contains a number of configuration options:</p>
+  <ul>
+    <li>id - the unique id for the job, automatically generated</li>
+    <li>customer - an optional field to group multiple jobs</li>
+    <li>name - an optional field to name the job. A name is optional but highly recommended.</li>
+    <li>notifications - an option to notify people when the run hits a particular event, e.g. suspended, completed</li>
+    <li>runners - the runners that will be used in the job
+      <ul>
+        <li>extract - runners that do the extracting of information from the source system</li>
+        <li>load - runners that either transform the metadata of the task or update or upload the item to the target
+          system</li>
+      </ul>
+    </li>
+    <li>schedule - an option for initiating runs at a specified time, including recurring initiation</li>
+    <li>timeout - allows a run to wait for an update longer than the default five minutes</li>
+  </ul>
+  <p>An example job configuration</p>
   <pre>
   {
-    "name": "Employee files production",
+    "notifications": [],
+    "name": "File copy",
     "runners": {
       "extract": [
         {
           "type": "FileSystemExtractor",
           "config": {
-            "extractLocation": "E:\\Staging",
-            "hashName": "prod-finance-data"
+            "extractLocation": "C:\\code\\test\\fs-extract"
           }
         }
       ],
       "load": [
-        { "type": "AcmeFinanceTransformer" },
         {
-          "type": "EDMSLoader",
+          "type": "FileSystemLoader",
           "config": {
-            "connection": {
-              "name": "EDMSConnections",
-              "key": "ProdConnection"
-            }
+            "loadLocation": "C:\\code\\test\\fs-load"
           }
         }
       ]
     },
-    "id": "Bveo3Lge8-Fg_-UZb9LV4"
+    "id": "bXnaYpDhMJ3-NLEDH_hZo"
   }
   </pre>
 
-  <p>In this example, files in the staging directory are scanned and a task created for each file using the
-    FileSystemExtractor task runner. The AcmeFinanceTransformer task runner then processes each file, adding metadata
-    required by the target system to the data captured previously. Then the EDMSLoader task runner uses the data
-    provided
-    by the previous runners and the connection details in the configuration to connect to the target solution and upload
-    the file.</p>
+  <p id="runners" class="subtitle is-5 docs-subhead">Runners</p>
+  <p>The section contains the runners used to complete the job. Runners are divided into extract and load sections. It
+    is
+    expected that runners focused on extracting data from source systems are added to the extract array and other
+    runners
+    are added to the load array. There is no particular functionality associated with these two arrays, but it is a
+    convention that helps report and visualise the status of a run.</p>
+  <p>More information on runner configuration is available <a href="/pages/runner-config/runners/">here</a>.</p>
 
-  <p>An instance of a job is called a run. A job can have one or many runs depending on the configuration. The run
-    contains the outcomes for each task. The run is where you find information on failed or suspended tasks as well as
-    the
-    time taken to complete an individual task and the various stages of the run.</p>
+  <p id="notifications" class="subtitle is-5 docs-subhead">Notifications</p>
+  <p>A job can define multiple notifications. A notification consists of the following:</p>
+  <ul>
+    <li>type - how the notification will be delivered, e.g. SMTP, Slack channel</li>
+    <li>events - the events that will fire a notification, e.g. suspended, completed</li>
+    <li>config - information needed to deliver the notification based on the type</li>
+  </ul>
+  <p>An example notification:</p>
+  <pre>
+  "notifications": [
+    {
+      "type": "slack",
+      "config": {
+        "url": "https://hooks.slack.com/services/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"
+      },
+      "events": ["runSuspended"]
+    }
+  ],
+  </pre>
+  <p>Check the <a href="/pages/basic/notifications">notifications</a> page for information on the currently supported
+    events and notification types.</p>
 
-  <p>Click on the <a href="/pages/basic/jobs/">Jobs and runs</a> page for more information on jobs and runs.</p>
-  <p>Click on the <a href="/pages/basic/client/">Client</a> page for more information on using the ethel client to
-    create jobs and track runs.</p>
-
-  </div>
+  <p id="schedule" class="subtitle is-5 docs-subhead">Schedule</p>
+  <p>The schedule attribute takes a standard cron pattern with a boolean attribute at the end to determine if it is
+    enabled.</p>
+</div>
         </div>
       </div>
     </section>

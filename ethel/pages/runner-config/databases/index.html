@@ -122,79 +122,221 @@
       <div class="docs-body section">
         <div class="container is-fluid">
           
-<h4 class="title is-4">Overview</h4>
+<p class="title is-4">Database runners</p>
 <div class="content">
 
-  <p>Ethel is focused on moving or updating data in content management solutions, like file systems, SharePoint, Content
-    Server, Documentum, etc.
-  </p>
-
-  <p>Ethel uses small task runners to provide reuseable components to perform the various parts of the updates. Task
-    runners are organised in a job. The job details the order of the task runners and their configuration. Each task
-    runner handles a discrete part of the job definition, such as traversing a file system, uploading a file to a target
-    system, or adding metadata to the task definition that is needed to upload a file successfully.</p>
-
-  <p>Task runners are separated into three types:
+  <p>These runners read from, or write to, databases.</p>
+  <p>The runners are:</p>
   <ul>
-    <li><i>extractors</i> - connect to a data source, extract the data and create tasks to be processed by transfomers
-      and
-      loaders. They may do actions like copying the source document to a staging location, but they should not change
-      either the source or target systems.</li>
-    <li><i>transformers</i> - update the data in the task to allow the loader to complete it's work. It's expected
-      that transformers will often be job specific components. These exist to allow extractors and loaders to be
-      relatively static, reuseable components.</li>
-    <li><i>loaders</i> - take the information in the task and create or update an object in a target system.</li>
+    <li><a href="/pages/runner-config/databases/#postgres-extractor">PostgresExtractor</a></li>
+    <li><a href="/pages/runner-config/databases/#postgres-loader">PostgresLoader</a></li>
+    <li><a href="/pages/runner-config/databases/#sqlserver-extractor">SQLServerExtractor</a></li>
+    <li><a href="/pages/runner-config/databases/#sqlserver-loader">SQLServerLoader</a></li>
   </ul>
-  </p>
 
-  <p>A relatively simple job definition is:</p>
+  <p id="postgres-extractor" class="subtitle is-5 docs-subhead">PostgresExtractor</p>
+  <p><a href="/pages/runner-config/runner-status/"><span class="tag is-info">Developed</span></a></p>
+
+  <p>This runner extracts data from a Postgres database. It has the following configuration options:</p>
+  <ul>
+    <li><code>batchSize</code> <i>number</i> - the number of items to be processed in a run. Will be ignored without a
+      hashName setting</li>
+    <li><code>connection</code> <strong>mandatory</strong> <i>object</i> - lookup name and key to object with the
+      following values:
+      <ul>
+        <li>database</li>
+        <li>user</li>
+        <li>password</li>
+        <li>host - the server running Postgres, defaults to localhost</li>
+        <li>port - the port where Postgres is listening, defaults to 5432</li>
+      </ul>
+    </li>
+    <li><code>hashName</code> <i>string</i> - the lookup name for storing the source object hash</li>
+    <li><code>quarantinedLookupName</code> <i>string</i> - the name for the quarantine lookup, defaults to
+      quarantinedPostgresExtractor</li>
+    <li><code>query</code> <strong>mandatory</strong> <i>string</i> - the query to be run</li>
+    <li><code>updateStatus</code> <i>number</i> - when the status should be logged to the console</li>
+  </ul>
+  <hr>
+  <p>An example runner configuration:</p>
   <pre>
   {
-    "name": "Employee files production",
-    "runners": {
-      "extract": [
-        {
-          "type": "FileSystemExtractor",
-          "config": {
-            "extractLocation": "E:\\Staging",
-            "hashName": "prod-finance-data"
-          }
-        }
-      ],
-      "load": [
-        { "type": "AcmeFinanceTransformer" },
-        {
-          "type": "EDMSLoader",
-          "config": {
-            "connection": {
-              "name": "EDMSConnections",
-              "key": "ProdConnection"
-            }
-          }
-        }
-      ]
+    "type": "PostgresExtractor",
+    "config": {
+      "connection": { "name": "connections", "key": "postgres.etheltest" },
+      "query": "SELECT * FROM customer INNER JOIN address on customer.address_id = address.address_id LIMIT 10;",
     },
-    "id": "Bveo3Lge8-Fg_-UZb9LV4"
   }
   </pre>
 
-  <p>In this example, files in the staging directory are scanned and a task created for each file using the
-    FileSystemExtractor task runner. The AcmeFinanceTransformer task runner then processes each file, adding metadata
-    required by the target system to the data captured previously. Then the EDMSLoader task runner uses the data
-    provided
-    by the previous runners and the connection details in the configuration to connect to the target solution and upload
-    the file.</p>
+  <p>For each row it will raise the next task with the following message elements:</p>
+  <ul>
+    <li><code>extractId</code> the extract id</li>
+    <li><code>item</code> the values returned by the query with the column name</li>
+  </ul>
+  <pre>
+  "message": {
+    "extractId": "DGJP3bsPxDHsW2wv1fRRW",
+    "item": {
+      "customer": "MARYSMITH",
+      "email": "MARY.SMITH@sakilacustomer.org",
+      "address": "1913 Hanoi Way",
+      "district": "Nagasaki",
+      "postal_code": "35200",
+      "phone": "28303384290"
+    }
+  }
+  </pre>
 
-  <p>An instance of a job is called a run. A job can have one or many runs depending on the configuration. The run
-    contains the outcomes for each task. The run is where you find information on failed or suspended tasks as well as
-    the
-    time taken to complete an individual task and the various stages of the run.</p>
+  <p id="postgres-loader" class="subtitle is-5 docs-subhead">PostgresLoader</p>
+  <p><a href="/pages/runner-config/runner-status/"><span class="tag is-info">Developed</span></a></p>
 
-  <p>Click on the <a href="/pages/basic/jobs/">Jobs and runs</a> page for more information on jobs and runs.</p>
-  <p>Click on the <a href="/pages/basic/client/">Client</a> page for more information on using the ethel client to
-    create jobs and track runs.</p>
+  <p>This runner extracts loads data into a Postgres database. It has the following configuration options:</p>
+  <ul>
+    <li><code>addHash</code> <i>boolean</i> - whether to add the currentHash lookup, defaults to true</li>
+    <li><code>addResultToMessage</code> <i>boolean</i> - whether the result of the query is added to the message,
+      defaults to false</li>
+    <li><code>connection</code> <strong>mandatory</strong> <i>object</i> - lookup name and key to object with the
+      following values:
+      <ul>
+        <li>database</li>
+        <li>user</li>
+        <li>password</li>
+        <li>host - the server running Postgres, defaults to localhost</li>
+        <li>port - the port where Postgres is listening, defaults to 5432</li>
+      </ul>
+    </li>
+    <li><code>query</code> <i>string</i> - the attribute in the message that contains the query, defaults to 'query'
+    </li>
+  </ul>
+  <p>It can use the following message attributes:</p>
+  <ul>
+    <li><code>query</code> <strong>mandatory</strong> <i>string</i> - the insert/update to be run, supports <a
+        href="/pages/runner-config/common-options/#text-replacement">text replacement</a></li>
+  </ul>
+  <p>Message attribute names can be changed in the config section.</p>
+  <hr>
+  <p>An example runner configuration:</p>
+  <pre>
+  {
+    "type": "PostgresLoader",
+    "config": {
+      "connection": { "name": "connections", "key": "postgres.etheltest" },
+      "query": "update"
+    },
+    "message": {
+      "update": "UPDATE customers SET name = ${item.name} WHERE ID = ${extractId};"
+    }
+  }
+  </pre>
 
-  </div>
+  <p>For each row it will raise the next task with the following message elements:</p>
+  <ul>
+    <li><code>PostgresLoaderResults</code> optionally include the results of the query in the message object</li>
+    <li><code>PostgresLoaderComplete</code> the date and time the runner completed</li>
+  </ul>
+
+  <p id="sqlserver-extractor" class="subtitle is-5 docs-subhead">SQLServerExtractor</p>
+  <p><a href="/pages/runner-config/runner-status/"><span class="tag is-info">Developed</span></a></p>
+
+  <p>This runner extracts data from a SQLServer database. It has the following configuration options:</p>
+  <ul>
+    <li><code>batchSize</code> <i>number</i> - the number of items to be processed in a run. Will be ignored without a
+      hashName setting</li>
+    <li><code>connection</code> <strong>mandatory</strong> <i>object</i> - lookup name and key to JSON connection
+      object from the <a href="https://github.com/tediousjs/node-mssql#longer-example-connect-via-config-object"
+        target="_blank">mssql project</a></li>
+    <li><code>hashName</code> <i>string</i> - the lookup name for storing the source object hash</li>
+    <li><code>quarantinedLookupName</code> <i>string</i> - the name for the quarantine lookup, defaults to
+      quarantinedSQLServerExtractor</li>
+    <li><code>query</code> <strong>mandatory</strong> <i>string</i> - the query to be run</li>
+    <li><code>updateStatus</code> <i>number</i> - when the status should be logged to the console</li>
+  </ul>
+  <hr>
+  <p>An example connection object for a local docker instance:</p>
+  <pre>
+  {
+    "user": "ethel",
+    "password": "Sup#rSecret",
+    "database": "ethel",
+    "server": "localhost",
+    "options": {
+      "trustServerCertificate": true
+    }
+  }
+  </pre>
+  <p>An example runner configuration:</p>
+  <pre>
+  {
+    "type": "SQLServerExtractor",
+    "config": {
+      "connection": { "name": "connections", "key": "sqlserver.dev" },
+      "query": "SELECT TOP 10 * FROM customers;",
+    },
+  }
+  </pre>
+
+  <p>For each row it will raise the next task with the following message elements:</p>
+  <ul>
+    <li><code>extractId</code> the extract id</li>
+    <li><code>item</code> the values returned by the query with the column name</li>
+  </ul>
+  <pre>
+  "message": {
+    "extractId": "DGJP3bsPxDHsW2wv1fRRW",
+    "item": {
+      "customer": "MARYSMITH",
+      "email": "MARY.SMITH@sakilacustomer.org",
+      "address": "1913 Hanoi Way",
+      "district": "Nagasaki",
+      "postal_code": "35200",
+      "phone": "28303384290"
+    }
+  }
+  </pre>
+
+  <p id="sqlserver-loader" class="subtitle is-5 docs-subhead">SQLServerLoader</p>
+  <p><a href="/pages/runner-config/runner-status/"><span class="tag is-info">Developed</span></a></p>
+
+  <p>This runner extracts data from a SQLServer database. It has the following configuration options:</p>
+  <ul>
+    <li><code>addHash</code> <i>boolean</i> - whether to add the currentHash lookup, defaults to true</li>
+    <li><code>addResultToMessage</code> <i>boolean</i> - whether the result of the query is added to the message,
+      defaults to false</li>
+    <li><code>connection</code> <strong>mandatory</strong> <i>object</i> - lookup name and key to JSON connection
+      object from the <a href="https://github.com/tediousjs/node-mssql#longer-example-connect-via-config-object"
+        target="_blank">mssql project</a></li>
+    <li><code>query</code> <i>string</i> - the message attribute that contains the query, defaults to 'query'
+    </li>
+  </ul>
+  <p>It can use the following message attributes:</p>
+  <ul>
+    <li><code>query</code> <strong>mandatory</strong> <i>string</i> - the insert/update to be run, supports <a
+        href="/pages/runner-config/common-options/#text-replacement">text replacement</a></li>
+  </ul>
+  <p>Message attribute names can be changed in the config section.</p>
+  <hr>
+  <p>An example runner configuration:</p>
+  <pre>
+  {
+    "type": "SQLServerLoader",
+    "config": {
+      "connection": { "name": "connections", "key": "sqlserver.dev" },
+      "query": "update"
+    },
+    "message": {
+      "update": "UPDATE customers SET name = ${item.name} WHERE ID = ${extractId};"
+    }
+  }
+  </pre>
+
+  <p>For each row it will raise the next task with the following message elements:</p>
+  <ul>
+    <li><code>SQLServerLoaderResults</code> optionally include the results of the query in the message object</li>
+    <li><code>SQLServerLoaderComplete</code> the date and time the runner completed</li>
+  </ul>
+
+</div>
         </div>
       </div>
     </section>

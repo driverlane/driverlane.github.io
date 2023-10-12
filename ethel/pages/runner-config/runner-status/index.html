@@ -122,79 +122,53 @@
       <div class="docs-body section">
         <div class="container is-fluid">
           
-<h4 class="title is-4">Overview</h4>
+<p class="title is-4">Runner status</p>
 <div class="content">
 
-  <p>Ethel is focused on moving or updating data in content management solutions, like file systems, SharePoint, Content
-    Server, Documentum, etc.
-  </p>
+  <p>The various runner status icons represent the following:</p>
+  <table>
+    <thead>
+      <th>
+      <td></td>
+      <td></td>
+      </th>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="tag is-danger">Deprecated</span></td>
+        <td>not recommended for use</td>
+      </tr>
+      <tr>
+        <td><span class="tag is-black">Demo only</span></td>
+        <td>testing and demonstration only usage</td>
+      </tr>
+      <tr>
+        <td><span class="tag is-warning">Planned</span></td>
+        <td>planned runner, little to no work completeds</td>
+      </tr>
+      <tr>
+        <td><span class="tag is-link">Started</span></td>
+        <td>development has started, you should assume the runner needs to be developed from scratch</td>
+      </tr>
+      <tr>
+        <td><span class="tag is-info">Developed</span></td>
+        <td>an initial version of the runner has been completed, you should assume there will be bugs and missing
+          features</td>
+      </tr>
+      <tr>
+        <td><span class="tag is-primary">Tested</span></td>
+        <td>the runner has been developed and tested extensively, but not used in a production job, there is a chance of
+          bugs and missing features</td>
+      </tr>
+      <tr>
+        <td><span class="tag is-success">Production</span></td>
+        <td>the runner has been used previously in a production job, there will be few bugs though it may need extra
+          features</td>
+      </tr>
+    </tbody>
+  </table>
 
-  <p>Ethel uses small task runners to provide reuseable components to perform the various parts of the updates. Task
-    runners are organised in a job. The job details the order of the task runners and their configuration. Each task
-    runner handles a discrete part of the job definition, such as traversing a file system, uploading a file to a target
-    system, or adding metadata to the task definition that is needed to upload a file successfully.</p>
-
-  <p>Task runners are separated into three types:
-  <ul>
-    <li><i>extractors</i> - connect to a data source, extract the data and create tasks to be processed by transfomers
-      and
-      loaders. They may do actions like copying the source document to a staging location, but they should not change
-      either the source or target systems.</li>
-    <li><i>transformers</i> - update the data in the task to allow the loader to complete it's work. It's expected
-      that transformers will often be job specific components. These exist to allow extractors and loaders to be
-      relatively static, reuseable components.</li>
-    <li><i>loaders</i> - take the information in the task and create or update an object in a target system.</li>
-  </ul>
-  </p>
-
-  <p>A relatively simple job definition is:</p>
-  <pre>
-  {
-    "name": "Employee files production",
-    "runners": {
-      "extract": [
-        {
-          "type": "FileSystemExtractor",
-          "config": {
-            "extractLocation": "E:\\Staging",
-            "hashName": "prod-finance-data"
-          }
-        }
-      ],
-      "load": [
-        { "type": "AcmeFinanceTransformer" },
-        {
-          "type": "EDMSLoader",
-          "config": {
-            "connection": {
-              "name": "EDMSConnections",
-              "key": "ProdConnection"
-            }
-          }
-        }
-      ]
-    },
-    "id": "Bveo3Lge8-Fg_-UZb9LV4"
-  }
-  </pre>
-
-  <p>In this example, files in the staging directory are scanned and a task created for each file using the
-    FileSystemExtractor task runner. The AcmeFinanceTransformer task runner then processes each file, adding metadata
-    required by the target system to the data captured previously. Then the EDMSLoader task runner uses the data
-    provided
-    by the previous runners and the connection details in the configuration to connect to the target solution and upload
-    the file.</p>
-
-  <p>An instance of a job is called a run. A job can have one or many runs depending on the configuration. The run
-    contains the outcomes for each task. The run is where you find information on failed or suspended tasks as well as
-    the
-    time taken to complete an individual task and the various stages of the run.</p>
-
-  <p>Click on the <a href="/pages/basic/jobs/">Jobs and runs</a> page for more information on jobs and runs.</p>
-  <p>Click on the <a href="/pages/basic/client/">Client</a> page for more information on using the ethel client to
-    create jobs and track runs.</p>
-
-  </div>
+</div>
         </div>
       </div>
     </section>

@@ -122,79 +122,90 @@
       <div class="docs-body section">
         <div class="container is-fluid">
           
-<h4 class="title is-4">Overview</h4>
+<p class="title is-4">Core for Success Factors runners</p>
 <div class="content">
 
-  <p>Ethel is focused on moving or updating data in content management solutions, like file systems, SharePoint, Content
-    Server, Documentum, etc.
-  </p>
-
-  <p>Ethel uses small task runners to provide reuseable components to perform the various parts of the updates. Task
-    runners are organised in a job. The job details the order of the task runners and their configuration. Each task
-    runner handles a discrete part of the job definition, such as traversing a file system, uploading a file to a target
-    system, or adding metadata to the task definition that is needed to upload a file successfully.</p>
-
-  <p>Task runners are separated into three types:
+  <p>These runners are related to working with Core for Success Factors.</p>
+  <p>The runners are:</p>
   <ul>
-    <li><i>extractors</i> - connect to a data source, extract the data and create tasks to be processed by transfomers
-      and
-      loaders. They may do actions like copying the source document to a staging location, but they should not change
-      either the source or target systems.</li>
-    <li><i>transformers</i> - update the data in the task to allow the loader to complete it's work. It's expected
-      that transformers will often be job specific components. These exist to allow extractors and loaders to be
-      relatively static, reuseable components.</li>
-    <li><i>loaders</i> - take the information in the task and create or update an object in a target system.</li>
+    <li><a href="/pages/runner-config/file-system/#coresf-loader">CoreSFLoader</a></li>
+    <li><a href="/pages/runner-config/file-system/#docssf-loader">DocPipelinesSSFLoader</a></li>
   </ul>
-  </p>
 
-  <p>A relatively simple job definition is:</p>
-  <pre>
-  {
-    "name": "Employee files production",
-    "runners": {
-      "extract": [
-        {
-          "type": "FileSystemExtractor",
-          "config": {
-            "extractLocation": "E:\\Staging",
-            "hashName": "prod-finance-data"
-          }
-        }
-      ],
-      "load": [
-        { "type": "AcmeFinanceTransformer" },
-        {
-          "type": "EDMSLoader",
-          "config": {
-            "connection": {
-              "name": "EDMSConnections",
-              "key": "ProdConnection"
-            }
-          }
-        }
-      ]
-    },
-    "id": "Bveo3Lge8-Fg_-UZb9LV4"
-  }
-  </pre>
+  <p id="coresf-loader" class="subtitle is-5 docs-subhead">CoreSFLoader</p>
+  <p><a href="/pages/runner-config/runner-status/"><span class="tag is-success">Production</span></a></p>
 
-  <p>In this example, files in the staging directory are scanned and a task created for each file using the
-    FileSystemExtractor task runner. The AcmeFinanceTransformer task runner then processes each file, adding metadata
-    required by the target system to the data captured previously. Then the EDMSLoader task runner uses the data
-    provided
-    by the previous runners and the connection details in the configuration to connect to the target solution and upload
-    the file.</p>
+  <p>This runner will load objects into Core for Success Factors. It has the following configuration options:</p>
+  <ul>
+    <li><code>addHash</code> <i>boolean</i> - whether to add the currentHash lookup, defaults to true</li>
+    <li><code>checkDocType</code> <i>boolean</i> - whether to check if the document type exists before uploading the
+      document, defaults to false</li>
+    <li><code>connection</code> <strong>mandatory</strong> <i>object</i> - the ID of the container where objects are
+      loaded</li>
+    <ul>
+      <li>authHost - server that provides authentication</li>
+      <li>contentHost - server that provides content functionality</li>
+      <li>subscriptionName - subscription name for the Core subscription</li>
+      <li>tenantId - tenant ID for the subscription</li>
+      <li>userId - user id from the API credentials for the Core subscription</li>
+      <li>userSecret - user secret from the API credentials for the Core subscription</li>
+    </ul>
+    <li><code>logOnly</code> <i>boolean</i> - whether to only log the actions without creating the files, defaults to
+      false</li>
+    <li><code>workspaceSearchField</code> <i>string</i> - the field used in the employee workspace search, defaults to
+      sf_person_information:user_id</li>
+  </ul>
+  <p>It expects the following attributes in the message object, these can be remapped in the config attributes:</p>
+  <ul>
+    <li><code>sourceFile</code> <i>string</i> - the message attribute containing the path to the file to upload,
+      defaults to sourceFile</li>
+    <li><code>docDate</code> <i>string</i> - the message attribute containing creation date for the uploaded document,
+      defaults to docDate</li>
+    <li><code>docType</code> <i>string</i> - the message attribute containingthe document type for the uploaded
+      document, defaults to docType</li>
+    <li><code>employeeId</code> <i>string</i> - the message attribute containing the value used to find the workspace
+      id, defaults to employeeId</li>
+  </ul>
+  <p>It populates the following attributes in the new tasks it creates:</p>
+  <ul>
+    <li><code>message.coreSFLoaderComplete</code> the date and time the task is completed</li>
+  </ul>
 
-  <p>An instance of a job is called a run. A job can have one or many runs depending on the configuration. The run
-    contains the outcomes for each task. The run is where you find information on failed or suspended tasks as well as
-    the
-    time taken to complete an individual task and the various stages of the run.</p>
+  <p id="docssf-loader" class="subtitle is-5 docs-subhead">DocPipelinesSSFLoader</p>
+  <p><a href="/pages/runner-config/runner-status/"><span class="tag is-danger">Deprecated</span></a></p>
 
-  <p>Click on the <a href="/pages/basic/jobs/">Jobs and runs</a> page for more information on jobs and runs.</p>
-  <p>Click on the <a href="/pages/basic/client/">Client</a> page for more information on using the ethel client to
-    create jobs and track runs.</p>
+  <p>The Document Pipelines integration to Core for Success Factors was full of errors when this was first created. The
+    problems were eventually resolved, but in the time we were waiting we wrote the API based runner and would recommend
+    using that instead. Doc Pipelines also has problems around multi-thread logging that make it a challenge when it
+    comes to reporting so should be avoided unless there are no other options.</p>
+  <p>This runner isn't in the standard ethel repo, it's kept in the lifeblood-migration repo on Github.</p>
+  <p>This runner will create upload directories and files for the Document Pipelines Success Factors integration. It has
+    the following configuration options:</p>
+  <ul>
+    <li><code>addHash</code> <i>boolean</i> - whether to add the currentHash lookup, defaults to false</li>
+    <li><code>copyFile</code> <i>boolean</i> - whether to copy or move the file to the target location, defaults to
+      true
+    </li>
+    <li><code>loadLocation</code> <strong>mandatory</strong> <i>string</i> - the path to the directory where the
+      uploads are staged</li>
+    <li><code>logOnly</code> <i>boolean</i> - whether to only log the actions without creating the files, defaults to
+      false</li>
+  </ul>
+  <p>It expects the following attributes in the message object, these can be remapped in the config attributes:</p>
+  <ul>
+    <li><code>attributesFile</code> <i>string</i> - the message attribute containing the path to the attributes file,
+      defaults to attributesFile</li>
+    <li><code>commands</code> <i>string array</i> - the message attribute containing the commands to be written to
+      file, defaults to commands</li>
+    <li><code>sourceFile</code> <i>string</i> - the message attribute containing the path to the file to upload,
+      defaults to sourceFile</li>
+  </ul>
+  <p>It populates the following attributes in the new tasks it creates:</p>
+  <ul>
+    <li><code>message.docPipelinesSSFLoaderComplete</code> the date and time the task is completed</li>
+  </ul>
 
-  </div>
+</div>
         </div>
       </div>
     </section>

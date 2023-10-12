@@ -122,79 +122,222 @@
       <div class="docs-body section">
         <div class="container is-fluid">
           
-<h4 class="title is-4">Overview</h4>
+<p class="title is-4">File system runners</p>
 <div class="content">
 
-  <p>Ethel is focused on moving or updating data in content management solutions, like file systems, SharePoint, Content
-    Server, Documentum, etc.
-  </p>
-
-  <p>Ethel uses small task runners to provide reuseable components to perform the various parts of the updates. Task
-    runners are organised in a job. The job details the order of the task runners and their configuration. Each task
-    runner handles a discrete part of the job definition, such as traversing a file system, uploading a file to a target
-    system, or adding metadata to the task definition that is needed to upload a file successfully.</p>
-
-  <p>Task runners are separated into three types:
+  <p>These runners are related to working with the file system.</p>
+  <p>The runners are:</p>
   <ul>
-    <li><i>extractors</i> - connect to a data source, extract the data and create tasks to be processed by transfomers
-      and
-      loaders. They may do actions like copying the source document to a staging location, but they should not change
-      either the source or target systems.</li>
-    <li><i>transformers</i> - update the data in the task to allow the loader to complete it's work. It's expected
-      that transformers will often be job specific components. These exist to allow extractors and loaders to be
-      relatively static, reuseable components.</li>
-    <li><i>loaders</i> - take the information in the task and create or update an object in a target system.</li>
+    <li><a href="/pages/runner-config/file-system/#fs-extractor">FileSystemExtractor</a></li>
+    <li><a href="/pages/runner-config/file-system/#fs-otcs">FileToOTCSTransformer</a></li>
+    <li><a href="/pages/runner-config/file-system/#fs-loader">FileSystemLoader</a></li>
   </ul>
-  </p>
 
-  <p>A relatively simple job definition is:</p>
+  <p id="fs-extractor" class="subtitle is-5 docs-subhead">FileSystemExtractor</p>
+  <p><a href="/pages/runner-config/runner-status/"><span class="tag is-success">Production</span></a></p>
+
+  <p>This runner extracts tasks from a file system. One task per document or directory. It has the following
+    configuration options:</p>
+  <ul>
+    <li><code>batchSize</code> <i>number</i> - the number of items to be processed in a run - needs a hashName value
+      or it will be ignored</li>
+    <li><code>createDirectoryTasks</code> <i>boolean</i> - whether to create tasks for directories or not, defaults to
+      true</li>
+    <li><code>extractLocation</code> <strong>mandatory</strong> <i>string</i> - path to the directory where extract
+      will start</li>
+    <li><code>hashName</code> <i>string</i> - the lookup name for storing the source object hash</li>
+    <li><code>ignore</code> see <a href="/pages/runner-config/common-options/#ignore">ignoring items</a></li>
+    <li><code>quarantinedLookupName</code> <i>string</i> - the name for the quarantine lookup, defaults to
+      quarantinedFileSystemExtractor</li>
+    <li><code>recursive</code> <i>boolean</i> - whether to extract from child directories, defaults to true</li>
+    <li><code>updateStatus</code> <i>number</i> - when the status should be logged to the console</li>
+  </ul>
+  <hr>
+  <p>An example runner configuration:</p>
   <pre>
   {
-    "name": "Employee files production",
+    "type": "FileSystemExtractor",
+    "config": {
+      "batchSize": 500,
+      "createDirectoryTasks": false,
+      "extractLocation": "C:\\data\finance-data",
+      "hashName": "prodFinanceMigration",
+      "ignore": {
+        "minSize": 350,
+        "name": ["system.ini"]
+      },
+      "quarantinedLookupName": "prodFinanceMigrationQuarantined"
+    }
+  }
+  </pre>
+
+  <p>It will raise the next task with the following message elements:</p>
+  <ul>
+    <li><code>item</code> information about the file or directory</li>
+    <li><code>extractId</code> an ID used to connect all runners to the source row</li>
+    <li><code>extractLocation</code> the directory where the extract started</li>
+    <li><code>sourceFile</code> path to the file</li>
+    <li><code>quarantine</code> the lookup to add to quarantine the file</li>
+  </ul>
+  <p>Example message object for new task:</p>
+  <pre>
+  {
+    "message": {
+      item: {
+        name: "built-file3.txt",
+        extension: ".txt",
+        path: "C:\\data\finance-data\\built-dir5\\built-dir4\\built-dir2\\built-dir4\\built-dir1\\built-file3.txt",
+        stats: {
+          dev: 3967843523,
+          mode: 33206,
+          nlink: 1,
+          uid: 0,
+          gid: 0,
+          rdev: 0,
+          blksize: 4096,
+          ino: 48132221017659290,
+          size: 59,
+          blocks: 0,
+          atimeMs: 1683609498896.2495,
+          mtimeMs: 1680502568908.2917,
+          ctimeMs: 1680502568908.2917,
+          birthtimeMs: 1681442581303.0498,
+          atime: "2023-05-09T05:18:18.896Z",
+          mtime: "2023-04-03T06:16:08.908Z",
+          ctime: "2023-04-03T06:16:08.908Z",
+          birthtime: "2023-04-14T03:23:01.303Z",
+        },
+        isDirectory: false,
+      },
+      extractId: "ef15711093fce44857f960c27f239414ee7beaaa",
+      extractLocation: "C:\\data\finance-data",
+      sourceFile: "C:\\data\finance-data\\built-dir5\\built-dir4\\built-dir2\\built-dir4\\built-dir1\\built-file3.txt",
+      quarantine: {
+        name: "prodFinanceMigrationQuarantined",
+        key: "ef15711093fce44857f960c27f239414ee7beaaa",
+        value: "C:\\data\finance-data\\built-dir5\\built-dir4\\built-dir2\\built-dir4\\built-dir1\\built-file3.txt",
+      },
+    }
+  }
+  </pre>
+
+  <p id="fs-otcs" class="subtitle is-5 docs-subhead">FileToOTCSTransformer</p>
+  <p><a href="/pages/runner-config/runner-status/"><span class="tag is-info">Developed</span></a></p>
+
+  <p>This runner will transform file system objects into Content Server objects. This runner assumes the message was
+    created by the FileSystemExtractor. It has the following configuration options:</p>
+  <ul>
+    <li><code>createDirectoryTasks</code> <i>boolean</i> - whether to create tasks for directories or not, defaults to
+      false</li>
+    <li><code>removeExtension</code> <i>boolean</i> - whether to remove the extension from the name of document
+      objects, defaults to true</li>
+  </ul>
+  <p>An example runner configuration:</p>
+  <pre>
+  {
+    "type": "FileToOTCSTransformer",
+    "config": {
+      "createDirectoryTasks": true,
+      "removeExtension": false,
+    }
+  }
+  </pre>
+
+  <p>It will raise the next task with the following message elements:</p>
+  <ul>
+    <li><code>node</code> the data of the object that is to be loaded</li>
+  </ul>
+  <p>Example message object for new task:</p>
+  <pre>
+  {
+    "message": {
+      "node": {
+        "properties": {
+          "container": false,
+          "name": "built-file1",
+          "type": 144,
+          "path": ":built-dir1:",
+        },
+        "versions": [
+          {
+            "name": "built-file1.txt",
+            "source": "C:\\data\finance-data-small\\built-dir1\\built-file1.txt",
+            "external_create_date": "2023-04-03T06:16:02.284Z",
+            "external_modify_date": "2023-04-03T06:16:02.284Z",
+          },
+        ],
+      },
+      loadAction: "addNode",
+    }
+  }
+  </pre>
+
+  <p id="fs-loader" class="subtitle is-5 docs-subhead">FileSystemLoader</p>
+  <p><a href="/pages/runner-config/runner-status/"><span class="tag is-primary">Tested</span></a></p>
+
+  <p>This runner copies a file from a file sytem path to a different path. It has the following configuration options:
+  </p>
+  <ul>
+    <li><code>addHash</code> <i>boolean</i> - whether to add the currentHash lookup, defaults to true</li>
+    <li><code>extractLocation</code> <i>string</i> - the message attribute containing the path to the directory where
+      extraction started, defaults to extractLocation</li>
+    <li><code>loadLocation</code> <strong>mandatory</strong> <i>string</i> - the path to the directory where loading
+      starts</li>
+    <li><code>logOnly</code> <i>boolean</i> - whether to only log the actions without creating the files, defaults to
+      false</li>
+    <li><code>sourceFile</code> <i>string</i> - the message attribute containing the path to the file to upload,
+      defaults to sourceFile</li>
+  </ul>
+  <p>It can use the following message attributes:</p>
+  <ul>
+    <li><code>extractLocation</code> <strong>mandatory</strong> <i>string</i> - path to the directory where
+      extraction started</li>
+    <li><code>sourceFile</code> <strong>mandatory</strong> <i>string</i> - path to the file to upload</li>
+  </ul>
+  <p>Message attribute names can be changed in the config section.</p>
+  <hr>
+  <p>An example runner and message configuration:</p>
+  <pre>
+  {
+    "name": "Test migration",
+    "runner": {
+      "type": "FileSystemLoader",
+      "config": {
+        "loadLocation": "C:\\code\\test\\fs-load"
+      }
+    },
     "runners": {
       "extract": [
         {
           "type": "FileSystemExtractor",
           "config": {
-            "extractLocation": "E:\\Staging",
-            "hashName": "prod-finance-data"
+            "extractLocation": "C:\\code\\test\\fs-extract",
+            "updateStatus": 2000
           }
         }
       ],
       "load": [
-        { "type": "AcmeFinanceTransformer" },
         {
-          "type": "EDMSLoader",
+          "type": "FileSystemLoader",
           "config": {
-            "connection": {
-              "name": "EDMSConnections",
-              "key": "ProdConnection"
-            }
+            "loadLocation": "C:\\code\\test\\fs-load"
           }
         }
       ]
     },
-    "id": "Bveo3Lge8-Fg_-UZb9LV4"
+    "message": {
+      "extractLocation": "C:\\code\\test\\fs-extract-small",
+      "sourceFile": "C:\\code\\test\\fs-extract-small\\built-dir1\\built-file1.txt",
+    }
+    "id": "6UQtP8-CdXAMg_GQCOSLd"
   }
   </pre>
+  <p>It will raise the next task with the existing message with the following message elements added:</p>
+  <ul>
+    <li><code>loadPath</code> the path where the file was created</li>
+  </ul>
 
-  <p>In this example, files in the staging directory are scanned and a task created for each file using the
-    FileSystemExtractor task runner. The AcmeFinanceTransformer task runner then processes each file, adding metadata
-    required by the target system to the data captured previously. Then the EDMSLoader task runner uses the data
-    provided
-    by the previous runners and the connection details in the configuration to connect to the target solution and upload
-    the file.</p>
-
-  <p>An instance of a job is called a run. A job can have one or many runs depending on the configuration. The run
-    contains the outcomes for each task. The run is where you find information on failed or suspended tasks as well as
-    the
-    time taken to complete an individual task and the various stages of the run.</p>
-
-  <p>Click on the <a href="/pages/basic/jobs/">Jobs and runs</a> page for more information on jobs and runs.</p>
-  <p>Click on the <a href="/pages/basic/client/">Client</a> page for more information on using the ethel client to
-    create jobs and track runs.</p>
-
-  </div>
+</div>
         </div>
       </div>
     </section>

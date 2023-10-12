@@ -122,79 +122,39 @@
       <div class="docs-body section">
         <div class="container is-fluid">
           
-<h4 class="title is-4">Overview</h4>
+<p class="title is-4">Notifications</p>
 <div class="content">
 
-  <p>Ethel is focused on moving or updating data in content management solutions, like file systems, SharePoint, Content
-    Server, Documentum, etc.
-  </p>
-
-  <p>Ethel uses small task runners to provide reuseable components to perform the various parts of the updates. Task
-    runners are organised in a job. The job details the order of the task runners and their configuration. Each task
-    runner handles a discrete part of the job definition, such as traversing a file system, uploading a file to a target
-    system, or adding metadata to the task definition that is needed to upload a file successfully.</p>
-
-  <p>Task runners are separated into three types:
+  <p id="events" class="subtitle is-5 docs-subhead">Notification events</p>
+  <p>The following events can generate a notification:</p>
   <ul>
-    <li><i>extractors</i> - connect to a data source, extract the data and create tasks to be processed by transfomers
-      and
-      loaders. They may do actions like copying the source document to a staging location, but they should not change
-      either the source or target systems.</li>
-    <li><i>transformers</i> - update the data in the task to allow the loader to complete it's work. It's expected
-      that transformers will often be job specific components. These exist to allow extractors and loaders to be
-      relatively static, reuseable components.</li>
-    <li><i>loaders</i> - take the information in the task and create or update an object in a target system.</li>
+    <li>runCompleted - all tasks have completed, either successfully or because the error was not to be
+      retried</li>
+    <li>runSuspended - i.e. all incomplete tasks have exhausted their error retry limit</li>
   </ul>
-  </p>
+  <p>Other run events can be implemented if required. There's no plans to send notifications on task or job events.</p>
 
-  <p>A relatively simple job definition is:</p>
+  <p id="types" class="subtitle is-5 docs-subhead">Notification types</p>
+  <p>Currently supported notification types are:</p>
+  <ul>
+    <li><a href="/pages/basics/notifications/#slack">Slack</a> - used in testing and demonstrations</li>
+    <li>It's just slack at the moment, we will create others as needed, e.g. SMTP</li>
+  </ul>
+
+  <p id="slack" class="subtitle is-5 docs-subhead">Slack notification</p>
+  <p>For a slack notification you will need to create ... </p>
+  <p>An example slack notification configuration:</p>
   <pre>
   {
-    "name": "Employee files production",
-    "runners": {
-      "extract": [
-        {
-          "type": "FileSystemExtractor",
-          "config": {
-            "extractLocation": "E:\\Staging",
-            "hashName": "prod-finance-data"
-          }
-        }
-      ],
-      "load": [
-        { "type": "AcmeFinanceTransformer" },
-        {
-          "type": "EDMSLoader",
-          "config": {
-            "connection": {
-              "name": "EDMSConnections",
-              "key": "ProdConnection"
-            }
-          }
-        }
-      ]
+    "type": "slack",
+    "config": {
+      "url": "https://hooks.slack.com/services/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"
     },
-    "id": "Bveo3Lge8-Fg_-UZb9LV4"
+    "events": ["runSuspended", ]
   }
   </pre>
 
-  <p>In this example, files in the staging directory are scanned and a task created for each file using the
-    FileSystemExtractor task runner. The AcmeFinanceTransformer task runner then processes each file, adding metadata
-    required by the target system to the data captured previously. Then the EDMSLoader task runner uses the data
-    provided
-    by the previous runners and the connection details in the configuration to connect to the target solution and upload
-    the file.</p>
-
-  <p>An instance of a job is called a run. A job can have one or many runs depending on the configuration. The run
-    contains the outcomes for each task. The run is where you find information on failed or suspended tasks as well as
-    the
-    time taken to complete an individual task and the various stages of the run.</p>
-
-  <p>Click on the <a href="/pages/basic/jobs/">Jobs and runs</a> page for more information on jobs and runs.</p>
-  <p>Click on the <a href="/pages/basic/client/">Client</a> page for more information on using the ethel client to
-    create jobs and track runs.</p>
-
-  </div>
+</div>
         </div>
       </div>
     </section>

@@ -122,79 +122,251 @@
       <div class="docs-body section">
         <div class="container is-fluid">
           
-<h4 class="title is-4">Overview</h4>
+<p class="title is-4">Text file runners</p>
 <div class="content">
 
-  <p>Ethel is focused on moving or updating data in content management solutions, like file systems, SharePoint, Content
-    Server, Documentum, etc.
-  </p>
-
-  <p>Ethel uses small task runners to provide reuseable components to perform the various parts of the updates. Task
-    runners are organised in a job. The job details the order of the task runners and their configuration. Each task
-    runner handles a discrete part of the job definition, such as traversing a file system, uploading a file to a target
-    system, or adding metadata to the task definition that is needed to upload a file successfully.</p>
-
-  <p>Task runners are separated into three types:
+  <p>These runners read from, or write to, text files.</p>
+  <p>The runners are:</p>
   <ul>
-    <li><i>extractors</i> - connect to a data source, extract the data and create tasks to be processed by transfomers
-      and
-      loaders. They may do actions like copying the source document to a staging location, but they should not change
-      either the source or target systems.</li>
-    <li><i>transformers</i> - update the data in the task to allow the loader to complete it's work. It's expected
-      that transformers will often be job specific components. These exist to allow extractors and loaders to be
-      relatively static, reuseable components.</li>
-    <li><i>loaders</i> - take the information in the task and create or update an object in a target system.</li>
+    <li><a href="/pages/runner-config/text-files/#csv-extractor">CSVExtractor</a></li>
+    <li><a href="/pages/runner-config/text-files/#csv-loader">CSVLoader</a></li>
+    <li><a href="/pages/runner-config/text-files/#json-extractor">JSONExtractor</a></li>
+    <li><a href="/pages/runner-config/text-files/#json-loader">JSONLoader</a></li>
   </ul>
-  </p>
 
-  <p>A relatively simple job definition is:</p>
+  <p id="csv-extractor" class="subtitle is-5 docs-subhead">CSVExtractor</p>
+  <p><a href="/pages/runner-config/runner-status/"><span class="tag is-primary">Tested</span></a></p>
+
+  <p>This runner extracts data from a CSV file. It will raise one new task per row. It has the following configuration
+    options:</p>
+  <ul>
+    <li><code>batchSize</code> <i>number</i> - the number of items to be processed in a run. Will be ignored without a
+      hashName setting</li>
+    <li><code>dataFile</code> <strong>mandatory</strong> <i>string</i> - the path to the CSV file</li>
+    <li><code>hasHeaders</code> <i>boolean</i> - whether the file has a header row, defaults to true</li>
+    <li><code>hashName</code> <i>string</i> - the lookup name for storing the source object hash</li>
+    <li><code>headersToCamelCase</code> <i>boolean</i> - whether to convert the heading column into camel case</li>
+    <li><code>ignoreHeaders</code> <i>boolean</i> - use column numbers instead of the first row as column names</li>
+    <li><code>quarantinedLookupName</code> <i>string</i> - the name for the quarantine lookup, defaults to
+      quarantinedCSVExtractor</li>
+    <li><code>updateStatus</code> <i>number</i> - when the status should be logged to the console</li>
+  </ul>
+  <hr>
+  <p>An example runner configuration:</p>
   <pre>
   {
-    "name": "Employee files production",
-    "runners": {
-      "extract": [
-        {
-          "type": "FileSystemExtractor",
-          "config": {
-            "extractLocation": "E:\\Staging",
-            "hashName": "prod-finance-data"
-          }
-        }
-      ],
-      "load": [
-        { "type": "AcmeFinanceTransformer" },
-        {
-          "type": "EDMSLoader",
-          "config": {
-            "connection": {
-              "name": "EDMSConnections",
-              "key": "ProdConnection"
-            }
-          }
-        }
-      ]
-    },
-    "id": "Bveo3Lge8-Fg_-UZb9LV4"
+    "type": "CSVExtractor",
+    "config": {
+      "dataFile": "C://data/source.csv",
+      "batchSize": 100,
+      "hasHeaders": false,
+      "hashName": "hashNameForJob",
+      "headersToCamelCase": 10,
+      "ignoreHeaders": 10,
+      "updateStatus": 10,
+    }
   }
   </pre>
 
-  <p>In this example, files in the staging directory are scanned and a task created for each file using the
-    FileSystemExtractor task runner. The AcmeFinanceTransformer task runner then processes each file, adding metadata
-    required by the target system to the data captured previously. Then the EDMSLoader task runner uses the data
-    provided
-    by the previous runners and the connection details in the configuration to connect to the target solution and upload
-    the file.</p>
+  <p>For each row it will raise the next task with the following message elements:</p>
+  <ul>
+    <li><code>item</code> the row of data from the source file</li>
+    <li><code>extractId</code> an ID used to connect all runners to the source item</li>
+    <li><code>currentHash</code> the hash of the data. Added if a hashName is configured.</li>
+    <li><code>quarantine</code> the lookup to add to quarantine the object</li>
+  </ul>
+  <p>Example message object for new task:</p>
+  <pre>
+  {
+    "message": {
+      "item": {
+        "column0": "J6BT8ITBAA9BFJI6",
+        "column1": "2012-12-23",
+        "column2": "Donte",
+        "column3": "Villasenor",
+        "column4": "allan.nugent4635@islam.com"
+      },
+      "extractId": "991eabc7590a6ad8ff350fbe1ded0a1293507137",
+      "quarantine": {
+        "name": "quarantinedCSVExtractor",
+        "key": "991eabc7590a6ad8ff350fbe1ded0a1293507137",
+        "value": "991eabc7590a6ad8ff350fbe1ded0a1293507137"
+      }
+    }
+  }
+  </pre>
 
-  <p>An instance of a job is called a run. A job can have one or many runs depending on the configuration. The run
-    contains the outcomes for each task. The run is where you find information on failed or suspended tasks as well as
-    the
-    time taken to complete an individual task and the various stages of the run.</p>
+  <p id="csv-loader" class="subtitle is-5 docs-subhead">CSVLoader</p>
+  <p><a href="/pages/runner-config/runner-status/"><span class="tag is-info">Developed</span></a></p>
 
-  <p>Click on the <a href="/pages/basic/jobs/">Jobs and runs</a> page for more information on jobs and runs.</p>
-  <p>Click on the <a href="/pages/basic/client/">Client</a> page for more information on using the ethel client to
-    create jobs and track runs.</p>
+  <p>This runner adds an entry to a CSV file. It has the following configuration options:</p>
+  <ul>
+    <li><code>addHash</code> <i>boolean</i> - whether to add the currentHash lookup, defaults to true</li>
+    <li><code>csvHeaders</code> <i>string</i> - a header row to be added to the CSV file on creation</li>
+    <li><code>csvTemplate</code> <strong>mandatory</strong> <i>string</i> - the CSV data template</li>
+    <li><code>targetPath</code> <i>string</i> - defaults to targetPath
+      <ul>
+        <li>if targetPathInMessage is true, the message attribute containing the path to the file</li>
+        <li>if targetPathInMessage is false, <strong>mandatory</strong> the path to the file</li>
+      </ul>
+    </li>
+    <li><code>targetPathInMessage</code> <i>boolean</i> - if the targetPath is in the message object, defaults to false
+    </li>
+  </ul>
+  <p>It can use the following message attributes:</p>
+  <ul>
+    <li><code>targetPath</code> <i>string</i> - the path to the file to update, <strong>mandatory</strong> if
+      targetPathInMessage is true</li>
+  </ul>
+  <p>Message attribute names can be changed in the config section.</p>
+  <hr>
+  <p>An example runner and message configuration:</p>
+  <pre>
+    {
+      "runner": {
+        "type": "CSVLoader",
+        "config": {
+          "csvHeaders": "\\"user_name\\",\\"first_name\\",\\"last_name\\"",
+          "csvTemplate": "\\"${user_name}\\",\\"${first_name}\\",\\"${last_name}\\"",
+          "targetPath": "C:\\code\\test\\csv-loader\\${batchId}users.csv",
+        }
+      },
+      "message": {
+        "batchId": "IRFa-VaY2b",
+        "first_name": "Fred",
+        "last_name": "Nerk",
+        "user_name": "nerkf"    
+      }
+    }
+  </pre>
 
-  </div>
+  <p>For each row it will raise the next task with the following message elements:</p>
+  <ul>
+    <li><code>csvValue</code> the CSV data written to the file</li>
+    <li><code>targetPath</code> the path of the file that was updated</li>
+    <li><code>CSVLoaderComplete</code> the date and time the runner completed</li>
+  </ul>
+  <p id="json-extractor" class="subtitle is-5 docs-subhead">JSONExtractor</p>
+  <p><a href="/pages/runner-config/runner-status/"><span class="tag is-primary">Tested</span></a></p>
+
+  <p>This runner extracts tasks from a JSON file. One task per object. It has the following configuration options:</p>
+  <ul>
+    <li><code>batchSize</code> <i>number</i> - the number of items to be processed in a run. Will be ignored without a
+      hashName setting</li>
+    <li><code>dataFile</code> <strong>mandatory</strong> <i>string</i> - the path to the JSON file</li>
+    <li><code>hashName</code> <i>string</i> - the lookup name for storing the source object hash</li>
+    <li><code>keysToCamelCase</code> <i>boolean</i> - convert the property name to camel case, defaults to false</li>
+    <li><code>quarantinedLookupName</code> <i>string</i> - the name for the quarantine lookup, defaults to
+      quarantinedJSONExtractor</li>
+    <li><code>updateStatus</code> <i>number</i> - when the status should be logged to the console</li>
+  </ul>
+  <hr>
+  <p>An example runner configuration:</p>
+  <pre>
+  {
+    "type": "JSONExtractor",
+    "config": {
+      "batchSize": 500,
+      "dataFile": "C:\\code\\test\\example.json",
+      "hashName": "prodFinanceMigration",
+      "quarantinedLookupName": "prodFinanceMigrationQuarantined"
+    }
+  }
+  </pre>
+
+  <p>It will raise the next task with the following message elements:</p>
+  <ul>
+    <li><code>extractId</code> an ID used to connect all runners to the source item</li>
+    <li><code>currentHash</code> the lookup to provide a current of the data, if a hashName is configured</li>
+    <li><code>item</code> the object from the source file</li>
+    <li><code>quarantine</code> the lookup to add to quarantine the object</li>
+    </li>
+  </ul>
+  <p>Example message object for new task:</p>
+  <pre>
+  {
+    "message": {
+      "item": {
+        "Id": "HTAKQDMOYG1NKLFR",
+        "name": "Synthia Sorrell",
+        "dob": "2018-07-30",
+        "address": {
+          "street": "7173 Clay",
+          "town": "Beaumaris",
+          "postode": "KW95 5LK"
+        },
+        "telephone": "+90-1385-287-372",
+        "pets": [
+          "Cali",
+          "Jax"
+        ],
+        "score": 9.8,
+        "email": "mia.foust0@music.cash",
+        "url": "http://comment.com",
+        "description": "properties midlands dod weak cities hourly prize q consecutive slide pin christians carolina rural founder forced verizon sphere waterproof cash",
+        "verified": true,
+        "salary": 62850
+      },
+      "extractId": "0d9f7b39b9c72740faa363e939af32554ec81ed9",
+      "quarantine": {
+        "name": "prodFinanceMigrationQuarantined",
+        "key": "0d9f7b39b9c72740faa363e939af32554ec81ed9",
+        "value": "0d9f7b39b9c72740faa363e939af32554ec81ed9"
+      }
+    }
+  }
+  </pre>
+
+  <p id="json-loader" class="subtitle is-5 docs-subhead">JSONLoader</p>
+  <p><a href="/pages/runner-config/runner-status/"><span class="tag is-info">Developed</span></a></p>
+
+  <p>This runner adds an entry to a JSON file. It has the following configuration options:</p>
+  <ul>
+    <li><code>addHash</code> <i>boolean</i> - whether to add the currentHash lookup, defaults to true</li>
+    <li><code>jsonTemplate</code> <strong>mandatory</strong> <i>string</i> - the json object template</li>
+    <li><code>targetPath</code> <i>string</i> - defaults to targetPath
+      <ul>
+        <li>if targetPathInMessage is true, the message attribute containing the path to the file</li>
+        <li>if targetPathInMessage is false, <strong>mandatory</strong> the path to the file</li>
+      </ul>
+    </li>
+    <li><code>targetPathInMessage</code> <i>boolean</i> - if the targetPath is in the message object, defaults to false
+    </li>
+  </ul>
+  <p>It can use the following message attributes:</p>
+  <ul>
+    <li><code>targetPath</code> <i>string</i> - the path to the file to update, <strong>mandatory</strong> if
+      targetPathInMessage is true</li>
+  </ul>
+  <p>Message attribute names can be changed in the config section.</p>
+  <hr>
+  <p>An example runner and message configuration:</p>
+  <pre>
+    {
+      "runner": {
+        "type": "JSONLoader",
+        "config": {
+          "jsonTemplate": {"first_name":"${first_name}","last_name":"${last_name}","user_name":"${user_name}"}
+          "targetPathInMessage": true
+        }
+      },
+      "message": {
+        "targetPath": "C:\\code\\test\\json-loader\\administrators.json",
+        "first_name": "Fred",
+        "last_name": "Nerk",
+        "user_name": "nerkf"    
+      }
+      "id": "6UQtP8-CdXAMg_GQCOSLd"
+    }
+  </pre>
+
+  <p>For each row it will raise the next task with the following message elements:</p>
+  <ul>
+    <li><code>jsonObject</code> the object added to the JSON file</li>
+    <li><code>targetPath</code> the path of the file that was updated</li>
+    <li><code>JSONLoaderComplete</code> the date and time the runner completed</li>
+  </ul>
+</div>
         </div>
       </div>
     </section>

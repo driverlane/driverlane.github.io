@@ -122,79 +122,217 @@
       <div class="docs-body section">
         <div class="container is-fluid">
           
-<h4 class="title is-4">Overview</h4>
+<p class="title is-4">Common options</p>
 <div class="content">
 
-  <p>Ethel is focused on moving or updating data in content management solutions, like file systems, SharePoint, Content
-    Server, Documentum, etc.
-  </p>
-
-  <p>Ethel uses small task runners to provide reuseable components to perform the various parts of the updates. Task
-    runners are organised in a job. The job details the order of the task runners and their configuration. Each task
-    runner handles a discrete part of the job definition, such as traversing a file system, uploading a file to a target
-    system, or adding metadata to the task definition that is needed to upload a file successfully.</p>
-
-  <p>Task runners are separated into three types:
+  <p>This page details a number of common configuration options that are available within many or all runners.</p>
   <ul>
-    <li><i>extractors</i> - connect to a data source, extract the data and create tasks to be processed by transfomers
-      and
-      loaders. They may do actions like copying the source document to a staging location, but they should not change
-      either the source or target systems.</li>
-    <li><i>transformers</i> - update the data in the task to allow the loader to complete it's work. It's expected
-      that transformers will often be job specific components. These exist to allow extractors and loaders to be
-      relatively static, reuseable components.</li>
-    <li><i>loaders</i> - take the information in the task and create or update an object in a target system.</li>
+    <li><a href="/pages/runner-config/common-options/#retry-policy">Error handling and retry</a></li>
+    <li><a href="/pages/runner-config/common-options/#queues">Runner queues</a></li>
+    <li><a href="/pages/runner-config/common-options/#batches">Batches</a></li>
+    <li><a href="/pages/runner-config/common-options/#repeating-runs">Repeating runs</a></li>
+    <li><a href="/pages/runner-config/common-options/#quarantine">Quarantine</a></li>
+    <li><a href="/pages/runner-config/common-options/#ignore">Ignoring items</a></li>
+    <li><a href="/pages/runner-config/common-options/#text-replacement">Text replacement</a></li>
   </ul>
-  </p>
 
-  <p>A relatively simple job definition is:</p>
+  <p id="retry-policy" class="subtitle is-5 docs-subhead">Error handling and retry</p>
+  <p>By default, when a runner hits an error it records the error message and stops processing the task, setting it's
+    status to suspended. You can then manually restart the task via the client or API.</p>
+  <p>By adding a retry policy to a runner this behaviour can be changed to automatically retry the task. Retries can be
+    configured to control the number of retries, the delay between the retries and what error messages would not be
+    retried. This configuration option is available for all runners.</p>
+  <p>This simplest retry policy is to set a number of retry attempts. There will be a five second delay between each
+    retry by default. An example of this with two retry attempts:</p>
   <pre>
   {
-    "name": "Employee files production",
-    "runners": {
-      "extract": [
-        {
-          "type": "FileSystemExtractor",
-          "config": {
-            "extractLocation": "E:\\Staging",
-            "hashName": "prod-finance-data"
-          }
-        }
-      ],
-      "load": [
-        { "type": "AcmeFinanceTransformer" },
-        {
-          "type": "EDMSLoader",
-          "config": {
-            "connection": {
-              "name": "EDMSConnections",
-              "key": "ProdConnection"
-            }
-          }
-        }
+    ...
+    "retry": {
+      "limit": 2
+    }
+  }
+  </pre>
+  <p>You can also specify a different amount of delay, as well as the ability to increase the delay between each retry.
+    The delay is specified in milliseconds.</p>
+  <pre>
+  {
+    ...
+    "retry": {
+      "limit": 2,
+      "delay": 10000,
+      "pattern": "backoff"
+    }
+  }
+  </pre>
+  <p>In addition to changing the number of retries and the delay between retries you can also specify specific error
+    messages that will not be retried as well as other messages that will automatically add the item to a quarantine if
+    that option was available on the extractor.</p>
+  <pre>
+  {
+    ...
+    "retry": {
+      "limit": 2,
+      "delay": 10000,
+      "pattern": "backoff",
+      "noRetryMessages": [
+        "System is unavailable"
+      ], 
+      "quarantineMessages": [
+        "Item already exists"
       ]
-    },
-    "id": "Bveo3Lge8-Fg_-UZb9LV4"
+    }
   }
   </pre>
 
-  <p>In this example, files in the staging directory are scanned and a task created for each file using the
-    FileSystemExtractor task runner. The AcmeFinanceTransformer task runner then processes each file, adding metadata
-    required by the target system to the data captured previously. Then the EDMSLoader task runner uses the data
-    provided
-    by the previous runners and the connection details in the configuration to connect to the target solution and upload
-    the file.</p>
+  <p id="queues" class="subtitle is-5 docs-subhead">Runner queues</p>
+  <p>By default all tasks are sent to a message queue called <i>tasks</i>. And again, by default, all queue services
+    will start up a listener for the <i>tasks</i> queue. This configuration is available for all runners.</p>
+  <p>In some situations you may want a runner to use an alternative queue or configure a core instance or the
+    ethel-agent to listen on queues other than <i>tasks</i>.</p>
+  <p>One example would be a job working with Personal Storage Table (.pst) files. There are a number of .NET libraries
+    for managing pst files, but no support in Node.js. You would then create a .NET runner for the ethel-agent and have
+    that listen to the <i>mail</i> queue. Then in the job configuration you would nominate the runner to use the
+    <i>mail</i> queue rather than the default <i>tasks</i> queue.
+  </p>
+  <pre>
+  {
+    "type": "PSTLoader",
+    "config": {
+      ...
+    },
+    "queue": "mail"
+  }
+  </pre>
+  <p>And then for the ethel-agent configuration you would add change the default ETHEL_QUEUE environment variable:</p>
+  <pre>ETHEL_QUEUE={"type":"RabbitMQ","url":"aqmps://server.tld:15672","queues":['mail']}</pre>
 
-  <p>An instance of a job is called a run. A job can have one or many runs depending on the configuration. The run
-    contains the outcomes for each task. The run is where you find information on failed or suspended tasks as well as
-    the
-    time taken to complete an individual task and the various stages of the run.</p>
+  <p id="batches" class="subtitle is-5 docs-subhead">Batches</p>
+  <p>Most runners provide the option to split a large job into multiple batches. This can be useful when multiple
+    different run types are being processed and a very large run will block the queue from processing other smaller
+    runs.
+  </p>
+  <p>To set up batches the config will require two elements, the batch size and a hash name. The batch size determines
+    how many tasks the extractor will generate in each run before stopping and the hash name is needed to stop
+    extracting the same information each time a new batch is run. An example config is:</p>
+  <pre>
+  {
+    "type": "FileSystemExtractor",
+    "config": {
+      ...
+      "hashName": "DevHRMigration",
+      "batchSize": 500,
+      ...
+    }
+  }
+  </pre>
+  <p>Another scenario where this may be useful is having a second instance of ethel core processing smaller, less
+    frequent runs that may take a while to be processed in the main <i>tasks</i> queue.</p>
 
-  <p>Click on the <a href="/pages/basic/jobs/">Jobs and runs</a> page for more information on jobs and runs.</p>
-  <p>Click on the <a href="/pages/basic/client/">Client</a> page for more information on using the ethel client to
-    create jobs and track runs.</p>
+  <p id="repeating-runs" class="subtitle is-5 docs-subhead">Repeating runs</p>
+  <p>Multiple runners provide the ability to repeat the extract stage and ignore unchanged data. To allow this to happen
+    the configuration section requires a hashName. The hashName will be used to store a value as a lookup that is used
+    to compare the data on later runs to see if it has changed.</p>
+  <p>The lookup and is made up of:</p>
+  <ul>
+    <li>name - the hashName supplied in the runner config</li>
+    <li>key - a unique identifier to the piece of data</li>
+    <li>value - the value used to compare if the item has changed between runs</li>
+  </ul>
+  <p>Each runner will generate the value used for the comparison based on the data structures of the extract system. For
+    example the FileSystemExtractor generates these values with the following logic:</p>
+  <ul>
+    <li>name - the hashName supplied in the runner config</li>
+    <li>key - a hash of the path to the file or directory</li>
+    <li>value - a hash of an object with the following information:
+      <ul>
+        <li>size - the file size in bytes</li>
+        <li>mtimeMs - the time the file was last modified</li>
+        <li>birthtimeMs - the time the file was created</li>
+      </ul>
+    </li>
+  </ul>
+  <p>To support the ability to ignore unchanged items in multiple runs add the following to the runner config:</p>
+  <pre>
+  {
+    "config": {
+        ...
+      "hashName": "DevHRMigration",
+    ...
+    }
+  }
+  </pre>
+  <p>As these values are lookups they can be reset by using the Settings section in the client. Find the lookups with
+    the name specified and delete these lookups to reset the check.</p>
 
-  </div>
+  <p id="quarantine" class="subtitle is-5 docs-subhead">Quarantine</p>
+  <p>The quarantine functionality allows you to stop a particular item in the migration from being processed. This would
+    be used when there's a problem that needs to be resolved before another attempt is made to process the item.</p>
+  <p>Quarantining a task creates a lookup using the item identifier created by the extract runner and the quarantine
+    name specified and uses the quarantine name supplied in the extractor configuration Once quarantined the item will
+    be ignored until the quarantine lookup is deleted.</p>
+  <p>Items can be quarantined two ways, via the client or via an error handling configuration. To quarantine an item in
+    the client find the task that has the issue and click the Quarantine button in the task view or the Quarantine tasks
+    view in the tasks view. Alternatively the error handling for a runner can be updated to automatically quarantine
+    tasks that have a specific error message.</p>
+  <p>An example extract configuration is:</p>
+  <pre>
+  {
+    "config": {
+        ...
+      "quarantinedLookupName": "DevHRMigrationQuarantine",
+    ...
+    }
+  }
+  </pre>
+  <p>An example error handling config for a runner is:</p>
+  <pre>
+  {
+    "type": "OTCSLoader",
+    "config": {
+      ...
+    },
+    "retry": {
+      "limit": 2,
+      "quarantineMessages": [
+        "Item already exists"
+      ]
+    }
+  }
+  </pre>
+
+  <p id="ignore" class="subtitle is-5 docs-subhead">Ignoring items</p>
+  <p>General ignore options are:</p>
+  <ul>
+    <li>maxSize - ignore a item larger than a configured value</li>
+    <li>minSize - ignore a item smaller than a configured value</li>
+    <li>name - ignore an item that contains the specified string</li>
+    <li>nameIgnoreCase - ignore an item that contains the specified string, ignoring case</li>
+  </ul>
+  <p>Some runners may also provide extra ignored options. For example the OpenText Content Server extractor provides the
+    ability to ignored specific object types. An example ignore configuration:</p>
+  <pre>
+    "config": {
+      "ignore": {
+        "minSize": 350,
+        "name": ["system.ini","Superseded"],
+        "nameIgnoreCase": ["drafts"]
+      },
+    }
+  </pre>
+  <p>The minSize and maxSize options do not have any unit of measure assumed. Supply the ignore value in the units
+    that the system uses. For example, the FileSystemExtractor and CotnentServerExtractor runners both use bytes.</p>
+  <p>The name option is case sensitive. For a case insensitive ignore use the nameIgnoreCase option.</p>
+
+  <p id="text-replacement" class="subtitle is-5 docs-subhead">Text replacement</p>
+  <p>Strings can be processed by the parseTemplateString function from the task-runner base class.
+    This function will find all occurences of <code>${.*}</code> in the supplied text string.</p>
+  <p>For each occurrence it will assume the value is in the message attribute of the task and will split the value by
+    periods. It will then iterate through the segments to check if that attribute exists in the message object.</p>
+  <p>For example the query <code>UPDATE status SET updated = '${MockLoaderCompleted}' WHERE id = '${item.id}'</code>
+    will look for <code>this.task.message.MockLoaderCompleted</code> and <code>this.task.message.item.id</code> and
+    replace these with the values of the attributes.</p>
+
+</div>
         </div>
       </div>
     </section>

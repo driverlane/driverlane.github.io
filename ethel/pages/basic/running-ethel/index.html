@@ -122,79 +122,44 @@
       <div class="docs-body section">
         <div class="container is-fluid">
           
-<h4 class="title is-4">Overview</h4>
+<p class="title is-4">Running ethel</p>
 <div class="content">
 
-  <p>Ethel is focused on moving or updating data in content management solutions, like file systems, SharePoint, Content
-    Server, Documentum, etc.
+  <p>A minimum configuration of ethel consists of a single instance of core. An instance of the client is the simplest
+    tool for initiating and monitoring runs, but the API can also be used.</p>
+
+  <p id="events" class="subtitle is-5 docs-subhead">Command line</p>
+  <p>The simplest method to run ethel is to clone the ethel repository then use a command line to start the appropriate
+    projects via a node npm command, e.g. <code>npm run start:prod</code> for the core project and
+    <code>npm run serve</code> for the client project.
   </p>
 
-  <p>Ethel uses small task runners to provide reuseable components to perform the various parts of the updates. Task
-    runners are organised in a job. The job details the order of the task runners and their configuration. Each task
-    runner handles a discrete part of the job definition, such as traversing a file system, uploading a file to a target
-    system, or adding metadata to the task definition that is needed to upload a file successfully.</p>
+  <p id="events" class="subtitle is-5 docs-subhead">Docker compose</p>
+  <p>Instead of a simple command line initiation a number of example docker compose files are available in the harness
+    folder and can be used as a starting point for an implementation specific docker file. The ethel-dev folder is
+    currently the best starting point as it includes volume configuration to allow restarting the images without data
+    loss. Production examples will be created once we start using docker compose on production jobs. So far only command
+    line instances have been used in production.</p>
 
-  <p>Task runners are separated into three types:
-  <ul>
-    <li><i>extractors</i> - connect to a data source, extract the data and create tasks to be processed by transfomers
-      and
-      loaders. They may do actions like copying the source document to a staging location, but they should not change
-      either the source or target systems.</li>
-    <li><i>transformers</i> - update the data in the task to allow the loader to complete it's work. It's expected
-      that transformers will often be job specific components. These exist to allow extractors and loaders to be
-      relatively static, reuseable components.</li>
-    <li><i>loaders</i> - take the information in the task and create or update an object in a target system.</li>
-  </ul>
-  </p>
+  <p id="events" class="subtitle is-5 docs-subhead">Configuration</p>
+  <p>There are currently no client configuration options.</p>
+  <p>For current core configuration options check the README.md file in the core project folder.</p>
 
-  <p>A relatively simple job definition is:</p>
-  <pre>
-  {
-    "name": "Employee files production",
-    "runners": {
-      "extract": [
-        {
-          "type": "FileSystemExtractor",
-          "config": {
-            "extractLocation": "E:\\Staging",
-            "hashName": "prod-finance-data"
-          }
-        }
-      ],
-      "load": [
-        { "type": "AcmeFinanceTransformer" },
-        {
-          "type": "EDMSLoader",
-          "config": {
-            "connection": {
-              "name": "EDMSConnections",
-              "key": "ProdConnection"
-            }
-          }
-        }
-      ]
-    },
-    "id": "Bveo3Lge8-Fg_-UZb9LV4"
-  }
-  </pre>
-
-  <p>In this example, files in the staging directory are scanned and a task created for each file using the
-    FileSystemExtractor task runner. The AcmeFinanceTransformer task runner then processes each file, adding metadata
-    required by the target system to the data captured previously. Then the EDMSLoader task runner uses the data
-    provided
-    by the previous runners and the connection details in the configuration to connect to the target solution and upload
-    the file.</p>
-
-  <p>An instance of a job is called a run. A job can have one or many runs depending on the configuration. The run
-    contains the outcomes for each task. The run is where you find information on failed or suspended tasks as well as
+  <p id="events" class="subtitle is-5 docs-subhead">Other architectures</p>
+  <p>By default ethel core uses better-queue as the task queue and SQLite as the data layer. RabbitMQ can be used for
     the
-    time taken to complete an individual task and the various stages of the run.</p>
+    task queue and will be required if you are intending to run multiple instances of core, use the ethel agent or use
+    more than the default tasks queue.</p>
+  <p>In addition to SQLite ethel core supports PostgreSQL and SQL Server as the data layer. SQLite is more performant
+    than you
+    expect and unless you're doing a large job with a lot of reporting requirements it is the simplest option. The point
+    to use one of the other two platforms is when the SQLite data files are likely to grow beyond a gigabyte.</p>
 
-  <p>Click on the <a href="/pages/basic/jobs/">Jobs and runs</a> page for more information on jobs and runs.</p>
-  <p>Click on the <a href="/pages/basic/client/">Client</a> page for more information on using the ethel client to
-    create jobs and track runs.</p>
+  <p id="events" class="subtitle is-5 docs-subhead">ethel agent</p>
+  <p>The ethel agent is intended to be a Windows service using a .NET application to connect to a RabbitMQ server and
+    action tasks assigned to the queues it is consuming. It's only in initial development at the moment.</p>
 
-  </div>
+</div>
         </div>
       </div>
     </section>
