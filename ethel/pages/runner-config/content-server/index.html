@@ -11,126 +11,136 @@
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.6.0/styles/default.min.css">
     <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.6.0/highlight.min.js"></script>
   </head>
-  <body class="app-container">
-    <section class="app-header">
-      <div class="app-name">
+  <body class="app">
+    <section class="header">
+      <div class="name">
         <a href="/">Ethel Docs</a>
       </div>
     </section>
-    <section class="app-body">
-      <aside class="docs-menu menu">
+    <aside class="panel menu">
+      <div class="docs-menu">
         
-        <p class="menu-label">Basics</p>
+          <p class="menu-label">Basics</p>
           <ul class="menu-list">
-            <li>
-              <a href="/">Overview</a>
-              
-            </li>
-            <li>
-              <a href="/pages/basic/jobs/">Jobs and runs</a>
-              
-            </li>
-            <li>
-              <a href="/pages/basic/notifications/">Notifications</a>
-              
-            </li>
-            <li>
-              <a href="/pages/basic/client/">Client</a>
-              
-            </li>
-            <li>
-              <a href="/pages/basic/running-ethel/">Running ethel</a>
-              
-            </li>
+              <li>
+                <a href="/">Overview</a>
+                
+              </li>
+              <li>
+                <a href="/pages/basic/jobs/">Jobs and runs</a>
+                
+              </li>
+              <li>
+                <a href="/pages/basic/notifications/">Notifications</a>
+                
+              </li>
+              <li>
+                <a href="/pages/basic/client/">Client</a>
+                
+              </li>
+              <li>
+                <a href="/pages/basic/running-ethel/">Running ethel</a>
+                
+              </li>
+              <li>
+                <a href="/pages/basic/core-config/">Core configuration</a>
+                
+              </li>
           </ul>
-          
-          
-        <p class="menu-label">Runner config</p>
+          <p class="menu-label">Runner config</p>
           <ul class="menu-list">
-            <li>
-              <a href="/pages/runner-config/common-options/">Common options</a>
-              
-            </li>
-            <li>
-              <a href="/pages/runner-config/runners/">Runner types</a>
-              
-            </li>
-            <li>
-              <a href="/pages/runner-config/mock/">Mock runners</a>
-              
-            </li>
-            <li>
-              <a href="/pages/runner-config/text-files/">Text files</a>
-              
-            </li>
-            <li>
-              <a href="/pages/runner-config/file-system/">File system</a>
-              
-            </li>
-            <li>
-              <a href="/pages/runner-config/databases/">Databases</a>
-              
-            </li>
-            <li>
-              <a href="/pages/runner-config/email/">Email</a>
-              
-            </li>
-            <li>
-              <a href="/pages/runner-config/ot/">OpenText runners</a>
-              
+              <li>
+                <a href="/pages/runner-config/runners/">Runner types</a>
+                
+              </li>
+              <li>
+                <a href="/pages/runner-config/common-options/">Common options</a>
+                
+              </li>
+              <li>
+                <a href="/pages/runner-config/mock/">Mock runners</a>
+                
+              </li>
+              <li>
+                <a href="/pages/runner-config/text-files/">Text files</a>
+                
+              </li>
+              <li>
+                <a href="/pages/runner-config/file-system/">File system</a>
+                
+              </li>
+              <li>
+                <a href="/pages/runner-config/databases/">Databases</a>
+                
+              </li>
+              <li>
+                <a href="/pages/runner-config/email/">Email</a>
+                
+              </li>
+              <li>
+                <a href="/pages/runner-config/ot/">OpenText runners</a>
+                
                   <ul>
-                    <li><a href="/pages/runner-config/content-server/">Content Server</a>
+                      <li>
+                        <a href="/pages/runner-config/archive-center/">Archive Server</a>
+                      </li>
+                      <li>
+                        <a href="/pages/runner-config/content-server/">Content Server</a>
+                      </li>
+                      <li>
+                        <a href="/pages/runner-config/success-factors/">Success Factors</a>
+                      </li>
                   </ul>
+                
+              </li>
+              <li>
+                <a href="/pages/runner-config/microsoft/">Microsoft runners</a>
+                
                   <ul>
-                    <li><a href="/pages/runner-config/success-factors/">Success Factors</a>
+                      <li>
+                        <a href="/pages/runner-config/sharepoint/">SharePoint</a>
+                      </li>
                   </ul>
-              
-            </li>
-            <li>
-              <a href="/pages/runner-config/microsoft/">Microsoft runners</a>
-              
-                  <ul>
-                    <li><a href="/pages/runner-config/sharepoint/">SharePoint</a>
-                  </ul>
-              
-            </li>
+                
+              </li>
           </ul>
-          
-          
-        <p class="menu-label">Development</p>
+          <p class="menu-label">Development</p>
           <ul class="menu-list">
-            <li>
-              <a href="/pages/development/repository/">Repository</a>
-              
-            </li>
-            <li>
-              <a href="/pages/development/runners/">Runners</a>
-              
-            </li>
-            <li>
-              <a href="/pages/development/client/">Client</a>
-              
-            </li>
-            <li>
-              <a href="/pages/development/architecture/">Architecture</a>
-              
-            </li>
+              <li>
+                <a href="/pages/development/repository/">Repository</a>
+                
+              </li>
+              <li>
+                <a href="/pages/development/runners/">Runners</a>
+                
+              </li>
+              <li>
+                <a href="/pages/development/architecture/">Architecture</a>
+                
+              </li>
           </ul>
-          
-          
-      </aside>
-      <div class="docs-body section">
+      </div>
+    </aside>
+    <section class="panel">
+      <div class="section">
         <div class="container is-fluid">
           
 <p class="title is-4">Content Server runners</p>
 <div class="content">
 
   <p>These runners are related to working with OpenText Content Server.</p>
-  <p>The runners are:</p>
+  <p>The runners documented here are:</p>
   <ul>
     <li><a href="/pages/runner-config/content-server/#otcs-extractor">OTCSExtractor</a></li>
     <li><a href="/pages/runner-config/content-server/#otcs-staging">OTCSStaging</a></li>
     <li><a href="/pages/runner-config/content-server/#otcs-loader">OTCSLoader</a></li>
+    <li><a href="/pages/runner-config/content-server/#fs-otcs">FSToOTCSTransformer</a></li>
+    <li><a href="/pages/runner-config/content-server/#sp-otcs">SPToOTCSTransformer</a></li>
+  </ul>
+  <p>Other related runners:</p>
+  <ul>
+    <li><a href="/pages/runner-config/file-system/#otcs-to-fs">OTCSToFSTransformer</a></li>
+    <li><a href="/pages/runner-config/sharepoint/#otcs-sp">OTCSToSPTransformer</a></li>
   </ul>
 
   <p id="otcs-connection" class="subtitle is-5 docs-subhead">OTCS connection</p>
@@ -145,19 +155,21 @@
     <li><code>preferV1</code> <i>boolean</i> - REST API should use v1 API calls where available, defaults to false
     </li>
     <li><code>proxyUrl</code> <i>string</i> - url for a proxy server</li>
+    <li><code>timings</code> <i>boolean</i> - whether to log request timings or not, defaults to false</li>
     <li><code>useSoap</code> <i>boolean</i> - whether the SOAP or REST API is used, defaults to false, i.e. use REST
     </li>
   </ul>
-  <p>An example REST connection object:</p>
-  <pre>
+  <hr>
+  <p>Example REST connection object:</p>
+  <pre class="code">
   {
     "username": "otadmin@otds.admin",
     "password": "otds",
     "restUrl": "http://localhost/cs/cs/api/"
   }
   </pre>
-  <p>An example SOAP connection object:</p>
-  <pre>
+  <p>Example SOAP connection object:</p>
+  <pre class="code">
   {
     "username": "otadmin@otds.admin",
     "password": "otds",
@@ -166,46 +178,29 @@
     "useSoap": true
   }
   </pre>
-  <p>The SOAP webservices will have different URLs depending on whether they are using Java or .NET. The example above
-    uses the default Java URL. A deault .NET URL would be <i>http://localhost/cws/DocumentManagement.svc</i>. It's
-    always safest to put the URL in a browser to check you have the right format.</p>
+  <p>The SOAP webservices will have different URLs depending on whether they are using Java or .NET. The example above uses the default Java URL. A deault .NET URL would be <i>http://localhost/cws/DocumentManagement.svc</i>. It's always safest to put the URL in a browser to check you have the right format.</p>
 
   <p id="otcs-extractor" class="subtitle is-5 docs-subhead">OTCSExtractor</p>
-  <p><a href="/pages/runner-config/runner-status/"><span class="tag is-info">Developed</span></a></p>
+  <p><a href="/pages/runner-config/runner-status/"><span class="tag is-primary">Production</span></a></p>
 
-  <p>This runner will extract information from Content Server. It will not extract any files from Content Server. To
-    extract files from Content Server to upload to other systems use the OTCSStaging runner. The OTCSExtractor has the
-    following configuration options:</p>
+  <p>This runner will extract information from Content Server. It will not extract any files from Content Server. To extract files from Content Server to upload to other systems use the OTCSStaging runner. The OTCSExtractor has the following configuration options:</p>
   <ul>
-    <li><code>batchSize</code> <i>number</i> - the number of items to be processed in a run - needs a hashName value
-      or it will be ignored</li>
-    <li><code>connection</code> <strong>mandatory</strong> <i>object</i> - <a
-        href="/pages/runner-config/content-server/#otcs-connection">OTCS connection object</a></li>
-    <li><code>createDirectoryTasks</code> <i>boolean</i> - whether to create tasks for directories or not, defaults to
-      true</li>
+    <li><code>batchConfig</code> <i>number | RunnerBatchConfig</i> - see <a href="/pages/runner-config/common-options/#batches">batches</a> - needs a hashName value or it will be ignored</li>
+    <li><code>connection</code> <strong>mandatory</strong> <i>object</i> - <a href="/pages/runner-config/content-server/#otcs-connection">OTCS connection object</a></li>
+    <li><code>createDirectoryTasks</code> <i>boolean</i> - whether to create tasks for directories or not, defaults to false</li>
+    <li><code>extractRoot</code> <strong>mandatory</strong> <i>number</i> - the ID of the container where objects are loaded</li>
     <li><code>hashName</code> <i>string</i> - the lookup name for storing the source object hash</li>
-    <li><code>ignore</code> see <a href="/pages/runner-config/common-options/#ignore">ignore items</a>. In addition to
-      the default ignore options the following custom options are available:
+    <li><code>ignore</code> default file system ignore options</li>
+    <li><code>include</code> <i>object</i> - include options are applied after ignore options:
       <ul>
-        <li><code>objectTypes</code> <i>string array</i> - list of object type ids to ignore</li>
+        <li><code>objectTypes</code> <i>number array</i> - object types that will be extracted, defaults to [144, 749]</li>
       </ul>
     </li>
-    <li><code>include</code> <i>object</i> - various options for limiting the objects to be processed, include options
-      are applied after ignore options:
-      <ul>
-        <li><code>objectTypes</code> <i>number array</i> - object types that will be extracted, defaults to
-          [0,141,144]</li>
-      </ul>
-    </li>
-    <li><code>quarantinedLookupName</code> <i>string</i> - the name for the quarantine lookup, defaults to
-      quarantinedOTCSExtractor</li>
-    <li><code>recursive</code> <i>boolean</i> - whether to extract from child directories, defaults to true</li>
-    <li><code>rootId</code> <i>mandatory, number</i> - the ID of the container where objects are loaded</li>
-    <li><code>updateStatus</code> <i>number</i> - when the status should be logged to the console</li>
+    <li><code>quarantinedLookupName</code> <i>string</i> - the name for the quarantine lookup, defaults to quarantinedOTCSExtractor</li>
   </ul>
   <hr>
-  <p>An example runner configuration:</p>
-  <pre>
+  <p>Example runner configuration:</p>
+  <pre class="code">
   {
     "type": "OTCSExtractor",
     "config": {
@@ -217,7 +212,7 @@
       "ignore": {
         "objectTypes": [0]
       }
-      "rootId": 48243,
+      "extractRoot": 48243,
     }
   }
   </pre>
@@ -229,10 +224,10 @@
     <li><code>quarantine</code> quarantine lookup for the item</li>
     <li><code>stagingId</code> id for the staging runner if the item has any associated files</li>
   </ul>
-  <pre>
+  <pre class="code">
   {
     "message": {
-      "item": {
+      "node": {
         "categories": [],
         "columns": [
           {
@@ -457,30 +452,27 @@
   </pre>
 
   <p id="otcs-staging" class="subtitle is-5 docs-subhead">OTCSStaging</p>
-  <p><a href="/pages/runner-config/runner-status/"><span class="tag is-info">Developed</span></a></p>
+  <p><a href="/pages/runner-config/runner-status/"><span class="tag is-primary">Production</span></a></p>
 
-  <p>This runner will copy files from Content Server to the specified storage location. It has the following
-    configuration options:</p>
+  <p>This runner will copy files from Content Server to the specified storage location. It has the following configuration options:</p>
   <ul>
-    <li><code>allVersions</code> <i>boolean</i> - whether to extract all versions or just the latest, defaults to
-      false, which is latest version</li>
-    <li><code>connection</code> <strong>mandatory</strong> <i>object</i> - <a
-        href="/pages/runner-config/content-server/#otcs-connection">OTCS connection object</a></li>
-    <li><code>hashName</code> <i>string</i> - the lookup name for storing the source object hash, a version specific
-      hash will be created</li>
-    <li><code>stagingId</code> <i>string</i> - the message attribute containing the OTCS id of the object to be
-      staged, defaults to stagingId</li>
-    <li><code>stagingLocation</code> <i>mandatory, object</i> - the location where the document content is stored</li>
-    <li><code>useCache</code> <i>boolean</i> - whether to use api caching or not, defaults to true</li>
+    <li><code>allVersions</code> <i>boolean</i> - whether to extract all versions or just the latest, defaults to false, which is latest version</li>
+    <li><code>connection</code> <strong>mandatory</strong> <i>object</i> - <a href="/pages/runner-config/content-server/#otcs-connection">OTCS connection object</a></li>
+    <li><code>hashName</code> <i>string</i> - the lookup name for storing the source object hash, a version specific hash will be created</li>
+    <li><code>node</code> <i>string</i> - the message attribute containing the OTCS node object, defaults to node</li>
+    <li><code>nodeAdd</code> <i>boolean</i> - if true will add the node to the message if it's missing, defaults to false</li>
+    <li><code>stagingId</code> <i>string</i> - the message attribute containing the OTCS id of the object to be staged, defaults to stagingId</li>
+    <li><code>stagingProvider</code> <strong>mandatory</strong> <i>object</i> - the location where the document content is stored</li>
+    <li><code>streamFilesLimit</code> <i>number</i> - number of bytes when the extractor should use a large file streaming approach, defaults to 1048576 (5 mb). Only relevant to SOAP API.</li>
   </ul>
-  <p>It can use the following message attributes:</p>
+  <p>It uses the following message attributes:</p>
   <ul>
     <li><code>stagingId</code> <strong>mandatory</strong> <i>number</i> - the id of the object to be staged</li>
   </ul>
   <p>Message attribute names can be changed in the config section.</p>
   <hr>
-  <p>An example runner and message configuration:</p>
-  <pre>
+  <p>Example runner and message configuration:</p>
+  <pre class="code">
   {
     "name": "Test migration",
     "runner": {
@@ -488,7 +480,7 @@
       "config": {
         "connection": {"name": "connections", "key": "otcs.dev"},
         "hashName":"ProdMigrationOne",
-        "stagingLocation": {
+        "stagingProvider": {
           "type": "FileSystem",
           "path": "E:\\data\\staging",
         }
@@ -497,198 +489,255 @@
     "runners": {...},
     "message": {
       "extractId": 47803,
-      "item": {...},
+      "extractId": 5707,
+      "node": {...},
       "stagingId": 47803,
     }
     "id": "6UQtP8-CdXAMg_GQCOSLd"
   }
   </pre>
-
   <p>It populates the following attributes in the new tasks it creates:</p>
   <ul>
-    <li><code>staged</code> an array of versions that were staged</li>
-    <li><code>OTCSStaging</code> information on what was processed</li>
+    <li><code>sourceFile</code> a version or array of versions that were staged</li>
   </ul>
-  <pre>
+  <pre class="code">
   {
     "message": {
-      "staged": [
+      "extractId": 47803,
+      "extractId": 5707,
+      "node": {...},
+      "stagingId": 47803,
+      "sourceFile": [
         {
-          "versionId": 47804,
-          "location": {
-            "type": "FileSystem",
-            "path": "C:\\code\\test\\otcs-staging"
-          },
-          "stagingId": "QL01FYQKKB6g_XMa5-u6O",
+          "createdDate: "2024-02-02T07:03:11",
           "filename": "built-file1.txt",
-          "mimeType": "text/plain;charset=utf-8"
+          "id": "42H2Y8j2RhqyCmJXncGK0",
+          "mimeType": "text/plain",
+          "modifiedDate": "2024-02-02T07:03:11",
+          "provider": {
+            "useOriginalName": false,
+            "type": "FileSystem",
+            "path": "E:\\test\\ethel-test\\otcs-staging",
+          },
+          "size": 59,
+          "sourceValues": {
+            version_id: 222413,
+          },
+          "systemId": "c701cc09851973dd1f5e3b8dd7bfa2cf32cc637b",
         }
-      ],
-      "OTCSStaging": {
-        "processed": 1,
-        "processedPreviously": 0,
-        "tasksCreated": 1,
-        "started": "2023-06-18T07:54:22.433Z",
-        "completed": "2023-06-18T07:54:22.832Z"
-      }
+      ]
     }
   }
   </pre>
 
   <p id="otcs-loader" class="subtitle is-5 docs-subhead">OTCSLoader</p>
-  <p><a href="/pages/runner-config/runner-status/"><span class="tag is-info">Developed</span></a></p>
+  <p><a href="/pages/runner-config/runner-status/"><span class="tag is-info">Tested</span></a></p>
 
   <p>This runner will load files or update objects in Content Server. It has the following configuration options:</p>
   <ul>
-    <li><code>addHash</code> <i>boolean</i> -whether to add the currentHash lookup, defaults to true</li>
-    <li><code>addAsNewVersion</code> <i>boolean</i> - whether to add the document as a new version if it already
-      exists, defaults to false. This is only relevant if the source system does not track versions. If the source
-      system uses version it will ignore this setting an only add versions if they are missing in the target system.
-    </li>
-    <li><code>connection</code> <strong>mandatory</strong> <i>object</i> - <a
-        href="/pages/runner-config/content-server/#otcs-connection">OTCS connection object</a></li>
-    <li><code>loadAction</code> <i>string</i> - what action is being taken, either addNode or updateNode</li>
-    <li><code>node</code> <i>string</i> - the message attribute containing the node to be loaded, defaults to node
-    </li>
-    <li><code>rootId</code> <i>mandatory, number</i> - the id where objects will be loaded</li>
+    <li><code>addHash</code> <i>boolean</i> - whether to add the currentHash lookup, defaults to true</li>
+    <li><code>connection</code> <strong>mandatory</strong> <i>object</i> - <a href="/pages/runner-config/content-server/#otcs-connection">OTCS connection object</a></li>
+    <li><code>loadRoot</code> <strong>mandatory</strong> <i>number</i> - the id where objects will be loaded</li>
+    <li><code>loadItem</code> <i>string</i> - the message attribute containing the item to be loaded, defaults to loadItem</li>
+    <li><code>overwrite</code> <i>boolean</i> - whether to add the document as a new version if it already exists, defaults to false</li>
   </ul>
-  <p>It can use the following message attributes:</p>
+  <p>It uses the following message attributes:</p>
   <ul>
-    <li><code>loadAction</code> <strong>mandatory</strong> <i>string</i> - the action to be taken</li>
-    <li><code>node</code> <strong>mandatory</strong> <i>object</i> - the node to be loaded</li>
+    <li><code>loadItem</code> <strong>mandatory</strong> <i>object</i> - the item to be loaded, must be a valid OTCSLoadItem object</li>
   </ul>
   <p>Message attribute names can be changed in the config section.</p>
   <hr>
-  <p>An example runner and message configuration:</p>
-  <pre>
+  <p>Example runner and message configuration:</p>
+  <pre class="code">
   {
     "name": "Test migration",
     "runner": {
       "type": "OTCSLoader",
       "config": {
         "connection": {"name": "connections", "key": "otcs.dev"},
-        "rootId": 48243,
+        "extractRoot": 48243,
       }
     },
     "runners": {...},
     "message": {
       "node": {
         "properties": {
-          "advanced_versioning": false,
           "container": false,
-          "container_size": 0,
-          "create_date": "2023-06-18T07:58:58",
-          "create_user_id": 1000,
-          "description": "",
-          "description_multilingual": {
-            "en": ""
-          },
-          "external_create_date": null,
-          "external_identity": "",
-          "external_identity_type": "",
-          "external_modify_date": null,
-          "external_source": "",
-          "favorite": false,
-          "hidden": false,
-          "id": 123695,
-          "mime_type": "text/plain",
-          "modify_date": "2023-06-18T07:58:58",
-          "modify_user_id": 1000,
           "name": "built-file1",
-          "name_multilingual": {
-            "en": "built-file1"
-          },
-          "owner": "Admin",
-          "owner_group_id": 999,
-          "owner_user_id": 1000,
-          "parent_id": 123805,
-          "permissions_model": "advanced",
-          "reserved": false,
-          "reserved_date": null,
-          "reserved_shared_collaboration": false,
-          "reserved_user_id": 0,
-          "size": 59,
-          "size_formatted": "1 KB",
           "type": 144,
-          "type_name": "Document",
-          "versionable": true,
-          "versions_control_advanced": false,
-          "volume_id": -2000
-        }
+          "path": ":built-dir1:",
+        },
+        "versions": [
+          {...},
+        ],
       },
-      "loadAction": "addNode",
+      "loadAction": "add",
     }
     "id": "6UQtP8-CdXAMg_GQCOSLd"
   }
   </pre>
 
+  <p id="fs-otcs" class="subtitle is-5 docs-subhead">FSToOTCSTransformer</p>
+  <p><a href="/pages/runner-config/runner-status/"><span class="tag is-info">Tested</span></a></p>
+
+  <p>This runner will transform file system objects into Content Server objects. This runner assumes the message was created by the FileSystemExtractor. It has the following configuration options:</p>
+  <ul>
+    <li><code>extractRoot</code> <i>string</i> - the message attribute containing the root file path for the extraction, defaults to extractRoot</li>
+    <li><code>item</code> <i>string</i> - the message attribute containing the file system object, defaults to item</li>
+    <li><code>removeExtension</code> <i>boolean</i> - whether to remove the extension from the name of document objects, defaults to true</li>
+    <li><code>sourceFile</code> <i>string</i> - the message attribute containing the of the file or directory that was extracted, defaults to sourceFile</li>
+  </ul>
+  <p>It uses the following message attributes:</p>
+  <ul>
+    <li><code>extractRoot</code> <strong>mandatory</strong> <i>string</i> - the root file path for the extraction</li>
+    <li><code>item</code> <strong>mandatory</strong> <i>string</i> - the file system stats object</li>
+    <li><code>sourceFile</code> <i>string | object</i> - the file to be added, either path or StagedFile object</li>
+  </ul>
+  <p>Message attribute names can be changed in the config section.</p>
+  <hr>
+  <p>Example runner configuration:</p>
+  <pre class="code">
+  {
+    "type": "FSToOTCSTransformer",
+    "config": {
+      "removeExtension": false,
+    },
+    "message": {
+      "item": {
+        "name": "built-file3.txt",
+        "extension": ".txt",
+        "path": "C:\\code\\test\\fs-extract\\built-dir5\\built-dir4\\built-dir2\\built-dir4\\built-dir1\\built-file3.txt",
+        "stats": {
+          "dev": 3967843523,
+          "mode": 33206,
+          "nlink": 1,
+          "uid": 0,
+          "gid": 0,
+          "rdev": 0,
+          "blksize": 4096,
+          "ino": 48132221017659290,
+          "size": 59,
+          "blocks": 0,
+          "atimeMs": 1683609498896.2495,
+          "mtimeMs": 1680502568908.2917,
+          "ctimeMs": 1680502568908.2917,
+          "birthtimeMs": 1681442581303.0498,
+          "atime": "2023-05-09T05:18:18.896Z",
+          "mtime": "2023-04-03T06:16:08.908Z",
+          "ctime": "2023-04-03T06:16:08.908Z",
+          "birthtime": "2023-04-14T03:23:01.303Z",
+        },
+        "isDirectory": false,
+      },
+      "extractId": "ef15711093fce44857f960c27f239414ee7beaaa",
+      "extractRoot": "C:\\code\\test\\fs-extract",
+      "sourceFile":
+        "C:\\code\\test\\fs-extract\\built-dir5\\built-dir4\\built-dir2\\built-dir4\\built-dir1\\built-file3.txt",
+    }
+  }
+  </pre>
+  <p>It will raise the next task with the following message elements:</p>
+  <ul>
+    <li><code>node</code> the data of the object that is to be loaded</li>
+  </ul>
+  <p>Example message object for new task:</p>
+  <pre class="code">
+  {
+    "message": {
+      "node": {
+        "properties": {
+          "container": false,
+          "name": "built-file1",
+          "type": 144,
+          "path": ":built-dir1:",
+        },
+        "versions": [
+          {...},
+        ],
+      },
+      loadAction: "add",
+    }
+  }
+  </pre>
+
+  <p id="fs-otcs" class="subtitle is-5 docs-subhead">SPToOTCSTransformer</p>
+  <p><a href="/pages/runner-config/runner-status/"><span class="tag is-link">Developed</span></a></p>
+
+  <p>This runner will transform SharePoint objects into Content Server objects. This runner assumes the message was
+    created by the SharePointStaging runner. It has the following configuration options:</p>
+  <ul>
+    <li><code>item</code> <i>string</i> - the message attribute containing the file system object, defaults to item</li>
+    <li><code>listName</code> <i>string</i> - the message attribute with the list or library name, defaults to listName</li>
+    <li><code>metadata</code> <i>object</i> - the mappings of SharePoint field names to CS attribute ids, key-value pairs with SP name as the key</li>
+    <li><code>removeExtension</code> <i>boolean</i> - whether to remove the extension from the name of document objects, defaults to true</li>
+    <li><code>siteRelativeUrl</code> <i>string</i> - the message attribute with the server relative URL to the site, defaults to siteRelativeUrl</li>
+    <li><code>sourceFile</code> <i>string</i> - the message attribute containing the sourceFile information, defaults to sourceFile</li>
+  </ul>
+  <p>It uses the following message attributes:</p>
+  <ul>
+    <li><code>item</code> <strong>mandatory</strong> <i>string</i> - the file system stats object</li>
+    <li><code>listName</code> <strong>mandatory</strong> <i>string</i> - the list or library name, i.e. the name from the URL, not the title</li>
+    <li><code>siteRelativeUrl</code> <strong>mandatory</strong> <i>string</i> - the URL to the site, minus the host name</li>
+    <li><code>sourceFile</code> <i>string | object</i> - the file to be added, either path or StagedFile object</li>
+  </ul>
+  <p>Message attribute names can be changed in the config section.</p>
+  <hr>
+  <p>Example runner configuration:</p>
+  <pre class="code">
+  {
+    "type": "SPToOTCSTransformer",
+    "config": {
+      "removeExtension": false,
+    },
+    "message": {
+      "item": {
+        "__metadata": {
+          "id": "efbb6411-2d6f-41df-a956-6fb832fac0da",
+          "uri": "https://w6n3w.sharepoint.com/sites/ethel-test/_api/Web/Lists(guid"5f4a27ce-5e30-433f-9536-10c1dc8d782f")/Items(5010)",
+          "etag": ""2"",
+          "type": "SP.Data.Shared_x0020_DocumentsItem",
+        },
+        ...
+      },
+      "siteRelativeUrl": "/sites/ethel-test/",
+      "listName": "Shared Documents",
+      "sourceFile": [
+        {...}      
+      ]
+    }
+  }
+  </pre>
+  <p>It will raise the next task with the following message elements:</p>
+  <ul>
+    <li><code>node</code> the data of the object that is to be loaded</li>
+  </ul>
+  <p>Example message object for new task:</p>
+  <pre class="code">
+  {
+    "message": {
+      "node": {
+        "properties": {
+          "container": false,
+          "name": "built-file1",
+          "type": 144,
+          "path": ":built-dir1:",
+        },
+        "versions": [
+          {...},
+        ],
+      },
+      loadAction: "add",
+    }
+  }
+  </pre>
+
 </div>
         </div>
+        <div class="container is-fluid dl-footer">
+          <a href="https://driverlane.com.au">Driver Lane</a>
+          &copy; 2020-2024
+        </div>
       </div>
-    </section>
-    <footer class="app-footer footer dl-footer">
-      <div class="dl-logo">
-        <a href="https://driverlane.com.au">
-          <svg version="1.1" viewbox="0 0 47 11">
-            <g transform="translate(0,-286)">
-              <g aria-label="driver lane" transform="translate(-19.954512,74.402148)">
-                <path d="m 23.782697,215.08501 v -2.42358 l 1.524,-0.13759 v 7.747 h -1.49225 v -0.381 l -0.07408,0.0635 -0.137583,0.0952
-                  -0.254,0.14817 q -0.381,0.21167 -0.814917,0.21167 -0.66675,0 -1.2065,-0.49742 -0.53975,-0.49742 -0.677333,-1.17475
-                  -0.127,-0.68792 -0.127,-1.17475 0,-0.381 0.04233,-0.61383 0.04233,-0.24342 0.148167,-0.75142 0.105833,-0.508
-                  0.635,-1.00542 0.53975,-0.49741 1.23825,-0.49741 0.53975,0 1.0795,0.3175 z m 0,1.15358 -0.07408,-0.0423 q
-                  -0.116416,-0.0741 -0.232833,-0.10583 -0.116417,-0.0317 -0.232833,-0.0529 -0.486834,-0.0423 -0.783167,0.27517
-                  -0.28575,0.30691 -0.28575,0.96308 -0.01058,0.127 -0.02117,0.22225 0,0.0847 0,0.13758 0,0.22225 0.05292,0.58209
-                  0.05292,0.35983 0.296333,0.62441 0.243417,0.26459 0.624417,0.26459 0.275167,0 0.582083,-0.15875 l 0.07408,-0.0529 z"></path>
-                <path d="m 26.220996,220.27084 v -5.43983 l 1.524,-0.0952 v 0.4445 l 0.09525,-0.0741 q 0.518584,-0.40217 1.121834,-0.40217 l
-                  0.15875,0.0106 -0.137584,1.35467 -0.148166,-0.0212 q -0.07408,0 -0.15875,-0.0106 -0.08467,-0.0106 -0.127,-0.0106
-                  -0.15875,0 -0.264584,0.0212 -0.105833,0.0106 -0.34925,0.0847 l -0.09525,0.0318 -0.09525,0.0423 v 4.064 z"></path>
-                <path d="m 29.435521,220.27084 v -5.43983 l 1.524,-0.13758 v 5.57741 z m -0.07408,-6.97441 q 0,-0.39159 0.169333,-0.55034
-                  0.169333,-0.15875 0.645583,-0.15875 0.381,0 0.5715,0.0952 0.201084,0.0952 0.254,0.30692 0.05292,0.21167 0.05292,0.39158
-                  0,0.61384 -0.867833,0.61384 -0.486834,0 -0.656167,-0.14817 -0.169333,-0.14817 -0.169333,-0.55033 z"></path>
-                <path d="m 31.260318,214.83101 1.640417,-0.14817 0.836083,3.40784 0.07408,0.43391 0.03175,0.254 0.01058,0.15875
-                  0.03175,-0.21166 0.03175,-0.20109 0.07408,-0.43391 0.846666,-3.28084 h 1.524 l -1.608666,5.461 h -1.926167 z"></path>
-                <path d="m 41.158052,218.05893 h -2.973916 l 0.02117,0.16933 q 0.116417,0.48683 0.47625,0.762 0.370417,0.26458 0.973667,0.26458
-                  0.402166,0 0.878416,-0.13758 l 0.137584,-0.0423 0.116416,-0.0423 0.254,1.06892 -0.127,0.0423 -0.137583,0.0423 q
-                  -0.243417,0.0741 -0.455083,0.10583 -0.211667,0.0423 -0.433917,0.0635 -0.211667,0.0212 -0.359833,0.0212 -0.148167,0.0106
-                  -0.22225,0.0106 -1.3335,0 -2.074333,-0.73025 -0.73025,-0.74083 -0.73025,-2.11667 0,-1.23825 0.529166,-1.9685
-                  0.53975,-0.74083 1.132417,-0.81491 0.60325,-0.0741 0.814916,-0.0741 1.058334,0 1.629834,0.73025 0.582083,0.73025
-                  0.582083,2.14842 z m -3.14325,-0.94192 h 1.74625 l -0.01058,-0.30692 q 0,-0.48683 -0.243417,-0.762 -0.232833,-0.28575
-                  -0.582083,-0.28575 -0.1905,0 -0.402167,0.10584 -0.211666,0.0952 -0.359833,0.35983 -0.148167,0.26458 -0.148167,0.74083 z"></path>
-                <path d="m 41.868621,220.27084 v -5.43983 l 1.524,-0.0952 v 0.4445 l 0.09525,-0.0741 q 0.518584,-0.40217 1.121834,-0.40217 l
-                  0.15875,0.0106 -0.137584,1.35467 -0.148166,-0.0212 q -0.07408,0 -0.15875,-0.0106 -0.08467,-0.0106 -0.127,-0.0106
-                  -0.15875,0 -0.264584,0.0212 -0.105833,0.0106 -0.34925,0.0847 l -0.09525,0.0318 -0.09525,0.0423 v 4.064 z"></path>
-                <path d="m 48.131805,220.27084 v -7.60941 l 1.513417,-0.13759 v 7.747 z"></path>
-                <path d="m 53.47126,217.00059 v -0.40216 q 0,-0.41275 -0.20108,-0.59267 -0.20108,-0.17992 -0.71967,-0.17992 -0.0741,0
-                  -0.17991,0.0106 -0.0952,0.0106 -0.30692,0.0423 -0.21167,0.0212 -0.70908,0.16933 l -0.16934,0.0635 -0.34925,-1.10066
-                  0.22225,-0.0635 0.24342,-0.0635 q 0.1905,-0.0423 0.49742,-0.0952 0.30691,-0.0635 0.62441,-0.0952 1.44992,0
-                  2.00025,0.39158 0.56092,0.381 0.56092,1.38642 v 3.79941 h -1.43933 l -0.0741,-0.46566 -0.11641,0.10583 q -0.29634,0.23283
-                  -0.59267,0.35983 -0.28575,0.127 -0.61383,0.127 h -0.33867 q -0.67733,-0.0741 -1.10067,-0.53975 -0.41275,-0.46566
-                  -0.41275,-1.16416 0,-0.17992 0.0741,-0.635 0.0741,-0.45509 0.58208,-0.84667 0.508,-0.39158 1.34408,-0.39158 0.13759,0
-                  0.30692,0.0212 0.17992,0.0106 0.42333,0.0529 l 0.20109,0.0423 0.11641,0.0212 z m 0,0.74084 -0.11641,-0.0212
-                  -0.14817,-0.0106 q -0.0741,-0.0106 -0.21167,-0.0106 -0.42333,0 -0.6985,0.16934 -0.27516,0.15875 -0.32808,0.32808
-                  -0.0529,0.16933 -0.0635,0.24342 -0.0106,0.0741 -0.0106,0.13758 0,0.28575 0.1905,0.48683 0.20108,0.1905 0.51858,0.22225
-                  0.21167,0 0.381,-0.0317 0.16933,-0.0423 0.37042,-0.13758 l 0.11641,-0.0635 z"></path>
-                <path d="m 55.90394,220.27084 v -5.43983 l 1.50283,-0.13758 v 0.41275 l 0.11642,-0.0529 0.14816,-0.0741 q 0.64559,-0.3175
-                  1.23825,-0.3175 0.64559,0 1.05834,0.381 0.42333,0.381 0.47625,0.97366 l 0.0212,0.46567 v 3.78883 h -1.524 v -3.39725 l
-                  -0.0106,-0.23283 q 0,-0.70908 -0.68792,-0.70908 -0.24341,0 -0.49741,0.10583 l -0.14817,0.0741 -0.0952,0.0423
-                  -0.0847,0.0529 v 4.064 z"></path>
-                <path d="m 65.90073,218.05893 h -2.97392 l 0.0212,0.16933 q 0.11641,0.48683 0.47625,0.762 0.37041,0.26458 0.97366,0.26458
-                  0.40217,0 0.87842,-0.13758 l 0.13758,-0.0423 0.11642,-0.0423 0.254,1.06892 -0.127,0.0423 -0.13758,0.0423 q
-                  -0.24342,0.0741 -0.45509,0.10583 -0.21166,0.0423 -0.43391,0.0635 -0.21167,0.0212 -0.35984,0.0212 -0.14816,0.0106
-                  -0.22225,0.0106 -1.3335,0 -2.07433,-0.73025 -0.73025,-0.74083 -0.73025,-2.11667 0,-1.23825 0.52917,-1.9685
-                  0.53975,-0.74083 1.13241,-0.81491 0.60325,-0.0741 0.81492,-0.0741 1.05833,0 1.62983,0.73025 0.58209,0.73025
-                  0.58209,2.14842 z m -3.14325,-0.94192 h 1.74625 l -0.0106,-0.30692 q 0,-0.48683 -0.24341,-0.762 -0.23284,-0.28575
-                  -0.58209,-0.28575 -0.1905,0 -0.40216,0.10584 -0.21167,0.0952 -0.35984,0.35983 -0.14816,0.26458 -0.14816,0.74083 z"></path>
-              </g>
-            </g>
-          </svg>
-          <span class="visually-hidden">Driver Lane</span>
-        </a>
-      </div>
-      <div>Driver Lane &copy; 2020-2023</div>
-    </footer>
-    <script>
-      hljs.highlightAll();
-    </script>
+    </div>
   </body>
 </html>

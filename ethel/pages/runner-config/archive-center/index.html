@@ -125,55 +125,84 @@
       <div class="section">
         <div class="container is-fluid">
           
-<p class="title is-4">Runner development</p>
+<p class="title is-4">Archive Center runners</p>
 <div class="content">
 
-  <p>When starting a new runner, look for the most recently updated runner of the type you're working on to use as a
-    reference.</p>
-
-  <p>All runners have access to a number of useful functions via the task and logging services as well as the BaseRunner
-    class.</p>
-    
-  <p id="task-runner" class="subtitle is-5 docs-subhead">Task runner base class</p>
+  <p>These runners are related to working with OpenText Archive Center.</p>
+  <p>The runners are:</p>
   <ul>
-    <li>config - the full job config object</li>
-    <li>hashGet - creates a hash of the value supplied</li>
-    <li>logger - the logger service</li>
-    <li>nextRunnerGet - returns the next task runner defined in the job</li>
-    <li>processTask - this is the stub function called by the server that should be overloaded in each runner</li>
-    <li>raiseNextTask - starts the next task runner defined in the job</li>
-    <li>stateSave - saves the state on the current task</li>
-    <li>task - the config object for this task runner</li>
-    <li>taskService - the TaskService object</li>
-    <li>toCamelCase - converts a string with spaces to camel case</li>
-    <li>wait - simple sleep function</li>
+    <li><a href="/pages/runner-config/archive-center/#otac-staging">OTACStaging</a></li>
   </ul>
 
-  <p id="task-service" class="subtitle is-5 docs-subhead">Task service</p>
-  <ul>
-    <li>cache - an optional object that implements the CacheProvider interface</li>
-    <li>lookupAdd - adds a lookup. Set encrypted to true if it is an encrypted lookup</li>
-    <li>lookupDelete - deletes a lookup</li>
-    <li>lookupGet - gets a lookup</li>
-    <li>lookupGetValue - gets the value stored on a lookup</li>
-    <li>lookupUpdate - updates a lookup. Set encrypted to true if it is an encrypted lookup.</li>
-    <li>stateSave - saves the state on the current task</li>
-    <li>taskRaise - general method for raising a new task. Multiple examples in existing runners</li>
-  </ul>
+  <p id="otac-staging" class="subtitle is-5 docs-subhead">OTACStaging</p>
+  <p><a href="/pages/runner-config/runner-status/"><span class="tag is-primary">Production</span></a></p>
 
-  <p id="logger-service" class="subtitle is-5 docs-subhead">Logger-service</p>
-  <p>Use <i>this.logger.verbose('...'), this.logger.debug('...')</i>, etc. to log information to the verbose, debug,
-    log, warn and error log levels. These levels are used to stay lin line with those used in Nest.js.</p>
-
-  <p id="lookups" class="subtitle is-5 docs-subhead">Lookups</p>
-  <p>Lookups provide a way of storing values in an in-memory cache or the database for later use. Use the lookup
-    functions on the task service.</p>
+  <p>This runner will copy files from Archive Center to the specified storage location. It has the following configuration options:</p>
   <ul>
-    <li>lookupAdd - adds a lookup. Supplying a time to live value will use an in-memory cache if one is available.</li>
-    <li>lookupDelete - deletes the specified lookup</li>
-    <li>lookupGet - returns the specified lookup</li>
-    <li>lookupUpdate - updates the specified lookup</li>
+    <li><code>archive</code> <i>string</i> - the message attribute containing the archive name, defaults to archive</li>
+    <li><code>docId</code> <i>string</i> - the message attribute containing the id of the document to be staged, defaults to docId</li>
+    <li><code>filename</code> <i>string</i> - the message attribute containing the filename of the document to be staged, defaults to filename</li>
+    <li><code>otacServer</code> <strong>mandatory</strong> <i> string</i> - the OTAC servername including protocol and port, e.g. https://server.domain.tld/</li>
+    <li><code>stagingProvider</code> <strong>mandatory</strong> <i> object</i> - the location where the document content is stored</li>
+    <li><code>timings</code> <i>boolean</i> - whether to log request timings or not, defaults to false</li>
   </ul>
+  <p>It uses the following message attributes:</p>
+  <ul>
+    <li><code>archive</code> <strong>mandatory</strong> <i> string</i> - the name of the archive that contains the document</li>
+    <li><code>docId</code> <strong>mandatory</strong> <i> string</i> - the id of the document to be staged</li>
+    <li><code>filename</code> <i>string</i> - the filename of the blob, if not supplied defaults to data</li>
+  </ul>
+  <p>Message attribute names can be changed in the config section.</p>
+  <hr>
+  <p>Example runner and message configuration:</p>
+  <pre class="code">
+  {
+    "name": "Test migration",
+    "runner": {
+      "type": "OTACStaging",
+      "config": {
+        "otacServer":"http://localhost:8888/",
+        "stagingProvider": {
+          "type": "FileSystem",
+          "path": "E:\\data\\staging",
+        }
+      }
+    },
+    "runners": {...},
+    "message": {
+      "docId": "abscfq8alfsdji9asdf",
+      "archive": "EMAILARCHIVE",
+    }
+  }
+  </pre>
+
+  <p>It populates the following attributes in the new tasks it creates:</p>
+  <ul>
+    <li><code>sourceFile</code> the path or staged file object of the file extracted</li>
+  </ul>
+  <pre class="code">
+  {
+    "message": {
+      "sourceFile": {
+        "createdDate": "2024-02-02T07:03:11",
+        "filename": "built-file1.txt",
+        "id": "42H2Y8j2RhqyCmJXncGK0",
+        "mimeType": "text/plain",
+        "modifiedDate": "2024-02-02T07:03:11",
+        "provider": {
+          "useOriginalName": false,
+          "type": "FileSystem",
+          "path": "E:\\test\\ethel-test\\otcs-staging",
+        },
+        "size": 59,
+        "sourceValues": {
+          "version_id": 222413,
+        },
+        "systemId": "c701cc09851973dd1f5e3b8dd7bfa2cf32cc637b",
+      }
+    }
+  }
+  </pre>
 
 </div>
         </div>

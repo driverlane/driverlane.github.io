@@ -11,189 +11,827 @@
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.6.0/styles/default.min.css">
     <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.6.0/highlight.min.js"></script>
   </head>
-  <body class="app-container">
-    <section class="app-header">
-      <div class="app-name">
+  <body class="app">
+    <section class="header">
+      <div class="name">
         <a href="/">Ethel Docs</a>
       </div>
     </section>
-    <section class="app-body">
-      <aside class="docs-menu menu">
+    <aside class="panel menu">
+      <div class="docs-menu">
         
-        <p class="menu-label">Basics</p>
+          <p class="menu-label">Basics</p>
           <ul class="menu-list">
-            <li>
-              <a href="/">Overview</a>
-              
-            </li>
-            <li>
-              <a href="/pages/basic/jobs/">Jobs and runs</a>
-              
-            </li>
-            <li>
-              <a href="/pages/basic/notifications/">Notifications</a>
-              
-            </li>
-            <li>
-              <a href="/pages/basic/client/">Client</a>
-              
-            </li>
-            <li>
-              <a href="/pages/basic/running-ethel/">Running ethel</a>
-              
-            </li>
+              <li>
+                <a href="/">Overview</a>
+                
+              </li>
+              <li>
+                <a href="/pages/basic/jobs/">Jobs and runs</a>
+                
+              </li>
+              <li>
+                <a href="/pages/basic/notifications/">Notifications</a>
+                
+              </li>
+              <li>
+                <a href="/pages/basic/client/">Client</a>
+                
+              </li>
+              <li>
+                <a href="/pages/basic/running-ethel/">Running ethel</a>
+                
+              </li>
+              <li>
+                <a href="/pages/basic/core-config/">Core configuration</a>
+                
+              </li>
           </ul>
-          
-          
-        <p class="menu-label">Runner config</p>
+          <p class="menu-label">Runner config</p>
           <ul class="menu-list">
-            <li>
-              <a href="/pages/runner-config/common-options/">Common options</a>
-              
-            </li>
-            <li>
-              <a href="/pages/runner-config/runners/">Runner types</a>
-              
-            </li>
-            <li>
-              <a href="/pages/runner-config/mock/">Mock runners</a>
-              
-            </li>
-            <li>
-              <a href="/pages/runner-config/text-files/">Text files</a>
-              
-            </li>
-            <li>
-              <a href="/pages/runner-config/file-system/">File system</a>
-              
-            </li>
-            <li>
-              <a href="/pages/runner-config/databases/">Databases</a>
-              
-            </li>
-            <li>
-              <a href="/pages/runner-config/email/">Email</a>
-              
-            </li>
-            <li>
-              <a href="/pages/runner-config/ot/">OpenText runners</a>
-              
+              <li>
+                <a href="/pages/runner-config/runners/">Runner types</a>
+                
+              </li>
+              <li>
+                <a href="/pages/runner-config/common-options/">Common options</a>
+                
+              </li>
+              <li>
+                <a href="/pages/runner-config/mock/">Mock runners</a>
+                
+              </li>
+              <li>
+                <a href="/pages/runner-config/text-files/">Text files</a>
+                
+              </li>
+              <li>
+                <a href="/pages/runner-config/file-system/">File system</a>
+                
+              </li>
+              <li>
+                <a href="/pages/runner-config/databases/">Databases</a>
+                
+              </li>
+              <li>
+                <a href="/pages/runner-config/email/">Email</a>
+                
+              </li>
+              <li>
+                <a href="/pages/runner-config/ot/">OpenText runners</a>
+                
                   <ul>
-                    <li><a href="/pages/runner-config/content-server/">Content Server</a>
+                      <li>
+                        <a href="/pages/runner-config/archive-center/">Archive Server</a>
+                      </li>
+                      <li>
+                        <a href="/pages/runner-config/content-server/">Content Server</a>
+                      </li>
+                      <li>
+                        <a href="/pages/runner-config/success-factors/">Success Factors</a>
+                      </li>
                   </ul>
+                
+              </li>
+              <li>
+                <a href="/pages/runner-config/microsoft/">Microsoft runners</a>
+                
                   <ul>
-                    <li><a href="/pages/runner-config/success-factors/">Success Factors</a>
+                      <li>
+                        <a href="/pages/runner-config/sharepoint/">SharePoint</a>
+                      </li>
                   </ul>
-              
-            </li>
-            <li>
-              <a href="/pages/runner-config/microsoft/">Microsoft runners</a>
-              
-                  <ul>
-                    <li><a href="/pages/runner-config/sharepoint/">SharePoint</a>
-                  </ul>
-              
-            </li>
+                
+              </li>
           </ul>
-          
-          
-        <p class="menu-label">Development</p>
+          <p class="menu-label">Development</p>
           <ul class="menu-list">
-            <li>
-              <a href="/pages/development/repository/">Repository</a>
-              
-            </li>
-            <li>
-              <a href="/pages/development/runners/">Runners</a>
-              
-            </li>
-            <li>
-              <a href="/pages/development/client/">Client</a>
-              
-            </li>
-            <li>
-              <a href="/pages/development/architecture/">Architecture</a>
-              
-            </li>
+              <li>
+                <a href="/pages/development/repository/">Repository</a>
+                
+              </li>
+              <li>
+                <a href="/pages/development/runners/">Runners</a>
+                
+              </li>
+              <li>
+                <a href="/pages/development/architecture/">Architecture</a>
+                
+              </li>
           </ul>
-          
-          
-      </aside>
-      <div class="docs-body section">
+      </div>
+    </aside>
+    <section class="panel">
+      <div class="section">
         <div class="container is-fluid">
           
-<p class="subtitle is-5">SharePoint runners</p>
+<p class="title is-4">SharePoint runners</p>
 <div class="content">
 
-  <p>Dev has started on an extractor, staging extractor and loader</p>
+  <p>These runners are related to working with Microsoft SharePoint.</p>
+  <p>The runners documented here are:</p>
+  <ul>
+    <li><a href="/pages/runner-config/sharepoint/#sp-extractor">SharePointExtractor</a></li>
+    <li><a href="/pages/runner-config/sharepoint/#sp-staging">SharePointStaging</a></li>
+    <li><a href="/pages/runner-config/sharepoint/#sp-loader">SharePointLoader</a></li>
+    <li><a href="/pages/runner-config/sharepoint/#fs-sp">FSToSPTransformer</a></li>
+    <li><a href="/pages/runner-config/sharepoint/#otcs-sp">OTCSToSPTransformer</a></li>
+    <li><a href="/pages/runner-config/sharepoint/#sp-sp">SPToSPTransformer</a></li>
+  </ul>
+  <p>Other related runners:</p>
+  <ul>
+    <li><a href="/pages/runner-config/file-system/#sp-to-fs">SPToFSTransformer</a></li>
+    <li><a href="/pages/runner-config/content-server/#sp-to-otcs">SPToOTCSTransformer</a></li>
+  </ul>
 
+  <p id="sp-connection" class="subtitle is-5 docs-subhead">SharePoint connection</p>
+  <p>The connection object for all SharePoint runners changes depending on the SharePoint version and the organisation
+    hosting the server. Look at the examples below for different configuration combinations:</p>
+  <ul>
+    <li><code>spHost</code> <i>string</i> - the SharePoint host name</li>
+    <li><code>clientId</code> <i>string</i> - the ID for the Entra client configuration</li>
+    <li><code>clientCertificate:thumbprint</code> <i>string</i> - thumbprint used to idenitify the certificate</li>
+    <li><code>certPath</code> <i>string</i> - path to the certificate file</li>
+    <li><code>tenantId</code> <i>string</i> - the tenant ID for the host connection</li>
+    <li><code>username</code> <i>string</i> - username for NTLM connections</li>
+    <li><code>password</code> <i>boolean</i> - user password for NTLM connections</li>
+    <li><code>timings</code> <i>boolean</i> - whether to log request timings or not, defaults to false</li>
+    <li><code>useNTLM</code> <i>boolean</i> - whether to attempt an NTLM connection</li>
+  </ul>
+  <p>Example SharePoint online connection object:</p>
+  <pre class="code">
+  {
+    "clientId": "5c2d4774-bc67-4e1d-b9c1-3b56e82c1b1f",
+    "clientCertificate": {
+      "thumbprint": "A33177147C1CB4D1D1A63CAF8B5A9E38CA36DAE8",
+    },
+    "certPath": "E:\\certs\\ethel-w6n3w.sharepoint.com.pk.txt",
+    "spHost": "https://w6n3w.sharepoint.com",
+    "tenantId": "83fc94bd-cff5-40f5-91ef-04bc08b68f32",
+  }
+  </pre>
+  <p>Example NTLM connection object:</p>
+  <pre class="code">
+  {
+    "username": "NERKS/fred.nerk",
+    "password": "nerk",
+    "spHost": "https://w6n3w.sharepoint.com",
+    "useNTLM": true
+  }
+  </pre>
+
+  <p id="sp-extractor" class="subtitle is-5 docs-subhead">SharePointExtractor</p>
+  <p><a href="/pages/runner-config/runner-status/"><span class="tag is-link">Developed</span></a></p>
+
+  <p>This runner will extract information from SharePoint. It will not extract any files from SharePoint. To
+    extract files from SharePoint to upload to other systems use the SharePointStaging runner. The SharePointExtractor
+    has the following configuration options:</p>
+  <ul>
+    <li><code>batchConfig</code> <i>number | RunnerBatchConfig</i> - see <a href="/pages/runner-config/common-options/#batches">batches</a> - needs a hashName value or it will be ignored</li>
+    <li><code>connection</code> <strong>mandatory</strong> <i>object</i> - <a href="/pages/runner-config/sharepoint/#sp-connection">SharePoint connection object</a></li>
+    <li><code>hashName</code> <i>string</i> - the lookup name for storing the source object hash</li>
+    <li><code>ignore</code> see <a href="/pages/runner-config/common-options/#ignore">ignore items</a>
+      <br>in addition you can specify a <i>subfolderRoot</i> path and all items outside that path will be ignored</li>
+    <li><code>keepAliveCount</code> <i>number</i> - how often to save the extractor status, defaults to 1000 tasks created</li>
+    <li><code>lists</code> <strong>mandatory</strong> <i>string</i> - string array - array of list URLs, e.g. ["https://w6n3w.sharepoint.com/sites/ethel-test/Shared%20Documents/"]</li>
+    <li><code>quarantinedLookupName</code> <i>string</i> - the name for the quarantine lookup, defaults to quarantinedSharePointExtractor</li>
+  </ul>
+  <hr>
+  <p>Example runner configuration:</p>
+  <pre class="code">
+  {
+    "type": "SharePointExtractor",
+    "config": {
+      "connection": {
+        "name": "connections",
+        "key": "sp.dev"
+      },
+      "hashName":"ProdMigrationOne",
+      "ignore": {
+        "objectTypes": ["Folder"],
+        "subfolderRoot": "Finance/2020/"
+      }
+      "lists": ["https://w6n3w.sharepoint.com/sites/ethel-test/Shared%20Documents/"],
+    }
+  }
+  </pre>
+
+  <p>It populates the following attributes in the new tasks it creates:</p>
+  <ul>
+    <li><code>item</code> metadata for the item extracted</li>
+    <li><code>quarantine</code> quarantine lookup for the item</li>
+  </ul>
+  <pre class="code">
+    {
+      "item": {
+        "__metadata": {
+          "id": "efbb6411-2d6f-41df-a956-6fb832fac0da",
+          "uri": "https://w6n3w.sharepoint.com/sites/ethel-test/_api/Web/Lists(guid'5f4a27ce-5e30-433f-9536-10c1dc8d782f')/Items(5010)",
+          "etag": "\"2\"",
+          "type": "SP.Data.Shared_x0020_DocumentsItem"
+        },
+        "FirstUniqueAncestorSecurableObject": {
+          "__deferred": {
+            "uri": "https://w6n3w.sharepoint.com/sites/ethel-test/_api/Web/Lists(guid'5f4a27ce-5e30-433f-9536-10c1dc8d782f')/Items(5010)/FirstUniqueAncestorSecurableObject"
+          }
+        },
+        "RoleAssignments": {
+          "__deferred": {
+            "uri": "https://w6n3w.sharepoint.com/sites/ethel-test/_api/Web/Lists(guid'5f4a27ce-5e30-433f-9536-10c1dc8d782f')/Items(5010)/RoleAssignments"
+          }
+        },
+        "AttachmentFiles": {
+          "__deferred": {
+            "uri": "https://w6n3w.sharepoint.com/sites/ethel-test/_api/Web/Lists(guid'5f4a27ce-5e30-433f-9536-10c1dc8d782f')/Items(5010)/AttachmentFiles"
+          }
+        },
+        "ContentType": {
+          "__deferred": {
+            "uri": "https://w6n3w.sharepoint.com/sites/ethel-test/_api/Web/Lists(guid'5f4a27ce-5e30-433f-9536-10c1dc8d782f')/Items(5010)/ContentType"
+          }
+        },
+        "GetDlpPolicyTip": {
+          "__deferred": {
+            "uri": "https://w6n3w.sharepoint.com/sites/ethel-test/_api/Web/Lists(guid'5f4a27ce-5e30-433f-9536-10c1dc8d782f')/Items(5010)/GetDlpPolicyTip"
+          }
+        },
+        "FieldValuesAsHtml": {
+          "__deferred": {
+            "uri": "https://w6n3w.sharepoint.com/sites/ethel-test/_api/Web/Lists(guid'5f4a27ce-5e30-433f-9536-10c1dc8d782f')/Items(5010)/FieldValuesAsHtml"
+          }
+        },
+        "FieldValuesAsText": {
+          "__deferred": {
+            "uri": "https://w6n3w.sharepoint.com/sites/ethel-test/_api/Web/Lists(guid'5f4a27ce-5e30-433f-9536-10c1dc8d782f')/Items(5010)/FieldValuesAsText"
+          }
+        },
+        "FieldValuesForEdit": {
+          "__deferred": {
+            "uri": "https://w6n3w.sharepoint.com/sites/ethel-test/_api/Web/Lists(guid'5f4a27ce-5e30-433f-9536-10c1dc8d782f')/Items(5010)/FieldValuesForEdit"
+          }
+        },
+        "File": {
+          "__metadata": {
+            "id": "https://w6n3w.sharepoint.com/sites/ethel-test/_api/Web/Lists(guid'5f4a27ce-5e30-433f-9536-10c1dc8d782f')/Items(5010)/File",
+            "uri": "https://w6n3w.sharepoint.com/sites/ethel-test/_api/Web/Lists(guid'5f4a27ce-5e30-433f-9536-10c1dc8d782f')/Items(5010)/File",
+            "type": "SP.File"
+          },
+          "Author": {
+            "__deferred": {
+              "uri": "https://w6n3w.sharepoint.com/sites/ethel-test/_api/Web/Lists(guid'5f4a27ce-5e30-433f-9536-10c1dc8d782f')/Items(5010)/File/Author"
+            }
+          },
+          "CheckedOutByUser": {
+            "__deferred": {
+              "uri": "https://w6n3w.sharepoint.com/sites/ethel-test/_api/Web/Lists(guid'5f4a27ce-5e30-433f-9536-10c1dc8d782f')/Items(5010)/File/CheckedOutByUser"
+            }
+          },
+          "EffectiveInformationRightsManagementSettings": {
+            "__deferred": {
+              "uri": "https://w6n3w.sharepoint.com/sites/ethel-test/_api/Web/Lists(guid'5f4a27ce-5e30-433f-9536-10c1dc8d782f')/Items(5010)/File/EffectiveInformationRightsManagementSettings"
+            }
+          },
+          "InformationRightsManagementSettings": {
+            "__deferred": {
+              "uri": "https://w6n3w.sharepoint.com/sites/ethel-test/_api/Web/Lists(guid'5f4a27ce-5e30-433f-9536-10c1dc8d782f')/Items(5010)/File/InformationRightsManagementSettings"
+            }
+          },
+          "ListItemAllFields": {
+            "__deferred": {
+              "uri": "https://w6n3w.sharepoint.com/sites/ethel-test/_api/Web/Lists(guid'5f4a27ce-5e30-433f-9536-10c1dc8d782f')/Items(5010)/File/ListItemAllFields"
+            }
+          },
+          "LockedByUser": {
+            "__deferred": {
+              "uri": "https://w6n3w.sharepoint.com/sites/ethel-test/_api/Web/Lists(guid'5f4a27ce-5e30-433f-9536-10c1dc8d782f')/Items(5010)/File/LockedByUser"
+            }
+          },
+          "ModifiedBy": {
+            "__deferred": {
+              "uri": "https://w6n3w.sharepoint.com/sites/ethel-test/_api/Web/Lists(guid'5f4a27ce-5e30-433f-9536-10c1dc8d782f')/Items(5010)/File/ModifiedBy"
+            }
+          },
+          "Properties": {
+            "__metadata": {
+              "id": "https://w6n3w.sharepoint.com/sites/ethel-test/_api/Web/Lists(guid'5f4a27ce-5e30-433f-9536-10c1dc8d782f')/Items(5010)/File/Properties",
+              "uri": "https://w6n3w.sharepoint.com/sites/ethel-test/_api/Web/Lists(guid'5f4a27ce-5e30-433f-9536-10c1dc8d782f')/Items(5010)/File/Properties",
+              "type": "SP.PropertyValues"
+            },
+            "vti_x005f_supportsZipIt": "false",
+            "vti_x005f_compliancepreviewnextbsn": "100",
+            "vti_x005f_universalannotationnextbsnalloc": "100",
+            "vti_x005f_previewnextbsn": "100",
+            "vti_x005f_contenttag": "{D72A0E5A-4C7C-48B6-9CB5-C1DE48AD7D24},2,2",
+            "vti_x005f_author": "i:0#.f|membership|mark.farrall@w6n3w.onmicrosoft.com",
+            "vti_x005f_collabnextbsnalloc": "100",
+            "vti_x005f_ertimecreated": "2024-03-25T04:31:47",
+            "vti_x005f_iplabelpromotionversion": 0,
+            "vti_x005f_folderitemcount": 0,
+            "vti_x005f_asyncpreviewnextbsn": "100",
+            "vti_x005f_listbasetype": 1,
+            "vti_x005f_metainfoversion": 2,
+            "vti_x005f_writevalidationtoken": "isFxKXJ8Yqf6TkkyLTMjrZ2RF5M=",
+            "vti_x005f_timelastmodified": "2024-03-25T05:52:07",
+            "vti_x005f_rtag": "rt:D72A0E5A-4C7C-48B6-9CB5-C1DE48AD7D24@00000000002",
+            "vti_x005f_shareflags": 0,
+            "vti_x005f_nextbsn": "190",
+            "vti_x005f_genericcontenttempnextbsn": "100",
+            "vti_x005f_cowatchnextbsn": "100",
+            "vti_x005f_timecreated": "2024-03-25T04:31:47",
+            "vti_x005f_canmaybeedit": "true",
+            "vti_x005f_principalcount": 3,
+            "vti_x005f_parserversion": "16.0.0.24706",
+            "vti_x005f_parentid": "{C5BB18F4-FBF7-4F7C-B8E8-FEE4BDBD92B0}",
+            "vti_x005f_genericcontenttempnextbsnalloc": "100",
+            "vti_x005f_previewinvalidtime": "2024-03-25T04:31:47",
+            "vti_x005f_foldersubfolderitemcount": 0,
+            "vti_x005f_docstoreversion": 2,
+            "vti_x005f_previewnextbsnalloc": "100",
+            "vti_x005f_etag": "\"{D72A0E5A-4C7C-48B6-9CB5-C1DE48AD7D24},2\"",
+            "vti_x005f_areHybridOrphanHashedBlobsCleaned": "false",
+            "vti_x005f_virusvendorid": 1299,
+            "vti_x005f_doclibrowid": 5010,
+            "vti_x005f_filesize": 520,
+            "vti_x005f_dbschemaversion": "16.0.399.0",
+            "vti_x005f_docviznextbsn": "100",
+            "vti_x005f_sourcecontrolcookie": "fp_internal",
+            "vti_x005f_timelastwritten": "2024-03-25T05:52:07",
+            "vti_x005f_complianceflags": 0,
+            "vti_x005f_contentversionisdirty": "false",
+            "vti_x005f_bsn": "190",
+            "vti_x005f_sourcecontrolversion": "V2.0",
+            "vti_x005f_iplabelid": "",
+            "vti_x005f_listflags2": 229392,
+            "vti_x005f_listiplabelid": "",
+            "vti_x005f_nexttolasttimemodified": "2024-03-25T04:31:47",
+            "vti_x005f_universalannotationnextbsn": "100",
+            "vti_x005f_decryptdeferred": "false",
+            "vti_x005f_decryptskipreason": 6,
+            "vti_x005f_contentversion": 2,
+            "vti_x005f_level": 1,
+            "vti_x005f_sprocsschemaversion": "16.0.1088.0",
+            "vti_x005f_timelastwnssent": "2024-03-25T05:52:07",
+            "vti_x005f_additionalstreamssize": "0",
+            "vti_x005f_internalversion": 513,
+            "vti_x005f_listid": "{5F4A27CE-5E30-433F-9536-10C1DC8D782F}",
+            "vti_x005f_aspxpagesnextbsn": "100",
+            "vti_x005f_docstoretype": 0,
+            "vti_x005f_collabnextbsn": "100",
+            "vti_x005f_listflags": "36028797027356812",
+            "ContentTypeId": "0x010100DB55E39C6EC291438266E18E53CF4A92",
+            "vti_x005f_ertimelastmodified": "2024-03-25T05:52:07",
+            "vti_x005f_streamschema": 75,
+            "vti_x005f_nextbsnallocated": "190",
+            "vti_x005f_zipitempreviewnextbsn": "100",
+            "vti_x005f_setuppathversion": 16,
+            "vti_x005f_candeleteversion": "true",
+            "vti_x005f_streamhash": "0x028AC17129727C62A7FA4E49322D3323AD9D911793",
+            "vti_x005f_replid": "rid:{D72A0E5A-4C7C-48B6-9CB5-C1DE48AD7D24}",
+            "vti_x005f_excelrevisionlognextbsn": "100",
+            "vti_x005f_durablestreammetadatanextbsn": "100",
+            "vti_x005f_metadatanextbsn": "100",
+            "vti_x005f_zipitempreviewnextbsnalloc": "100",
+            "vti_x005f_orphannextbsn": "100",
+            "vti_x005f_virusstatus": 0,
+            "vti_x005f_modifiedby": "i:0#.f|membership|mark.farrall@w6n3w.onmicrosoft.com",
+            "vti_x005f_listservertemplate": 101
+          },
+          "VersionEvents": {
+            "__deferred": {
+              "uri": "https://w6n3w.sharepoint.com/sites/ethel-test/_api/Web/Lists(guid'5f4a27ce-5e30-433f-9536-10c1dc8d782f')/Items(5010)/File/VersionEvents"
+            }
+          },
+          "VersionExpirationReport": {
+            "__deferred": {
+              "uri": "https://w6n3w.sharepoint.com/sites/ethel-test/_api/Web/Lists(guid'5f4a27ce-5e30-433f-9536-10c1dc8d782f')/Items(5010)/File/VersionExpirationReport"
+            }
+          },
+          "Versions": {
+            "results": [
+              {
+                "__metadata": {
+                  "id": "https://w6n3w.sharepoint.com/sites/ethel-test/_api/SP.FileVersion1acfeb2a-793f-4018-8f9f-6d822c08ab6f",
+                  "uri": "https://w6n3w.sharepoint.com/sites/ethel-test/_api/SP.FileVersion1acfeb2a-793f-4018-8f9f-6d822c08ab6f",
+                  "type": "SP.FileVersion"
+                },
+                "CreatedBy": {
+                  "__deferred": {
+                    "uri": "https://w6n3w.sharepoint.com/sites/ethel-test/_api/SP.FileVersion1acfeb2a-793f-4018-8f9f-6d822c08ab6f/CreatedBy"
+                  }
+                },
+                "CheckInComment": "",
+                "Created": "2024-03-25T04:31:47Z",
+                "ID": 512,
+                "IsCurrentVersion": false,
+                "Length": "520",
+                "Size": 520,
+                "Url": "_vti_history/512/Shared Documents/data.txt",
+                "VersionLabel": "1.0"
+              }
+            ]
+          },
+          "CheckInComment": "",
+          "CheckOutType": 2,
+          "ContentTag": "{D72A0E5A-4C7C-48B6-9CB5-C1DE48AD7D24},2,2",
+          "CustomizedPageStatus": 0,
+          "ETag": "\"{D72A0E5A-4C7C-48B6-9CB5-C1DE48AD7D24},2\"",
+          "Exists": true,
+          "ExistsAllowThrowForPolicyFailures": true,
+          "IrmEnabled": false,
+          "Length": "520",
+          "Level": 1,
+          "LinkingUri": null,
+          "LinkingUrl": "",
+          "MajorVersion": 2,
+          "MinorVersion": 0,
+          "Name": "data.txt",
+          "ServerRelativeUrl": "/sites/ethel-test/Shared Documents/data.txt",
+          "TimeCreated": "2024-03-25T04:31:47Z",
+          "TimeLastModified": "2024-03-25T05:52:07Z",
+          "Title": null,
+          "UIVersion": 1024,
+          "UIVersionLabel": "2.0",
+          "UniqueId": "d72a0e5a-4c7c-48b6-9cb5-c1de48ad7d24"
+        },
+        "LikedByInformation": {
+          "__deferred": {
+            "uri": "https://w6n3w.sharepoint.com/sites/ethel-test/_api/Web/Lists(guid'5f4a27ce-5e30-433f-9536-10c1dc8d782f')/Items(5010)/LikedByInformation"
+          }
+        },
+        "ParentList": {
+          "__deferred": {
+            "uri": "https://w6n3w.sharepoint.com/sites/ethel-test/_api/Web/Lists(guid'5f4a27ce-5e30-433f-9536-10c1dc8d782f')/Items(5010)/ParentList"
+          }
+        },
+        "Properties": {
+          "__deferred": {
+            "uri": "https://w6n3w.sharepoint.com/sites/ethel-test/_api/Web/Lists(guid'5f4a27ce-5e30-433f-9536-10c1dc8d782f')/Items(5010)/Properties"
+          }
+        },
+        "Versions": {
+          "__deferred": {
+            "uri": "https://w6n3w.sharepoint.com/sites/ethel-test/_api/Web/Lists(guid'5f4a27ce-5e30-433f-9536-10c1dc8d782f')/Items(5010)/Versions"
+          }
+        },
+        "FileSystemObjectType": 0,
+        "Id": 5010,
+        "ServerRedirectedEmbedUri": null,
+        "ServerRedirectedEmbedUrl": "",
+        "ContentTypeId": "0x010100DB55E39C6EC291438266E18E53CF4A92",
+        "OData__ColorTag": null,
+        "ComplianceAssetId": null,
+        "Title": null,
+        "Surname": null,
+        "ID": 5010,
+        "Created": "2024-03-25T04:31:48Z",
+        "AuthorId": 9,
+        "Modified": "2024-03-25T05:52:07Z",
+        "EditorId": 9,
+        "OData__CopySource": null,
+        "CheckoutUserId": null,
+        "OData__UIVersionString": "2.0",
+        "GUID": "fc08406b-9f08-44db-bda1-0aa67af10d67",
+        "type": "File",
+        "container": false
+      },
+      "siteRelativeUrl": "/sites/ethel-test/",
+      "listName": "Shared Documents",
+      "quarantine": {
+        "name": "quarantinedSharePointExtractor",
+        "key": "fc08406b-9f08-44db-bda1-0aa67af10d67",
+        "value": "fc08406b-9f08-44db-bda1-0aa67af10d67"
+      }
+    }
+    </pre>
+
+  <p id="sp-staging" class="subtitle is-5 docs-subhead">SharePointStaging</p>
+  <p><a href="/pages/runner-config/runner-status/"><span class="tag is-link">Developed</span></a></p>
+
+  <p>This runner will copy files from SharePoint to the specified storage location. It has the following configuration options:</p>
+  <ul>
+    <li><code>allVersions</code> <i>boolean</i> - whether to extract the latest version or all versions, defaults to false</li>
+    <li><code>connection</code> <strong>mandatory</strong> <i>object</i> - <a href="/pages/runner-config/sharepoint/#sp-connection">SharePoint connection object</a></li>
+    <li><code>item</code> <i>string</i> - the message attribute with the API definition of the object, defaults to item</li>
+    <li><code>siteRelativeUrl</code> <i>string</i> - the message attribute with the server relative URL to the site, defaults to siteRelativeUrl</li>
+    <li><code>stagingProvider</code> <strong>mandatory</strong> <i>object</i> - the location where the document content is stored</li>
+  </ul>
+  <p>It uses the following message attributes:</p>
+  <ul>
+    <li><code>item</code> <strong>mandatory</strong> <i>object</i> - the item object from the SharePoint API</li>
+    <li><code>siteRelativeUrl</code> <strong>mandatory</strong> <i>number</i> - the URL to the site, minus the host name</li>
+  </ul>
+  <hr>
+  <p>Example runner configuration:</p>
+  <pre class="code">
+  {
+    "id": "6UQtP8-CdXAMg_GQCOSLd",
+    "name": "Test migration",
+    "runner": {
+      "type": "SharePointStaging",
+      "config": {
+        "connection": {
+          "name": "connections",
+          "key": "sp.dev"
+        }
+      }
+    },
+    "message": {
+      "item": {...},
+      "siteRelativeUrl": "/sites/ethel-test/",
+    }
+  }
+  </pre>
+
+  <p>It populates the following attributes in the new tasks it creates:</p>
+  <ul>
+    <li><code>sourceFile</code> metadata for the item extracted</li>
+  </ul>
+  <pre class="code">
+    "message": {
+      "item": {...},
+      "siteRelativeUrl": "/sites/ethel-test/",
+      "sourceFile": [
+        {
+          "createdDate": "2024-03-25T04:31:47Z",
+          "filename": "data.txt",
+          "id": "G2KlXr06Gg6Q1lck38TU0",
+          "mimeType": "text/plain",
+          "modifiedDate": "2024-03-25T05:52:07Z",
+          "provider": {
+            "useOriginalName": false,
+            "type": "FileSystem",
+            "path": "E:\\test\\ethel-test\\sp-staging",
+          },
+          "size": 520,
+          "sourceValues": {
+            "VersionLabel": "1.0",
+          },
+          systemId: "4e04301e5cf0ebb3c8d36a65e9819d5db05aefab",
+        },
+      ],
+    }
+    </pre>
+
+  <p id="sp-loader" class="subtitle is-5 docs-subhead">SharePointLoader</p>
+  <p><a href="/pages/runner-config/runner-status/"><span class="tag is-link">Developed</span></a></p>
+
+  <p>This runner will copy files from SharePoint to the specified storage location. It has the following configuration options:</p>
+  <ul>
+    <li><code>addHash</code> <i>boolean</i> - whether to add the currentHash lookup, defaults to true</li>
+    <li><code>connection</code> <strong>mandatory</strong> <i>object</i> - <a href="/pages/runner-config/sharepoint/#sp-connection">SharePoint connection object</a></li>
+    <li><code>listName</code> <i>string</i> - the message attribute with the list name, defaults to listName</li>
+    <li><code>loadItem</code> <i>string</i> - the message attribute containing the item to be loaded, defaults to loadItem</li>
+    <li><code>siteRelativeUrl</code> <i>string</i> - the message attribute with the server relative URL to the site, defaults to siteRelativeUrl</li>
+    <li><code>overwrite</code> <i>boolean</i> - whether to add the document as a new version if it already exists, defaults to false</li>
+  </ul>
+  <p>It uses the following message attributes:</p>
+  <ul>
+    <li><code>item</code> <strong>mandatory</strong> <i>object</i> - the item object from the SharePoint API</li>
+    <li><code>listName</code> <strong>mandatory</strong> <i>number</i> - the name of the list</li>
+    <li><code>siteRelativeUrl</code> <strong>mandatory</strong> <i>number</i> - the URL to the site, minus the host name</li>
+  </ul>
+  <p>Message attribute names can be changed in the config section.</p>
+  <hr>
+  <p>Example runner and message configuration:</p>
+  <pre class="code">
+  {
+    "id": "6UQtP8-CdXAMg_GQCOSLd",
+    "name": "Test migration",
+    "runner": {
+      "type": "SharePointStaging",
+      "config": {
+        "connection": {"name": "connections", "key": "sp.dev"},
+        "hashName":"ProdMigrationOne",
+        "stagingProvider": {
+          "type": "FileSystem",
+          "path": "E:\\data\\staging",
+        }
+      }
+    },
+    "runners": {...},
+    "message": {
+      "item": {...},
+      "listName": "Documents",
+      "siteRelativeUrl": "/sites/Project Anthrax"
+    }
+  }
+  </pre>
+  <p>It populates the following attributes in the new tasks it creates:</p>
+  <ul>
+    <li><code>sourceFile</code> an array of versions that were staged</li>
+  </ul>
+  <pre class="code">
+  {
+    "message": {
+      "sourceFile": [
+        {
+          "createdDate": "2024-03-25T04:31:47Z",
+          "filename": "data.txt",
+          "id": "G2KlXr06Gg6Q1lck38TU0",
+          "mimeType": "text/plain",
+          "modifiedDate": "2024-03-25T05:52:07Z",
+          "provider": {
+            "useOriginalName": false,
+            "type": "FileSystem",
+            "path": "E:\\test\\ethel-test\\sp-staging",
+          },
+          "size": 520,
+          "sourceValues": {
+            "VersionLabel": "1.0",
+          },
+          "systemId": "4e04301e5cf0ebb3c8d36a65e9819d5db05aefab",
+        },
+      ],
+    }
+  }
+  </pre>
+
+  <p id="fs-sp" class="subtitle is-5 docs-subhead">FSToSPTransformer</p>
+  <p><a href="/pages/runner-config/runner-status/"><span class="tag is-link">Developed</span></a></p>
+
+  <p>This runner transforms file system extractor messages to the SPLoadItem format. It has the following configuration options:</p>
+  <ul>
+    <li><code>extractRoot</code> <i>string</i> - the message attribute containing the root file path for the extraction, defaults to extractRoot</li>
+    <li><code>listName</code> <strong>mandatory</strong> <i>string</i> - the list or library name, i.e. the name from the URL, not the title</li>
+    <li><code>item</code> <i>string</i> - the message attribute containing the file system object, defaults to item</li>
+    <li><code>siteRelativeUrl</code> <strong>mandatory</strong> <i>string</i> - the URL to the site, minus the host name</li>
+    <li><code>sourceFile</code> <i>string</i> - the message attribute containing the sourceFile information, defaults to sourceFile</li>
+  </ul>
+  <p>It uses the following message attributes:</p>
+  <ul>
+    <li><code>extractRoot</code> <strong>mandatory</strong> <i>string</i> - the root file path for the extraction</li>
+    <li><code>item</code> <strong>mandatory</strong> <i>object</i> - the file system stats object</li>
+    <li><code>sourceFile</code> <i>string | StagedFile</i> - the file to be added, either path or StagedFile object</li>
+  </ul>
+  <hr>
+  <p>Example runner and message configuration:</p>
+  <pre class="code">
+  {
+    "id": "6UQtP8-CdXAMg_GQCOSLd",
+    "name": "Test migration",
+    "runner":  {
+      "type": "FSToSPTransformer",
+      "config": {
+        "listName": "Ethel testing",
+        "siteRelativeUrl": "/sites/ethel-test/Ethel%20testing/Forms/AllItems.aspx",
+      },
+    },
+    "runners": ...,
+    "message": {
+      "extractRoot": "C:\\code\\test\\fs-extract",
+      "item": {...},
+      "sourceFile": {...}
+    }
+  }
+  </pre>
+  <p>It populates the following attributes in the new tasks it creates:</p>
+  <ul>
+    <li><code>loadItem</code> an array of versions that were staged</li>
+  </ul>
+  <pre class="code">
+  {
+    "message": {
+      "loadItem": {
+        "update": false,
+        "type": "File",
+        "name": "File name",
+        "listPath": "/folder 1/subfolder 1/subfolder 2/",
+        "fields": { description: "Description text" },
+        "sourceFile": {...}
+      }
+    }
+  }
+  </pre>
+
+  <p id="otcs-sp" class="subtitle is-5 docs-subhead">OTCSToSPTransformer</p>
+  <p><a href="/pages/runner-config/runner-status/"><span class="tag is-link">Developed</span></a></p>
+
+  <p>This runner transforms OTCS extractor messages to the SPLoadItem format. It has the following configuration options:</p>
+  <ul>
+    <li><code>extractRoot</code> <i>string</i> - the message attribute containing the root file path for the extraction, defaults to extractRoot</li>
+    <li><code>listName</code> <strong>mandatory</strong> <i>string</i> - the list or library name, i.e. the name from the URL, not the title</li>
+    <li><code>metadata</code> <i>object</i> - the mappings of CS attribute ids to SharePoint field names, key-value pairs with CS attribute id as the key</li>
+    <li><code>node</code> <i>string</i> - the message attribute containing the Content Server object, defaults to node</li>
+    <li><code>siteRelativeUrl</code> <strong>mandatory</strong> <i>string</i> - the URL to the site, minus the host name</li>
+    <li><code>sourceFile</code> <i>string</i> - the message attribute containing the sourceFile information, defaults to sourceFile</li>
+  </ul>
+  <p>It uses the following message attributes:</p>
+  <ul>
+    <li><code>extractRoot</code> <strong>mandatory</strong> <i>string</i> - the root file path for the extraction</li>
+    <li><code>node</code> <strong>mandatory</strong> <i>object</i> - the file system stats object</li>
+    <li><code>sourceFile</code> <i>string | StagedFile</i> - the file to be added, either path or StagedFile object</li>
+  </ul>
+  <hr>
+  <p>Example runner and message configuration:</p>
+  <pre class="code">
+  {
+    "id": "6UQtP8-CdXAMg_GQCOSLd",
+    "name": "Test migration",
+    "runner":  {
+      "type": "OTCSToSPTransformer",
+      "config": {
+        "listName": "Ethel testing",
+        "siteRelativeUrl": "/sites/ethel-test/Ethel%20testing/Forms/AllItems.aspx",
+      },
+    },
+    "runners": ...,
+    "message": {
+      "extractRoot": "C:\\code\\test\\fs-extract",
+      "node": {...},
+      "sourceFile": {...}
+    }
+  }
+  </pre>
+  <p>It populates the following attributes in the new tasks it creates:</p>
+  <ul>
+    <li><code>loadItem</code> an array of versions that were staged</li>
+  </ul>
+  <pre class="code">
+  {
+    "message": {
+      "loadItem": {
+        "update": false,
+        "type": "File",
+        "name": "File name",
+        "listPath": "/folder 1/subfolder 1/subfolder 2/",
+        "fields": { description: "Description text" },
+        "sourceFile": {...}
+      }
+    }
+  }
+  </pre>
+
+  <p id="sp-sp" class="subtitle is-5 docs-subhead">SPToSPTransformer</p>
+  <p><a href="/pages/runner-config/runner-status/"><span class="tag is-link">Developed</span></a></p>
+
+  <p>This runner transforms SharePoint to the SPLoadItem format. It has the following configuration options:</p>
+  <ul>
+    <li><code>item</code> <i>string</i> - the message attribute containing the SharePoint item, defaults to item</li>
+    <li><code>listName</code> <i>string</i> - the message attribute containing the original list or library name, defaults to listName</li>
+    <li><code>listNameMapping</code> <i>object</i> - key value pairs mapping an existing list name to a new list name, can also specify a subfolder as the target for the load</li>
+    <li><code>metadataMapping</code> <i>object</i> - mapping object for field names, key-value pairs with source field name as the key and target field name as the value</li>
+    <li><code>siteRelativeUrl</code> <i>string</i> - the message attribute containing the original siteRelativeUrl, defaults to siteRelativeUrl</li>
+    <li><code>siteUrlMapping</code> <strong>mandatory</strong> <i>object</i> - key value pairs mapping an existing site URL to a new site URL</li>
+    <li><code>sourceFile</code> <i>string</i> - the message attribute containing the sourceFile information, defaults to sourceFile</li>
+  </ul>
+  <p>It uses the following message attributes:</p>
+  <ul>
+    <li><code>item</code> <strong>mandatory</strong> <i>object</i> - the sharepoint list item object</li>
+    <li><code>listName</code> <strong>mandatory</strong> <i>string</i> - the list or library name, i.e. the name from the URL, not the title</li>
+    <li><code>siteRelativeUrl</code> <strong>mandatory</strong> <i>string</i> - the URL to the site, minus the host name</li>
+    <li><code>sourceFile</code> <i>string | StagedFile</i> - the file to be added, either path or StagedFile object</li>
+  </ul>
+  <hr>
+  <p>Example runner and message configuration:</p>
+  <pre class="code">
+  {
+    "id": "6UQtP8-CdXAMg_GQCOSLd",
+    "name": "Test migration",
+    "runner":  {
+      "type": "SPToSPTransformer",
+      "config": {
+        siteUrlMapping: { '/sites/ethel-test/': '/sites/Testteamsite/' },
+        listNameMapping: {
+          "Shared Documents": "Archive",
+          "Approvals": { "list": "Old Approvals" },
+          "Research": { list: "Archive", "subfolder": "/Research/" },
+        },
+      },
+    },
+    "runners": ...,
+    "message": {
+      "item": {...},
+      "siteRelativeUrl": "/sites/ethel-test/",
+      "listName": "Shared Documents",
+      "sourceFile": {...}
+    }
+  }
+  </pre>
+  <p>It populates the following attributes in the new tasks it creates:</p>
+  <ul>
+    <li><code>loadItem</code> an array of versions that were staged</li>
+  </ul>
+  <pre class="code">
+  {
+    "message": {
+      "loadItem": {
+        "update": false,
+        "type": "File",
+        "name": "File name",
+        "listPath": "/folder 1/subfolder 1/subfolder 2/",
+        "fields": { description: "Description text" },
+        "sourceFile": {...}
+      }
+    }
+  }
+  </pre>
 </div>
         </div>
+        <div class="container is-fluid dl-footer">
+          <a href="https://driverlane.com.au">Driver Lane</a>
+          &copy; 2020-2024
+        </div>
       </div>
-    </section>
-    <footer class="app-footer footer dl-footer">
-      <div class="dl-logo">
-        <a href="https://driverlane.com.au">
-          <svg version="1.1" viewbox="0 0 47 11">
-            <g transform="translate(0,-286)">
-              <g aria-label="driver lane" transform="translate(-19.954512,74.402148)">
-                <path d="m 23.782697,215.08501 v -2.42358 l 1.524,-0.13759 v 7.747 h -1.49225 v -0.381 l -0.07408,0.0635 -0.137583,0.0952
-                  -0.254,0.14817 q -0.381,0.21167 -0.814917,0.21167 -0.66675,0 -1.2065,-0.49742 -0.53975,-0.49742 -0.677333,-1.17475
-                  -0.127,-0.68792 -0.127,-1.17475 0,-0.381 0.04233,-0.61383 0.04233,-0.24342 0.148167,-0.75142 0.105833,-0.508
-                  0.635,-1.00542 0.53975,-0.49741 1.23825,-0.49741 0.53975,0 1.0795,0.3175 z m 0,1.15358 -0.07408,-0.0423 q
-                  -0.116416,-0.0741 -0.232833,-0.10583 -0.116417,-0.0317 -0.232833,-0.0529 -0.486834,-0.0423 -0.783167,0.27517
-                  -0.28575,0.30691 -0.28575,0.96308 -0.01058,0.127 -0.02117,0.22225 0,0.0847 0,0.13758 0,0.22225 0.05292,0.58209
-                  0.05292,0.35983 0.296333,0.62441 0.243417,0.26459 0.624417,0.26459 0.275167,0 0.582083,-0.15875 l 0.07408,-0.0529 z"></path>
-                <path d="m 26.220996,220.27084 v -5.43983 l 1.524,-0.0952 v 0.4445 l 0.09525,-0.0741 q 0.518584,-0.40217 1.121834,-0.40217 l
-                  0.15875,0.0106 -0.137584,1.35467 -0.148166,-0.0212 q -0.07408,0 -0.15875,-0.0106 -0.08467,-0.0106 -0.127,-0.0106
-                  -0.15875,0 -0.264584,0.0212 -0.105833,0.0106 -0.34925,0.0847 l -0.09525,0.0318 -0.09525,0.0423 v 4.064 z"></path>
-                <path d="m 29.435521,220.27084 v -5.43983 l 1.524,-0.13758 v 5.57741 z m -0.07408,-6.97441 q 0,-0.39159 0.169333,-0.55034
-                  0.169333,-0.15875 0.645583,-0.15875 0.381,0 0.5715,0.0952 0.201084,0.0952 0.254,0.30692 0.05292,0.21167 0.05292,0.39158
-                  0,0.61384 -0.867833,0.61384 -0.486834,0 -0.656167,-0.14817 -0.169333,-0.14817 -0.169333,-0.55033 z"></path>
-                <path d="m 31.260318,214.83101 1.640417,-0.14817 0.836083,3.40784 0.07408,0.43391 0.03175,0.254 0.01058,0.15875
-                  0.03175,-0.21166 0.03175,-0.20109 0.07408,-0.43391 0.846666,-3.28084 h 1.524 l -1.608666,5.461 h -1.926167 z"></path>
-                <path d="m 41.158052,218.05893 h -2.973916 l 0.02117,0.16933 q 0.116417,0.48683 0.47625,0.762 0.370417,0.26458 0.973667,0.26458
-                  0.402166,0 0.878416,-0.13758 l 0.137584,-0.0423 0.116416,-0.0423 0.254,1.06892 -0.127,0.0423 -0.137583,0.0423 q
-                  -0.243417,0.0741 -0.455083,0.10583 -0.211667,0.0423 -0.433917,0.0635 -0.211667,0.0212 -0.359833,0.0212 -0.148167,0.0106
-                  -0.22225,0.0106 -1.3335,0 -2.074333,-0.73025 -0.73025,-0.74083 -0.73025,-2.11667 0,-1.23825 0.529166,-1.9685
-                  0.53975,-0.74083 1.132417,-0.81491 0.60325,-0.0741 0.814916,-0.0741 1.058334,0 1.629834,0.73025 0.582083,0.73025
-                  0.582083,2.14842 z m -3.14325,-0.94192 h 1.74625 l -0.01058,-0.30692 q 0,-0.48683 -0.243417,-0.762 -0.232833,-0.28575
-                  -0.582083,-0.28575 -0.1905,0 -0.402167,0.10584 -0.211666,0.0952 -0.359833,0.35983 -0.148167,0.26458 -0.148167,0.74083 z"></path>
-                <path d="m 41.868621,220.27084 v -5.43983 l 1.524,-0.0952 v 0.4445 l 0.09525,-0.0741 q 0.518584,-0.40217 1.121834,-0.40217 l
-                  0.15875,0.0106 -0.137584,1.35467 -0.148166,-0.0212 q -0.07408,0 -0.15875,-0.0106 -0.08467,-0.0106 -0.127,-0.0106
-                  -0.15875,0 -0.264584,0.0212 -0.105833,0.0106 -0.34925,0.0847 l -0.09525,0.0318 -0.09525,0.0423 v 4.064 z"></path>
-                <path d="m 48.131805,220.27084 v -7.60941 l 1.513417,-0.13759 v 7.747 z"></path>
-                <path d="m 53.47126,217.00059 v -0.40216 q 0,-0.41275 -0.20108,-0.59267 -0.20108,-0.17992 -0.71967,-0.17992 -0.0741,0
-                  -0.17991,0.0106 -0.0952,0.0106 -0.30692,0.0423 -0.21167,0.0212 -0.70908,0.16933 l -0.16934,0.0635 -0.34925,-1.10066
-                  0.22225,-0.0635 0.24342,-0.0635 q 0.1905,-0.0423 0.49742,-0.0952 0.30691,-0.0635 0.62441,-0.0952 1.44992,0
-                  2.00025,0.39158 0.56092,0.381 0.56092,1.38642 v 3.79941 h -1.43933 l -0.0741,-0.46566 -0.11641,0.10583 q -0.29634,0.23283
-                  -0.59267,0.35983 -0.28575,0.127 -0.61383,0.127 h -0.33867 q -0.67733,-0.0741 -1.10067,-0.53975 -0.41275,-0.46566
-                  -0.41275,-1.16416 0,-0.17992 0.0741,-0.635 0.0741,-0.45509 0.58208,-0.84667 0.508,-0.39158 1.34408,-0.39158 0.13759,0
-                  0.30692,0.0212 0.17992,0.0106 0.42333,0.0529 l 0.20109,0.0423 0.11641,0.0212 z m 0,0.74084 -0.11641,-0.0212
-                  -0.14817,-0.0106 q -0.0741,-0.0106 -0.21167,-0.0106 -0.42333,0 -0.6985,0.16934 -0.27516,0.15875 -0.32808,0.32808
-                  -0.0529,0.16933 -0.0635,0.24342 -0.0106,0.0741 -0.0106,0.13758 0,0.28575 0.1905,0.48683 0.20108,0.1905 0.51858,0.22225
-                  0.21167,0 0.381,-0.0317 0.16933,-0.0423 0.37042,-0.13758 l 0.11641,-0.0635 z"></path>
-                <path d="m 55.90394,220.27084 v -5.43983 l 1.50283,-0.13758 v 0.41275 l 0.11642,-0.0529 0.14816,-0.0741 q 0.64559,-0.3175
-                  1.23825,-0.3175 0.64559,0 1.05834,0.381 0.42333,0.381 0.47625,0.97366 l 0.0212,0.46567 v 3.78883 h -1.524 v -3.39725 l
-                  -0.0106,-0.23283 q 0,-0.70908 -0.68792,-0.70908 -0.24341,0 -0.49741,0.10583 l -0.14817,0.0741 -0.0952,0.0423
-                  -0.0847,0.0529 v 4.064 z"></path>
-                <path d="m 65.90073,218.05893 h -2.97392 l 0.0212,0.16933 q 0.11641,0.48683 0.47625,0.762 0.37041,0.26458 0.97366,0.26458
-                  0.40217,0 0.87842,-0.13758 l 0.13758,-0.0423 0.11642,-0.0423 0.254,1.06892 -0.127,0.0423 -0.13758,0.0423 q
-                  -0.24342,0.0741 -0.45509,0.10583 -0.21166,0.0423 -0.43391,0.0635 -0.21167,0.0212 -0.35984,0.0212 -0.14816,0.0106
-                  -0.22225,0.0106 -1.3335,0 -2.07433,-0.73025 -0.73025,-0.74083 -0.73025,-2.11667 0,-1.23825 0.52917,-1.9685
-                  0.53975,-0.74083 1.13241,-0.81491 0.60325,-0.0741 0.81492,-0.0741 1.05833,0 1.62983,0.73025 0.58209,0.73025
-                  0.58209,2.14842 z m -3.14325,-0.94192 h 1.74625 l -0.0106,-0.30692 q 0,-0.48683 -0.24341,-0.762 -0.23284,-0.28575
-                  -0.58209,-0.28575 -0.1905,0 -0.40216,0.10584 -0.21167,0.0952 -0.35984,0.35983 -0.14816,0.26458 -0.14816,0.74083 z"></path>
-              </g>
-            </g>
-          </svg>
-          <span class="visually-hidden">Driver Lane</span>
-        </a>
-      </div>
-      <div>Driver Lane &copy; 2020-2023</div>
-    </footer>
-    <script>
-      hljs.highlightAll();
-    </script>
+    </div>
   </body>
 </html>
