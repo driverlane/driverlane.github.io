@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="Description" content="Documentation for Ethel">
     <title>Ethel Docs</title>
-    <base href="/ethel/">
+    <base href="/">
     <link rel="icon" type="image/x-icon" href="favicon.ico">
     <link rel="stylesheet" href="assets/styles.css">
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.6.0/styles/default.min.css">
@@ -39,7 +39,7 @@
                 
               </li>
               <li>
-                <a href="pages/basic/running-ethel/">Running ethel</a>
+                <a href="pages/basic/deployment/">Deployment</a>
                 
               </li>
               <li>
@@ -50,11 +50,11 @@
           <p class="menu-label">Runner config</p>
           <ul class="menu-list">
               <li>
-                <a href="pages/runner-config/runners/">Runner types</a>
+                <a href="pages/runner-config/common-options/">Common options</a>
                 
               </li>
               <li>
-                <a href="pages/runner-config/common-options/">Common options</a>
+                <a href="pages/runner-config/runners/">Runner types</a>
                 
               </li>
               <li>
@@ -107,15 +107,19 @@
           <p class="menu-label">Development</p>
           <ul class="menu-list">
               <li>
+                <a href="pages/development/design/">Design</a>
+                
+              </li>
+              <li>
                 <a href="pages/development/repository/">Repository</a>
                 
               </li>
               <li>
-                <a href="pages/development/runners/">Runners</a>
+                <a href="pages/development/server/">Server</a>
                 
               </li>
               <li>
-                <a href="pages/development/architecture/">Architecture</a>
+                <a href="pages/development/runners/">Runners</a>
                 
               </li>
           </ul>
@@ -125,7 +129,7 @@
       <div class="section">
         <div class="container is-fluid">
           
-<h4 class="title is-4">Jobs and runs</h4>
+<h3 class="title is-3">Jobs and runs</h3>
 <div class="content">
 
   <ul>
@@ -135,13 +139,16 @@
     <li><a href="pages/basic/jobs/#schedule">Schedule</a></li>
   </ul>
 
-  <p id="job-config" class="subtitle is-5 docs-subhead">Job configuration</p>
+  <h4 id="job-config" class="title is-4 docs-subhead">Job configuration</h4>
+
   <p>A job contains a number of configuration options:</p>
+
   <ul>
     <li>id - the unique id for the job, automatically generated</li>
     <li>customer - an optional field to group multiple jobs</li>
-    <li>name - an optional field to name the job. A name is optional but highly recommended.</li>
-    <li>notifications - an option to notify people when the run hits a particular event, e.g. suspended, completed</li>
+    <li>name - <strong>mandatory</strong> a job name</li>
+    <li>notifications - an option to send notifyications when particular events occur, e.g. suspended, completed</li>
+    <li>itemsToProcess - how many items that will be processed by the job, used in status reporting</li>
     <li>runners - the runners that will be used in the job
       <ul>
         <li>extract - runners that do the extracting of information from the source system</li>
@@ -151,73 +158,74 @@
     </li>
     <li>schedule - an option for initiating runs at a specified time, including recurring initiation</li>
     <li>timeout - allows a run to wait for an update longer than the default five minutes</li>
+    <li>tags - an array of descriptive tags, yet to be formalised</li>
   </ul>
-  <p>Example job configuration</p>
-  <pre class="code">
-  {
-    "notifications": [],
-    "name": "File copy",
-    "runners": {
-      "extract": [
-        {
-          "type": "FileSystemExtractor",
-          "config": {
-            "extractRoot": "C:\\code\\test\\fs-extract"
-          }
-        }
-      ],
-      "load": [
-        {
-          "type": "FileSystemLoader",
-          "config": {
-            "loadRoot": "C:\\code\\test\\fs-load"
-          }
-        }
-      ]
-    },
-    "id": "bXnaYpDhMJ3-NLEDH_hZo"
-  }
-  </pre>
 
-  <p id="runners" class="subtitle is-5 docs-subhead">Runners</p>
-  <p>The section contains the runners used to complete the job. Runners are divided into extract and load sections. It
-    is
-    expected that runners focused on extracting data from source systems are added to the extract array and other
-    runners
-    are added to the load array. There is no particular functionality associated with these two arrays, but it is a
-    convention that helps report and visualise the status of a run.</p>
+  <p>Example job configuration</p>
+
+  <pre class="code">{
+  "id": "bXnaYpDhMJ3-NLEDH_hZo"
+  "name": "File copy",
+  "runners": {
+    "extract": [
+      {
+        "type": "FileSystemExtractor",
+        "config": {
+          "extractRoot": "C:\\code\\test\\fs-extract"
+        }
+      }
+    ],
+    "load": [
+      {
+        "type": "FileSystemLoader",
+        "config": {
+          "loadRoot": "C:\\code\\test\\fs-load"
+        }
+      }
+    ]
+  },
+}</pre>
+
+  <h4 id="runners" class="title is-4 docs-subhead">Runners</h4>
+
+  <p>Runners are divided into extract and load sections. As there is no functional difference between these arrays
+    the convention is that that runners focused on extracting data from source systems are added to the extract array
+    and other runners are added to the load array.</p>
   <p>More information on runner configuration is available <a href="pages/runner-config/runners/">here</a>.</p>
 
-  <p id="notifications" class="subtitle is-5 docs-subhead">Notifications</p>
-  <p>A job can define multiple notifications. A notification consists of the following:</p>
+  <h5 id="notifications" class="title is-5 docs-subhead">Notifications</h5>
+  <p>A job can have multiple notifications. A notification consists of the following:</p>
   <ul>
     <li>type - how the notification will be delivered, e.g. SMTP, Slack channel</li>
     <li>events - the events that will fire a notification, e.g. suspended, completed</li>
     <li>config - information needed to deliver the notification based on the type</li>
   </ul>
+
   <p>Example notification:</p>
-  <pre class="code">
-  "notifications": [
-    {
-      "type": "slack",
-      "config": {
-        "url": "https://hooks.slack.com/services/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"
-      },
-      "events": ["runSuspended"]
-    }
-  ],
-  </pre>
+  <pre class="code">"notifications": [
+  {
+    "type": "slack",
+    "config": {
+      "url": "https://hooks.slack.com/services/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"
+    },
+    "events": ["runSuspended"]
+  }
+],</pre>
+
   <p>Check the <a href="pages/basic/notifications">notifications</a> page for information on the currently supported
     events and notification types.</p>
 
-  <p id="schedule" class="subtitle is-5 docs-subhead">Schedule</p>
-  <p>The schedule attribute takes a standard cron pattern with a boolean attribute at the end to determine if it is
-    enabled.</p>
+  <h5 id="schedule" class="title is-5 docs-subhead">Schedule</h5>
+  <p>The schedule attribute allows defining a run scheduled in the future. The example below will create a run at 4am
+    every Monday morning.</p>
+
+  <pre class="code">"schedule":{"enabled": true,"cron":"0 4 * * 1"}</pre>
+
 </div>
         </div>
         <div class="container is-fluid dl-footer">
           <a href="https://driverlane.com.au">Driver Lane</a>
-          &copy; 2020-2024
+          &copy; 2020-2025
         </div>
       </div>
     </div>

@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="Description" content="Documentation for Ethel">
     <title>Ethel Docs</title>
-    <base href="/ethel/">
+    <base href="/">
     <link rel="icon" type="image/x-icon" href="favicon.ico">
     <link rel="stylesheet" href="assets/styles.css">
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.6.0/styles/default.min.css">
@@ -39,7 +39,7 @@
                 
               </li>
               <li>
-                <a href="pages/basic/running-ethel/">Running ethel</a>
+                <a href="pages/basic/deployment/">Deployment</a>
                 
               </li>
               <li>
@@ -50,11 +50,11 @@
           <p class="menu-label">Runner config</p>
           <ul class="menu-list">
               <li>
-                <a href="pages/runner-config/runners/">Runner types</a>
+                <a href="pages/runner-config/common-options/">Common options</a>
                 
               </li>
               <li>
-                <a href="pages/runner-config/common-options/">Common options</a>
+                <a href="pages/runner-config/runners/">Runner types</a>
                 
               </li>
               <li>
@@ -107,15 +107,19 @@
           <p class="menu-label">Development</p>
           <ul class="menu-list">
               <li>
+                <a href="pages/development/design/">Design</a>
+                
+              </li>
+              <li>
                 <a href="pages/development/repository/">Repository</a>
                 
               </li>
               <li>
-                <a href="pages/development/runners/">Runners</a>
+                <a href="pages/development/server/">Server</a>
                 
               </li>
               <li>
-                <a href="pages/development/architecture/">Architecture</a>
+                <a href="pages/development/runners/">Runners</a>
                 
               </li>
           </ul>
@@ -125,7 +129,7 @@
       <div class="section">
         <div class="container is-fluid">
           
-<p class="title is-4">File system runners</p>
+<h3 class="title is-3">File system runners</h3>
 <div class="content">
 
   <p>These runners are related to working with the file system:</p>
@@ -137,325 +141,426 @@
     <li><a href="pages/runner-config/file-system/#sp-to-fs">SPToFSTransformer</a></li>
   </ul>
 
-  <p id="fs-extractor" class="subtitle is-5 docs-subhead">FileSystemExtractor</p>
-  <p><a href="pages/runner-config/runner-status/"><span class="tag is-primary">Production</span></a></p>
+  <section>
 
-  <p>This runner extracts tasks from a file system. One task per document or directory. It has the following configuration options:</p>
-  <ul>
-    <li><code>batchConfig</code> <i>number | RunnerBatchConfig</i> - see <a href="pages/runner-config/common-options/#batches">batches</a> - needs a hashName value or it will be ignored</li>
-    <li><code>createDirectoryTasks</code> <i>boolean</i> - whether to create tasks for directories or not, defaults to true</li>
-    <li><code>extractRoot</code> <strong>mandatory</strong> <i>string</i> - path to the directory where extract will start</li>
-    <li><code>followSymLink</code> <i>boolean</i> - whether to use the target of a link object as the object or not, defaults to false</li>
-    <li><code>hashName</code> <i>string</i> - the lookup name for storing the source object hash</li>
-    <li><code>ignore</code> see <a href="pages/runner-config/common-options/#ignore">ignoring items</a>, by default objectTypes other than File are ignored and files with names '.DS_Store' or 'Thumbs.db', ignoring case</li>
-    <li><code>keepAliveCount</code> <i>number</i> - how often to save the extractor status, defaults to 1000 tasks created</li>
-    <li><code>quarantinedLookupName</code> <i>string</i> - the name for the quarantine lookup, defaults to quarantinedFileSystemExtractor</li>
-    <li><code>recursive</code> <i>boolean</i> - whether to extract from child directories, defaults to true</li>
-    <li><code>stagingProvider</code> <strong>mandatory</strong> <i>object</i> - the location where the document content is stored</li>
-  </ul>
-  <p>The extractor recognises the following object types: File, Directory, SymbolicLink and Unsupported.</p>
-  <hr>
-  <p>Example runner configuration:</p>
-  <pre class="code">
-  {
-    "type": "FileSystemExtractor",
-    "config": {
-      "batchConfig": 500,
-      "createDirectoryTasks": false,
-      "extractRoot": "C:\\data\finance-data",
-      "hashName": "prodFinanceMigration",
-      "ignore": {
-        "minSize": 350,
-        "name": ["system.ini"]
-      },
-      "quarantinedLookupName": "prodFinanceMigrationQuarantined"
-    }
-  }
-  </pre>
+    <h4 id="fs-extractor" class="title is-4 docs-subhead">FileSystemExtractor</h4>
+    <p><a href="pages/runner-config/runner-status/"><span class="tag is-primary">Production</span></a></p>
 
-  <p>It will raise the next task with the following message elements:</p>
-  <ul>
-    <li><code>extractId</code> an ID used to connect all runners to the source row</li>
-    <li><code>extractRoot</code> the directory where the extract started</li>
-    <li><code>item</code> information about the file or directory</li>
-    <li><code>quarantine</code> the lookup to add to quarantine the file</li>
-    <li><code>sourceFile</code> path of the file extracted</li>
-  </ul>
-  <p>Example message object for new task:</p>
-  <pre class="code">
-  {
-    "message": {
-      item: {
-        name: "built-file3.txt",
-        extension: ".txt",
-        path: "C:\\data\finance-data\\built-dir5\\built-dir4\\built-dir2\\built-dir4\\built-dir1\\built-file3.txt",
-        stats: {
-          dev: 3967843523,
-          mode: 33206,
-          nlink: 1,
-          uid: 0,
-          gid: 0,
-          rdev: 0,
-          blksize: 4096,
-          ino: 48132221017659290,
-          size: 59,
-          blocks: 0,
-          atimeMs: 1683609498896.2495,
-          mtimeMs: 1680502568908.2917,
-          ctimeMs: 1680502568908.2917,
-          birthtimeMs: 1681442581303.0498,
-          atime: "2023-05-09T05:18:18.896Z",
-          mtime: "2023-04-03T06:16:08.908Z",
-          ctime: "2023-04-03T06:16:08.908Z",
-          birthtime: "2023-04-14T03:23:01.303Z",
-        },
-        isDirectory: false,
-      },
-      extractId: "ef15711093fce44857f960c27f239414ee7beaaa",
-      sourceFile: "C:\\data\finance-data\\built-dir5\\built-dir4\\built-dir2\\built-dir4\\built-dir1\\built-file3.txt",
-      extractRoot: "C:\\data\finance-data",
-      quarantine: {
-        name: "prodFinanceMigrationQuarantined",
-        key: "ef15711093fce44857f960c27f239414ee7beaaa",
-        value: "C:\\data\finance-data\\built-dir5\\built-dir4\\built-dir2\\built-dir4\\built-dir1\\built-file3.txt",
-      },
-    }
-  }
-  </pre>
+    <p>This runner extracts items from a file system. One task per document or directory</p>
 
+    <h5 class="title is-5">Configuration options</h5>
 
-  <p id="fs-loader" class="subtitle is-5 docs-subhead">FileSystemLoader</p>
-  <p><a href="pages/runner-config/runner-status/"><span class="tag is-primary">Production</span></a></p>
+    <table class="table is-fullwidth">
+      <thead>
+        <th>Option</th>
+        <th>Data type</th>
+        <th>Default</th>
+        <th>Description</th>
+      </thead>
+      <tbody>
+        <tr>
+          <td>addSummary</td>
+          <td>boolean</td>
+          <td><code>false</code></td>
+          <td>Whether to capture detailed information about the extract location</td>
+        </tr>
+        <tr>
+          <td>batchConfig</td>
+          <td>number | BatchConfig, <strong>mandatory</strong></td>
+          <td>none</td>
+          <td>See <a href="pages/runner-config/common-options/#batches">batches</a></td>
+        </tr>
+        <tr>
+          <td>cancelCheckNumber</td>
+          <td>number</td>
+          <td><code>100</code></td>
+          <td>How often, in tasks raised, to check if the extract should be cancelled</td>
+        </tr>
+        <tr>
+          <td>extractRoot</td>
+          <td>string | string[], <strong>mandatory</strong></td>
+          <td>none</td>
+          <td>Path to the directory or directories where extract starts.</td>
+        </tr>
+        <tr>
+          <td>followSymLink</td>
+          <td>boolean</td>
+          <td><code>false</code></td>
+          <td>Whether to use the target of a link object as the object or not</td>
+        </tr>
+        <tr>
+          <td>hashName</td>
+          <td>string, <strong>mandatory</strong></td>
+          <td>none</td>
+          <td>The lookup name used to store the extract hash</td>
+        </tr>
+        <tr>
+          <td>ignore</td>
+          <td>object</td>
+          <td><code>name: [{ names: ['.DS_Store', 'Thumbs.db', '~$'], caseSensitive: false }],
+            <br>objectTypes: ['Directory', 'SymbolicLink', 'Unsupported'],</code>
+          </td>
+          <td>See <a href="pages/runner-config/common-options/#ignore">ignore items</a>. This runner only supports file
+            system based ignore options.<br>Object types are <code>File</code>,
+            <code>Directory</code>,
+            <code>SymbolicLink</code> and <code>Unsupported</code>.
+          </td>
+        </tr>
+        <tr>
+          <td>quarantinedLookupName</td>
+          <td>string</td>
+          <td><code>quarantinedFileSystemExtractor</code></td>
+          <td>Name value for the quarantine lookup</td>
+        </tr>
+        <tr>
+          <td>recursive</td>
+          <td>boolean</td>
+          <td><code>true</code></td>
+          <td>Whether to extract the root folder descendants</td>
+        </tr>
+        <tr>
+          <td>stagingProvider</td>
+          <td>any</td>
+          <td>none</td>
+          <td>The configuration details for the storage provider</td>
+        </tr>
+      </tbody>
+    </table>
+    <hr>
 
-  <p>This runner copies a file from a file sytem path to a different path. It has the following configuration options:</p>
-  <ul>
-    <li><code>addHash</code> <i>boolean</i> - whether to add the currentHash lookup, defaults to true</li>
-    <li><code>loadItem</code> <i>string</i> - the message attribute containing the FSLoadItem details, defaults to loadItem</li>
-    <li><code>overwrite</code> <i>boolean</i> - whether to overwrite any target file, defaults to false</li>
-  </ul>
-  <p>It uses the following message attributes:</p>
-  <ul>
-    <li><code>loadItem</code> <strong>mandatory</strong> <i>FSLoadItem</i> - the information used by the loader to create the item</li>
-  </ul>
-  <p>Message attribute names can be changed in the config section.</p>
-  <hr>
-  <p>Example runner and message configuration:</p>
-  <pre class="code">
-  {
-    "name": "Test migration",
-    "runner": {
-      "type": "FileSystemLoader",
-    },
-    "runners": {
-      "extract": [
-        {
-          "type": "FileSystemExtractor",
-          "config": {
-            "extractRoot": "C:\\code\\test\\fs-extract",
-          }
-        }
-      ],
-      "load": [
-        {
-          "type": "FileSystemLoader",
-        }
-      ]
-    },
-    "message": {
-      "sourceFile": "C:\\code\\test\\fs-staging\\data.txt",
-      "loadPath": "C:\\code\\test\\fs-extract-small\\built-dir1\\built-file1.txt",
-    }
-    "id": "6UQtP8-CdXAMg_GQCOSLd"
-  }
-  </pre>
-  <p>It will raise the next task with the existing message</p>
+    <h5 class="title is-5">Message attributes</h5>
 
-  <p id="fs-fs" class="subtitle is-5 docs-subhead">FSToFSTransformer</p>
-  <p><a href="pages/runner-config/runner-status/"><span class="tag is-link">Developed</span></a></p>
+    <p>It adds the following attributes to the message object of raised tasks:</p>
+    <ul>
+      <li><code>extractItem</code> information about the extracted item</li>
+      <li><code>quarantine</code> the lookup to add to quarantine the file</li>
+      <li><code>sourceFile</code> the extracted file information</li>
+    </ul>
+    <hr>
 
-  <p>This runner will transform file system objects into file system objects on another path. This runner assumes the message was created by the FileSystemExtractor. It has the following configuration options:</p>
-  <ul>
-    <li><code>extractRoot</code> <i>string</i> - the message attribute containing the path to the directory where extraction starts, defaults to extractRoot</li>
-    <li><code>item</code> <i>object</i> - the message attribute containing the file system object, defaults to item</li>
-    <li><code>loadRoot</code> <strong>mandatory</strong> <i>string</i> - the path to the directory where loading starts</li>
-    <li><code>sourceFile</code> <i>string</i> - the message attribute containing the file to be loaded, defaults to sourceFile</li>
-  </ul>
-  <p>It uses the following message attributes:</p>
-  <ul>
-    <li><code>extractRoot</code> <strong>mandatory</strong> <i>number</i> - path to the directory where extraction started</li>
-    <li><code>item</code> <strong>mandatory</strong> <i>object</i> - the file system object</li>
-    <li><code>sourceFile</code> <i>string | StagedFile</i> - the file to be added, either path or StagedFile object</li>
-  </ul>
-  <p>Message attribute names can be changed in the config section.</p>
-  <hr>
-  <p>Example runner configuration:</p>
-  <pre class="code">
-  {
-    "type": "FSToFSTransformer",
-    "config": {
-      "loadRoot": "C:\\data\finance-data\\",
-    },
-    "message": {
-      "item": {
-        "path": "C:\\code\\test\\fs-extract\\built-dir5\\built-dir4\\built-file3.txt",
-        ...
-      },
-      "extractRoot": "C:\\code\\test\\fs-extract"
-    }
-  }
-  </pre>
+  </section>
 
-  <p>It will raise the next task with the following message elements:</p>
-  <ul>
-    <li><code>loadPath</code> the path where the file or directory is created</li>
-  </ul>
-  <p>Example message object for new task:</p>
-  <pre class="code">
-  {
-    "message": {
-      "loadPath": "C:\\data\finance-data\\built-dir1\\built-file1.txt",
-    }
-  }
-  </pre>
-  
-  <p id="otcs-to-fs" class="subtitle is-5 docs-subhead">OTCSToFSTransformer</p>
-  <p><a href="pages/runner-config/runner-status/"><span class="tag is-link">Developed</span></a></p>
+  <section>
 
-  <p>This runner will transform the task message for the FileSystemLoader:</p>
-  <ul>
-    <li><code>appendVersionToFileName</code> <i>boolean</i> - whether to append the version number before the file extension, defaults to false</li>
-    <li><code>createMetadataFile</code> <i>boolean</i> - whether to create a file with the OTCS metadata, defaults to false</li>
-    <li><code>createShortcutFile</code> <i>boolean</i> - whether to create a file with the path to the shortcut target, defaults to false</li>
-    <li><code>extractRoot</code> <i>string </i> - the message attribute containing the id of where the extract started, defaults to extractRoot</li>
-    <li><code>loadRoot</code> <strong>mandatory</strong> <i>boolean</i> - the path to the directory where loading starts</li>
-    <li><code>node</code> <i>string </i> - the message attribute containing the Content Server object, defaults to node</li>
-    <li><code>sourceFile</code> <i>string | object</i> - the message attribute containing the file to be loaded, defaults to sourceFile</li>
-  </ul>
-  <p>It uses the following message attributes:</p>
-  <ul>
-    <li><code>extractRoot</code> <strong>mandatory</strong> <i>number</i> - the id of where the extract started</li>
-    <li><code>node</code> <strong>mandatory</strong> <i>object</i> - the Content Server object</li>
-    <li><code>sourceFile</code> <i>string | StagedFile</i> - the file to be added, either path or StagedFile object</li>
-  </ul>
-  <p>Message attribute names can be changed in the config section.</p>
-  <hr>
-  <p>Example runner and message configuration:</p>
-  <pre class="code">
-  {
-    "name": "Test migration",
-    "runner": {
-      "type": "OTCSToFSTransformer",
-      "config": {
-        "loadRoot": "E:\\code\\test\\otcs-to-fs\\"
-      }
-    },
-    "runners": {...},
-    "message": {
-      "extractRoot": "5707",
-      "node": {...},
-      "sourceFile": [
-        {
-          "provider": {
-            "type": "FileSystem",
-            "path": "E:\\code\\test\\otcs-staging",
-          },
-          "id": "QMSRzo6-OLqikE6Kn0_d4",
-          "filename": "built-file1.txt",
-          "mimeType": "text/plain;charset=utf-8",
-        },
-      ]
-    }
-    "id": "6UQtP8-CdXAMg_GQCOSLd"
-  }
-  </pre>
+    <h4 id="fs-loader" class="title is-4 docs-subhead">FileSystemLoader</h4>
+    <p><a href="pages/runner-config/runner-status/"><span class="tag is-primary">Production</span></a></p>
 
-  <p>It populates the following attributes in the new tasks it creates:</p>
-  <ul>
-    <li><code>loadPath</code> the path where the file is copied</li>
-  </ul>
-  <pre class="code">
-  {
-    "message": {
-      ...
-      "loadPath": "E:\\otcs-extract\\built-file1.txt",
-      ...
-    }
-  }
-  </pre>
+    <p>This runner adds a file to the specified file path</p>
 
-  
-  <p id="sp-to-fs" class="subtitle is-5 docs-subhead">SPToFSTransformer</p>
-  <p><a href="pages/runner-config/runner-status/"><span class="tag is-link">Developed</span></a></p>
+    <h5 class="title is-5">Configuration options</h5>
 
-  <p>This runner will transform the task message for the FileSystemLoader:</p>
-  <ul>
-    <li><code>appendVersionToFileName</code> <i>boolean</i> - whether to append the version number before the file extension, defaults to false</li>
-    <li><code>createMetadataFile</code> <i>boolean</i> - whether to create a file with the OTCS metadata, defaults to false</li>
-    <li><code>item</code> <i>object</i> - the message attribute containing the SharePoint object, defaults to item</li>
-    <li><code>listName</code> <i>string</i> - the message attribute with the list name, defaults to listName</li>
-    <li><code>loadRoot</code> <strong>mandatory</strong> <i>boolean</i> - the path to the directory where loading starts</li>
-    <li><code>siteRelativeUrl</code> <i>string</i> - the message attribute with the siteRelativeUrl, defaults to siteRelativeUrl</li>
-    <li><code>sourceFile</code> <i>string | StagedFile</i> - the file to be added, either path or StagedFile object</li>
-  </ul>
-  <p>It uses the following message attributes:</p>
-  <ul>
-    <li><code>item</code> <strong>mandatory</strong> <i>object</i> - the SharePoint object</li>
-    <li><code>listName</code> <strong>mandatory</strong> <i>string</i> - the list name, i.e. the name from the URL, not the title</li>
-    <li><code>siteRelativeUrl</code> <strong>mandatory</strong> <i>string</i> - the URL to the site, minus the host name</li>
-    <li><code>sourceFile</code> <i>string | StagedFile</i> - the file to be added, either path or StagedFile object</li>
-  </ul>
-  <p>Message attribute names can be changed in the config section.</p>
-  <hr>
-  <p>Example runner and message configuration:</p>
-  <pre class="code">
-  {
-    "name": "Test migration",
-    "runner": {
-      "type": "OTCSToFSTransformer",
-      "config": {
-        "loadRoot": "E:\\code\\test\\otcs-to-fs\\"
-      }
-    },
-    "runners": {...},
-    "message": {
-      "item": {...},
-      "siteRelativeUrl": "/sites/ethel-test/",
-      "listName": "Shared Documents",
-      "sourceFile": [
-        {
-          "provider": {
-            "type": "FileSystem",
-            "path": "E:\\code\\test\\otcs-staging",
-          },
-          "id": "QMSRzo6-OLqikE6Kn0_d4",
-          "filename": "built-file1.txt",
-          "mimeType": "text/plain;charset=utf-8",
-        },
-      ]
-    }
-    "id": "6UQtP8-CdXAMg_GQCOSLd"
-  }
-  </pre>
+    <table class="table is-fullwidth">
+      <thead>
+        <th>Option</th>
+        <th>Data type</th>
+        <th>Default</th>
+        <th>Description</th>
+      </thead>
+      <tbody>
+        <tr>
+          <td>addHash</td>
+          <td>boolean</td>
+          <td><code>true</code></td>
+          <td>Whether to save the extractHash lookup</td>
+        </tr>
+        <tr>
+          <td>handleExisting</td>
+          <td>string</td>
+          <td><code>error</code></td>
+          <td>This runner supports three options:
+            <ul>
+              <li><code>complete</code> - complete the task and add the hash</li>
+              <li><code>error</code> - throw an error, this is the default option</li>
+              <li><code>overwrite</code> - overwrite the existing file with the newly extracted file</li>
+            </ul>
+          </td>
+        </tr>
+        <tr>
+          <td>loadItem</td>
+          <td>string</td>
+          <td><code>loadItem</code></td>
+          <td>The message attribute that contains the FSLoadItem object</td>
+        </tr>
+      </tbody>
+    </table>
+    <hr>
 
-  <p>It populates the following attributes in the new tasks it creates:</p>
-  <ul>
-    <li><code>loadPath</code> the path where the file is copied</li>
-  </ul>
-  <pre class="code">
-  {
-    "message": {
-      ...
-      "loadPath": "E:\\otcs-extract\\built-file1.txt",
-      ...
-    }
-  }
-  </pre>
+    <h5 class="title is-5">Message attributes</h5>
+
+    <table class="table is-fullwidth">
+      <thead>
+        <th>Option</th>
+        <th>Data type</th>
+        <th>Description</th>
+      </thead>
+      <tbody>
+        <tr>
+          <td>extractHash</td>
+          <td>Lookup</td>
+          <td>The current extract hash object</td>
+        </tr>
+        <tr>
+          <td>loadItem, <strong>mandatory</strong></td>
+          <td>FSLoadItem</td>
+          <td>The information used by the loader to create the item.</td>
+        </tr>
+      </tbody>
+    </table>
+    <p>Message attribute names can be changed in the configuration options.</p>
+    <p>This runner does not change the message object.</p>
+    <hr>
+
+  </section>
+
+  <section>
+
+    <h4 id="fs-fs" class="title is-4 docs-subhead">FSToFSTransformer</h4>
+    <p><a href="pages/runner-config/runner-status/"><span class="tag is-info">Tested</span></a></p>
+
+    <p>This runner will transform file system extract items into file system load items on another path. This runner
+      assumes the message was created by the FileSystemExtractor</p>
+
+    <h5 class="title is-5">Configuration options</h5>
+
+    <table class="table is-fullwidth">
+      <thead>
+        <th>Option</th>
+        <th>Data type</th>
+        <th>Default</th>
+        <th>Description</th>
+      </thead>
+      <tbody>
+        <tr>
+          <td>loadRoot, <strong>mandatory</strong></td>
+          <td>number</td>
+          <td>none</td>
+          <td>The path to the directory where loading starts.</td>
+        </tr>
+      </tbody>
+    </table>
+    <hr>
+
+    <h5 class="title is-5">Message attributes</h5>
+
+    <table class="table is-fullwidth">
+      <thead>
+        <th>Option</th>
+        <th>Data type</th>
+        <th>Description</th>
+      </thead>
+      <tbody>
+        <tr>
+          <td>extractItem, <strong>mandatory</strong></td>
+          <td>Lookup</td>
+          <td>The FSExtractItem object.</td>
+        </tr>
+        <tr>
+          <td>sourceFile</td>
+          <td>string | SourceFile</td>
+          <td>The extracted file information</td>
+        </tr>
+      </tbody>
+    </table>
+    <p>It adds the following attributes to the message object:</p>
+    <ul>
+      <li><code>loadItem</code> the FSLoadItem object</li>
+    </ul>
+    <hr>
+
+  </section>
+
+  <section>
+
+    <h4 id="otcs-to-fs" class="title is-4 docs-subhead">OTCSToFSTransformer</h4>
+    <p><a href="pages/runner-config/runner-status/"><span class="tag is-primary">Production</span></a></p>
+
+    <p>This runner will transform the message object for the FileSystemLoader</p>
+
+    <h5 class="title is-5">Configuration options</h5>
+
+    <table class="table is-fullwidth">
+      <thead>
+        <th>Option</th>
+        <th>Data type</th>
+        <th>Default</th>
+        <th>Description</th>
+      </thead>
+      <tbody>
+        <tr>
+          <td>addHash</td>
+          <td>boolean</td>
+          <td><code>true</code></td>
+          <td>Whether to add the hash for shortcuts</td>
+        </tr>
+        <tr>
+          <td>appendVersionToFileName</td>
+          <td>boolean</td>
+          <td><code>false</code></td>
+          <td>Whether to append the version number before the file extension</td>
+        </tr>
+        <tr>
+          <td>createMetadataFile</td>
+          <td>boolean</td>
+          <td><code>false</code></td>
+          <td>Whether to create a file with the OTCS metadata</td>
+        </tr>
+        <tr>
+          <td>createShortcutFile</td>
+          <td>boolean</td>
+          <td><code>false</code></td>
+          <td>Whether to create a file with the path to the shortcut target</td>
+        </tr>
+        <tr>
+          <td>extractItem</td>
+          <td>string</td>
+          <td><code>extractItem</code></td>
+          <td>The message attribute with the CSNode object</td>
+        </tr>
+        <tr>
+          <td>loadRoot</td>
+          <td>number, <strong>mandatory</strong></td>
+          <td>none</td>
+          <td>The path to the directory where loading starts.</td>
+        </tr>
+        <tr>
+          <td>sourceFile</td>
+          <td>string</td>
+          <td><code>sourceFile</code></td>
+          <td>The message attribute with the extracted file information</td>
+        </tr>
+      </tbody>
+    </table>
+    <hr>
+
+    <h5 class="title is-5">Message attributes</h5>
+
+    <table class="table is-fullwidth">
+      <thead>
+        <th>Option</th>
+        <th>Data type</th>
+        <th>Description</th>
+      </thead>
+      <tbody>
+        <tr>
+          <td>extractItem, <strong>mandatory</strong></td>
+          <td>Lookup</td>
+          <td>The FSExtractItem object.</td>
+        </tr>
+        <tr>
+          <td>sourceFile</td>
+          <td>SourceFile[]</td>
+          <td>The extracted file information</td>
+        </tr>
+      </tbody>
+    </table>
+    <p>Message attribute names can be changed in the configuration options.</p>
+
+    <p>It adds the following attributes to the message object:</p>
+    <ul>
+      <li><code>loadItem</code> the FSLoadItem object</li>
+    </ul>
+    <hr>
+
+  </section>
+
+  <section>
+
+    <h4 id="sp-to-fs" class="title is-4 docs-subhead">SPToFSTransformer</h4>
+    <p><a href="pages/runner-config/runner-status/"><span class="tag is-link">Developed</span></a></p>
+
+    <p>This runner will transform the message object for the FileSystemLoader</p>
+
+    <h5 class="title is-5">Configuration options</h5>
+
+    <table class="table is-fullwidth">
+      <thead>
+        <th>Option</th>
+        <th>Data type</th>
+        <th>Default</th>
+        <th>Description</th>
+      </thead>
+      <tbody>
+        <tr>
+          <td>appendVersionToFileName</td>
+          <td>boolean</td>
+          <td><code>false</code></td>
+          <td>Whether to append the version number before the file extension</td>
+        </tr>
+        <tr>
+          <td>createMetadataFile</td>
+          <td>boolean</td>
+          <td><code>false</code></td>
+          <td>Whether to create a file with the OTCS metadata</td>
+        </tr>
+        <tr>
+          <td>extractItem</td>
+          <td>string</td>
+          <td><code>extractItem</code></td>
+          <td>The message attribute with the SharePoint object</td>
+        </tr>
+        <tr>
+          <td>extractRoot</td>
+          <td>string</td>
+          <td><code>extractRoot</code></td>
+          <td>The message attribute with with the configuration used for the extract item</td>
+        </tr>
+        <tr>
+          <td>loadRoot</td>
+          <td>number, <strong>mandatory</strong></td>
+          <td>none</td>
+          <td>The path to the directory where loading starts</td>
+        </tr>
+        <tr>
+          <td>sourceFile</td>
+          <td>string</td>
+          <td><code>sourceFile</code></td>
+          <td>The message attribute with the extracted file information</td>
+        </tr>
+      </tbody>
+    </table>
+    <hr>
+
+    <h5 class="title is-5">Message attributes</h5>
+
+    <table class="table is-fullwidth">
+      <thead>
+        <th>Option</th>
+        <th>Data type</th>
+        <th>Description</th>
+      </thead>
+      <tbody>
+        <tr>
+          <td>item, <strong>mandatory</strong></td>
+          <td>any</td>
+          <td>The SharePoint object.</td>
+        </tr>
+        <tr>
+          <td>listUrl, <strong>mandatory</strong></td>
+          <td>string</td>
+          <td>The SharePoint object.</td>
+        </tr>
+        <tr>
+          <td>sourceFile</td>
+          <td>StagedFile[]</td>
+          <td>The extracted file information</td>
+        </tr>
+      </tbody>
+    </table>
+    <p>Message attribute names can be changed in the configuration options.</p>
+
+    <p>It adds the following attributes to the message object:</p>
+    <ul>
+      <li><code>loadPath</code> the path where the file is copied</li>
+    </ul>
+    <hr>
+
+  </section>
 
 </div>
         </div>
         <div class="container is-fluid dl-footer">
           <a href="https://driverlane.com.au">Driver Lane</a>
-          &copy; 2020-2024
+          &copy; 2020-2025
         </div>
       </div>
     </div>

@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="Description" content="Documentation for Ethel">
     <title>Ethel Docs</title>
-    <base href="/ethel/">
+    <base href="/">
     <link rel="icon" type="image/x-icon" href="favicon.ico">
     <link rel="stylesheet" href="assets/styles.css">
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.6.0/styles/default.min.css">
@@ -39,7 +39,7 @@
                 
               </li>
               <li>
-                <a href="pages/basic/running-ethel/">Running ethel</a>
+                <a href="pages/basic/deployment/">Deployment</a>
                 
               </li>
               <li>
@@ -50,11 +50,11 @@
           <p class="menu-label">Runner config</p>
           <ul class="menu-list">
               <li>
-                <a href="pages/runner-config/runners/">Runner types</a>
+                <a href="pages/runner-config/common-options/">Common options</a>
                 
               </li>
               <li>
-                <a href="pages/runner-config/common-options/">Common options</a>
+                <a href="pages/runner-config/runners/">Runner types</a>
                 
               </li>
               <li>
@@ -107,15 +107,19 @@
           <p class="menu-label">Development</p>
           <ul class="menu-list">
               <li>
+                <a href="pages/development/design/">Design</a>
+                
+              </li>
+              <li>
                 <a href="pages/development/repository/">Repository</a>
                 
               </li>
               <li>
-                <a href="pages/development/runners/">Runners</a>
+                <a href="pages/development/server/">Server</a>
                 
               </li>
               <li>
-                <a href="pages/development/architecture/">Architecture</a>
+                <a href="pages/development/runners/">Runners</a>
                 
               </li>
           </ul>
@@ -125,7 +129,7 @@
       <div class="section">
         <div class="container is-fluid">
           
-<p class="title is-4">Core for Success Factors runners</p>
+<h3 class="title is-3">Core for Success Factors runners</h3>
 <div class="content">
 
   <p>These runners are related to working with Core for Success Factors.</p>
@@ -135,69 +139,121 @@
     <li><a href="pages/runner-config/file-system/#docssf-loader">DocPipelinesSSFLoader</a></li>
   </ul>
 
-  <p id="coresf-loader" class="subtitle is-5 docs-subhead">CoreSFLoader</p>
-  <p><a href="pages/runner-config/runner-status/"><span class="tag is-primary">Production</span></a></p>
+  <section class="CoreSFLoader">
 
-  <p>This runner will load objects into Core for Success Factors. It has the following configuration options:</p>
-  <ul>
-    <li><code>addHash</code> <i>boolean</i> - whether to add the currentHash lookup, defaults to true</li>
-    <li><code>checkDocType</code> <i>boolean</i> - whether to check if the document type exists before uploading the document, defaults to false</li>
-    <li><code>connection</code> <strong>mandatory</strong> <i>object</i> - the ID of the container where objects are loaded</li>
+    <h4 id="coresf-loader" class="title is-4 docs-subhead">CoreSFLoader</h4>
+    <p><a href="pages/runner-config/runner-status/"><span class="tag is-primary">Production</span></a></p>
+
+    <p>This runner will load objects into Core for Success Factors</p>
+
+    <h5 class="title is-5">Configuration options</h5>
+
+    <table class="table is-fullwidth">
+      <thead>
+        <th>Attribute</th>
+        <th>Data type</th>
+        <th>Default</th>
+        <th>Description</th>
+      </thead>
+      <tbody>
+        <tr>
+          <td>addHash</td>
+          <td>boolean</td>
+          <td><code>true</code></td>
+          <td>Whether to save the extractHash lookup</td>
+        </tr>
+        <tr>
+          <td>checkDocType</td>
+          <td>boolean</td>
+          <td><code>false</code></td>
+          <td>Whether to check if the document type exists before uploading the document</td>
+        </tr>
+        <tr>
+          <td>connection</td>
+          <td>LookupDetails, <strong>mandatory</strong></td>
+          <td>none</td>
+          <td>The name and key to the lookup with the Core connection details.</td>
+        </tr>
+        <tr>
+          <td>workspaceSearchField</td>
+          <td>string</td>
+          <td><code>sf_person_information:user_id</code></td>
+          <td>The field used in the employee workspace search</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p>The connection object should contain:</p>
     <ul>
-      <li>authHost - server that provides authentication</li>
-      <li>contentHost - server that provides content functionality</li>
-      <li>subscriptionName - subscription name for the Core subscription</li>
-      <li>tenantId - tenant ID for the subscription</li>
-      <li>userId - user id from the API credentials for the Core subscription</li>
-      <li>userSecret - user secret from the API credentials for the Core subscription</li>
+      <li><code>authHost</code> - server that provides authentication</li>
+      <li><code>contentHost</code> - server that provides content functionality</li>
+      <li><code>subscriptionName</code> - subscription name for the Core subscription</li>
+      <li><code>tenantId</code> - tenant ID for the subscription</li>
+      <li><code>userId</code> - user id from the API credentials for the Core subscription</li>
+      <li><code>userSecret</code> - user secret from the API credentials for the Core subscription</li>
     </ul>
-    <li><code>logOnly</code> <i>boolean</i> - whether to only log the actions without creating the files, defaults to false</li>
-    <li><code>timings</code> <i>boolean</i> - whether to log the http timings or not, defaults to false</li>
-    <li><code>workspaceSearchField</code> <i>string</i> - the field used in the employee workspace search, defaults to sf_person_information:user_id</li>
-  </ul>
-  <p>It expects the following attributes in the message object, these can be remapped in the config attributes:</p>
-  <ul>
-    <li><code>sourceFile</code> <i>string</i> - the message attribute containing the path to the file to upload, defaults to sourceFile</li>
-    <li><code>docDate</code> <i>string</i> - the message attribute containing creation date for the uploaded document, defaults to docDate</li>
-    <li><code>docType</code> <i>string</i> - the message attribute containingthe document type for the uploaded document, defaults to docType</li>
-    <li><code>employeeId</code> <i>string</i> - the message attribute containing the value used to find the workspace id, defaults to employeeId</li>
-  </ul>
-  <p>It populates the following attributes in the new tasks it creates:</p>
-  <ul>
-    <li><code>message.coreSFLoaderComplete</code> the date and time the task is completed</li>
-  </ul>
+    <hr>
 
-  <p id="docssf-loader" class="subtitle is-5 docs-subhead">DocPipelinesSSFLoader</p>
-  <p><a href="pages/runner-config/runner-status/"><span class="tag is-danger">Deprecated</span></a></p>
+    <h5 class="title is-5">Message attributes</h5>
 
-  <p>The Document Pipelines integration to Core for Success Factors was full of errors when this was first created. The
-    problems were eventually resolved, but in the time we were waiting we wrote the API based runner and would recommend
-    using that instead. Doc Pipelines also has problems around multi-thread logging that make it a challenge when it
-    comes to reporting so should be avoided unless there is no other option.</p>
-  <p>This runner isn't in the standard ethel repo, it's kept in the lifeblood-migration repo on Github.</p>
-  <p>This runner will create upload directories and files for the Document Pipelines Success Factors integration. It has the following configuration options:</p>
-  <ul>
-    <li><code>addHash</code> <i>boolean</i> - whether to add the currentHash lookup, defaults to false</li>
-    <li><code>copyFile</code> <i>boolean</i> - whether to copy or move the file to the target location, defaults to true</li>
-    <li><code>loadLocation</code> <strong>mandatory</strong> <i>string</i> - the path to the directory where the uploads are staged</li>
-    <li><code>logOnly</code> <i>boolean</i> - whether to only log the actions without creating the files, defaults to false</li>
-  </ul>
-  <p>It expects the following attributes in the message object, these can be remapped in the config attributes:</p>
-  <ul>
-    <li><code>attributesFile</code> <i>string</i> - the message attribute containing the path to the attributes file, defaults to attributesFile</li>
-    <li><code>commands</code> <i>string array</i> - the message attribute containing the commands to be written to file, defaults to commands</li>
-    <li><code>sourceFile</code> <i>string</i> - the message attribute containing the path to the file to upload, defaults to sourceFile</li>
-  </ul>
-  <p>It populates the following attributes in the new tasks it creates:</p>
-  <ul>
-    <li><code>message.docPipelinesSSFLoaderComplete</code> the date and time the task is completed</li>
-  </ul>
+    <table class="table is-fullwidth">
+      <thead>
+        <th>Option</th>
+        <th>Data type</th>
+        <th>Description</th>
+      </thead>
+      <tbody>
+        <tr>
+          <td>docDate, <strong>mandatory</strong></td>
+          <td>string</td>
+          <td>The date for the document.</td>
+        </tr>
+        <tr>
+          <td>docType, <strong>mandatory</strong></td>
+          <td>string</td>
+          <td>The document type.</td>
+        </tr>
+        <tr>
+          <td>employeeId, <strong>mandatory</strong></td>
+          <td>number</td>
+          <td>The employeeId.</td>
+        </tr>
+        <tr>
+          <td>sourceFile, <strong>mandatory</strong></td>
+          <td>SourceFile</td>
+          <td>The extracted file information.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p>It adds the following attributes to the message object:</p>
+    <ul>
+      <li><code>outcome</code> the outcome of the file upload</li>
+      <li><code>workspaceId</code> the id number of the workspace where the file was uploaded</li>
+    </ul>
+    <hr>
+
+  </section>
+
+  <section class="DocPipelinesSSFLoader">
+
+    <p id="docssf-loader" class="title is-4 docs-subhead">DocPipelinesSSFLoader</p>
+    <p><a href="pages/runner-config/runner-status/"><span class="tag is-danger">Deprecated</span></a></p>
+
+    <p>The Document Pipelines integration to Core for Success Factors was full of errors when this was first created.
+      The problems were eventually resolved, but in the time we were waiting we wrote the API based runner and would
+      recommend using that instead.</p>
+    <p>Pipelines also has problems with logging when running multi-thread. It's impossible to determine which thread the
+      log comes from.</p>
+    <p>This runner is stored in a repository on Github.</p>
+
+  </section>
 
 </div>
         </div>
         <div class="container is-fluid dl-footer">
           <a href="https://driverlane.com.au">Driver Lane</a>
-          &copy; 2020-2024
+          &copy; 2020-2025
         </div>
       </div>
     </div>

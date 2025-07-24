@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="Description" content="Documentation for Ethel">
     <title>Ethel Docs</title>
-    <base href="/ethel/">
+    <base href="/">
     <link rel="icon" type="image/x-icon" href="favicon.ico">
     <link rel="stylesheet" href="assets/styles.css">
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.6.0/styles/default.min.css">
@@ -39,7 +39,7 @@
                 
               </li>
               <li>
-                <a href="pages/basic/running-ethel/">Running ethel</a>
+                <a href="pages/basic/deployment/">Deployment</a>
                 
               </li>
               <li>
@@ -50,11 +50,11 @@
           <p class="menu-label">Runner config</p>
           <ul class="menu-list">
               <li>
-                <a href="pages/runner-config/runners/">Runner types</a>
+                <a href="pages/runner-config/common-options/">Common options</a>
                 
               </li>
               <li>
-                <a href="pages/runner-config/common-options/">Common options</a>
+                <a href="pages/runner-config/runners/">Runner types</a>
                 
               </li>
               <li>
@@ -107,15 +107,19 @@
           <p class="menu-label">Development</p>
           <ul class="menu-list">
               <li>
+                <a href="pages/development/design/">Design</a>
+                
+              </li>
+              <li>
                 <a href="pages/development/repository/">Repository</a>
                 
               </li>
               <li>
-                <a href="pages/development/runners/">Runners</a>
+                <a href="pages/development/server/">Server</a>
                 
               </li>
               <li>
-                <a href="pages/development/architecture/">Architecture</a>
+                <a href="pages/development/runners/">Runners</a>
                 
               </li>
           </ul>
@@ -125,7 +129,7 @@
       <div class="section">
         <div class="container is-fluid">
           
-<p class="title is-4">Content Server runners</p>
+<h3 class="title is-3">Content Server runners</h3>
 <div class="content">
 
   <p>These runners are related to working with OpenText Content Server.</p>
@@ -143,599 +147,572 @@
     <li><a href="pages/runner-config/sharepoint/#otcs-sp">OTCSToSPTransformer</a></li>
   </ul>
 
-  <p id="otcs-connection" class="subtitle is-5 docs-subhead">OTCS connection</p>
-  <p>The connection object for all OTCS runners supports the following attributes:</p>
-  <ul>
-    <li><code>username</code> <strong>mandatory</strong> <i>string</i> - username for the connection</li>
-    <li><code>password</code> <strong>mandatory</strong> <i>string</i> - password for the connection</li>
-    <li><code>domain</code> <i>string</i> - domain name for shared instances - not used in SOAP connections</li>
-    <li><code>restUrl</code> <strong>mandatory for REST</strong>, <i>string</i> - url to the REST API</li>
-    <li><code>authUrl</code> <strong>mandatory for SOAP</strong>, <i>string</i> - url to the REST API</li>
-    <li><code>docManUrl</code> <strong>mandatory for SOAP</strong>, <i>string</i> - url to the REST API</li>
-    <li><code>preferV1</code> <i>boolean</i> - REST API should use v1 API calls where available, defaults to false
-    </li>
-    <li><code>proxyUrl</code> <i>string</i> - url for a proxy server</li>
-    <li><code>timings</code> <i>boolean</i> - whether to log request timings or not, defaults to false</li>
-    <li><code>useSoap</code> <i>boolean</i> - whether the SOAP or REST API is used, defaults to false, i.e. use REST
-    </li>
-  </ul>
-  <hr>
-  <p>Example REST connection object:</p>
-  <pre class="code">
-  {
-    "username": "otadmin@otds.admin",
-    "password": "otds",
-    "restUrl": "http://localhost/cs/cs/api/"
-  }
-  </pre>
-  <p>Example SOAP connection object:</p>
-  <pre class="code">
-  {
-    "username": "otadmin@otds.admin",
-    "password": "otds",
-    "authUrl": "http://localhost/cws/services/Authentication",
-    "docManUrl": "http://localhost/cws/services/DocumentManagement",
-    "useSoap": true
-  }
-  </pre>
-  <p>The SOAP webservices will have different URLs depending on whether they are using Java or .NET. The example above uses the default Java URL. A deault .NET URL would be <i>http://localhost/cws/DocumentManagement.svc</i>. It's always safest to put the URL in a browser to check you have the right format.</p>
+  <section>
 
-  <p id="otcs-extractor" class="subtitle is-5 docs-subhead">OTCSExtractor</p>
-  <p><a href="pages/runner-config/runner-status/"><span class="tag is-primary">Production</span></a></p>
+    <h4 id="otcs-connection" class="title is-4 docs-subhead">OTCS connection</h4>
+    <p>The connection object for all OTCS runners supports the following attributes:</p>
 
-  <p>This runner will extract information from Content Server. It will not extract any files from Content Server. To extract files from Content Server to upload to other systems use the OTCSStaging runner. The OTCSExtractor has the following configuration options:</p>
-  <ul>
-    <li><code>batchConfig</code> <i>number | RunnerBatchConfig</i> - see <a href="pages/runner-config/common-options/#batches">batches</a> - needs a hashName value or it will be ignored</li>
-    <li><code>connection</code> <strong>mandatory</strong> <i>object</i> - <a href="pages/runner-config/content-server/#otcs-connection">OTCS connection object</a></li>
-    <li><code>createDirectoryTasks</code> <i>boolean</i> - whether to create tasks for directories or not, defaults to false</li>
-    <li><code>extractRoot</code> <strong>mandatory</strong> <i>number</i> - the ID of the container where objects are loaded</li>
-    <li><code>hashName</code> <i>string</i> - the lookup name for storing the source object hash</li>
-    <li><code>ignore</code> default file system ignore options</li>
-    <li><code>include</code> <i>object</i> - include options are applied after ignore options:
-      <ul>
-        <li><code>objectTypes</code> <i>number array</i> - object types that will be extracted, defaults to [144, 749]</li>
-      </ul>
-    </li>
-    <li><code>quarantinedLookupName</code> <i>string</i> - the name for the quarantine lookup, defaults to quarantinedOTCSExtractor</li>
-  </ul>
-  <hr>
-  <p>Example runner configuration:</p>
-  <pre class="code">
-  {
-    "type": "OTCSExtractor",
-    "config": {
-      "connection": {
-        "name": "connections",
-        "key": "otcs.dev"
-      },
-      "hashName":"ProdMigrationOne",
-      "ignore": {
-        "objectTypes": [0]
-      }
-      "extractRoot": 48243,
-    }
-  }
-  </pre>
+    <table class="table is-fullwidth">
+      <thead>
+        <th>Attribute</th>
+        <th>Data type</th>
+        <th>Default</th>
+        <th>Description</th>
+      </thead>
+      <tbody>
+        <tr>
+          <td>username</td>
+          <td>string, <strong>mandatory</strong></td>
+          <td>none</td>
+          <td>The username for the connection.</td>
+        </tr>
+        <tr>
+          <td>password</td>
+          <td>string, <strong>mandatory</strong></td>
+          <td>none</td>
+          <td>The password for the connection.</td>
+        </tr>
+        <tr>
+          <td>domain</td>
+          <td>string</td>
+          <td>none</td>
+          <td>The domain for the connection.</td>
+        </tr>
+        <tr>
+          <td>restUrl</td>
+          <td>string, <strong>mandatory for REST API</strong></td>
+          <td>none</td>
+          <td>The URL to the REST API.</td>
+        </tr>
+        <tr>
+          <td>authUrl</td>
+          <td>string, <strong>mandatory for SOAP API</strong></td>
+          <td>none</td>
+          <td>The URL to the SOAP authentication API</td>
+        </tr>
+        <tr>
+          <td>docManUrl</td>
+          <td>string, <strong>mandatory for SOAP API</strong></td>
+          <td>none</td>
+          <td>The URL to the SOAP document management API</td>
+        </tr>
+        <tr>
+          <td>preferV1</td>
+          <td>boolean</td>
+          <td>false</td>
+          <td>Set to <code>true</code> to use the v1 REST API routes</td>
+        </tr>
+        <tr>
+          <td>useSoap</td>
+          <td>boolean</td>
+          <td>false</td>
+          <td>Set to <code>true</code> to use the SOAP API instead of the REST API</td>
+        </tr>
+      </tbody>
+    </table>
+    <hr>
 
-  <p>It populates the following attributes in the new tasks it creates:</p>
-  <ul>
-    <li><code>item</code> metadata for the item extracted</li>
-    <li><code>extractId</code> item id</li>
-    <li><code>quarantine</code> quarantine lookup for the item</li>
-    <li><code>stagingId</code> id for the staging runner if the item has any associated files</li>
-  </ul>
-  <pre class="code">
-  {
-    "message": {
-      "node": {
-        "categories": [],
-        "columns": [
-          {
-            "data_type": 2,
-            "key": "type",
-            "name": "Type",
-            "sort_key": "type"
-          },
-          {
-            "data_type": -1,
-            "key": "name",
-            "name": "Name",
-            "sort_key": "name"
-          },
-          {
-            "data_type": -1,
-            "key": "size_formatted",
-            "name": "Size",
-            "sort_key": "size"
-          },
-          {
-            "data_type": 401,
-            "include_time": true,
-            "key": "modify_date",
-            "name": "Modified",
-            "sort_key": "modify_date"
-          },
-          {
-            "data_type": 2,
-            "key": "id",
-            "name": "DataID",
-            "sort_key": "id"
-          }
-        ],
-        "nicknames": {
-          "nickname": "47803"
-        },
-        "permissions": [
-          {
-            "permissions": [
-              "add_items",
-              "delete",
-              "delete_versions",
-              "edit_attributes",
-              "edit_permissions",
-              "modify",
-              "reserve",
-              "add_major_version",
-              "see",
-              "see_contents"
-            ],
-            "right_id": 1000,
-            "type": "owner"
-          },
-          {
-            "permissions": [
-              "see",
-              "see_contents"
-            ],
-            "right_id": 999,
-            "type": "group"
-          },
-          {
-            "permissions": [
-              "see",
-              "see_contents"
-            ],
-            "right_id": null,
-            "type": "public"
-          },
-          {
-            "permissions": [
-              "add_items",
-              "delete",
-              "delete_versions",
-              "edit_attributes",
-              "edit_permissions",
-              "modify",
-              "reserve",
-              "add_major_version",
-              "see",
-              "see_contents"
-            ],
-            "right_id": 2001,
-            "type": "custom"
-          }
-        ],
-        "properties": {
-          "advanced_versioning": false,
-          "container": false,
-          "container_size": 0,
-          "create_date": "2023-04-27T07:55:32",
-          "create_user_id": 1000,
-          "description": "",
-          "description_multilingual": {
-            "en": ""
-          },
-          "external_create_date": null,
-          "external_identity": "",
-          "external_identity_type": "",
-          "external_modify_date": null,
-          "external_source": "file_system",
-          "favorite": false,
-          "hidden": false,
-          "id": 47803,
-          "mime_type": "text/plain",
-          "modify_date": "2023-05-01T04:56:15",
-          "modify_user_id": 1000,
-          "name": "built-file1.txt",
-          "name_multilingual": {
-            "en": "built-file1.txt"
-          },
-          "owner": "Admin",
-          "owner_group_id": 999,
-          "owner_user_id": 1000,
-          "parent_id": 48243,
-          "permissions_model": "advanced",
-          "reserved": false,
-          "reserved_date": null,
-          "reserved_shared_collaboration": false,
-          "reserved_user_id": 0,
-          "size": 59,
-          "size_formatted": "1 KB",
-          "type": 144,
-          "type_name": "Document",
-          "versionable": null,
-          "versions_control_advanced": false,
-          "volume_id": -2000
-        },
-        "rmiconsdata": {
-          "class_id": 0,
-          "official": 0,
-          "show_classify": false,
-          "show_hold": false,
-          "show_hold_tab": false,
-          "show_official": false,
-          "show_xref_tab": false
-        },
-        "systemattributes": {},
-        "versions": [
-          {
-            "create_date": "2023-04-27T07:55:32",
-            "description": null,
-            "external_create_date": null,
-            "external_identity": "",
-            "external_identity_type": "",
-            "external_modify_date": "2023-04-03T16:16:02",
-            "external_source": "file_system",
-            "file_create_date": "2023-04-27T07:55:32",
-            "file_modify_date": "2023-04-03T16:16:02",
-            "file_name": "built-file1.txt",
-            "file_size": 59,
-            "file_type": "txt",
-            "id": 47803,
-            "locked": false,
-            "locked_date": null,
-            "locked_user_id": null,
-            "mime_type": "text/plain",
-            "modify_date": "2023-04-27T07:55:32",
-            "name": "built-file1.txt",
-            "owner_id": 1000,
-            "provider_id": 36594,
-            "version_id": 47804,
-            "version_number": 1,
-            "version_number_major": 0,
-            "version_number_minor": 1,
-            "version_number_name": "1"
-          }
-        ],
-        "ancestors": [
-          {
-            "id": 2000,
-            "name": "Enterprise",
-            "parent_id": -1,
-            "type": 141,
-            "volume_id": -2000,
-            "type_name": "Enterprise Workspace"
-          },
-          {
-            "id": 6113,
-            "name": "Sandpit",
-            "parent_id": 2000,
-            "type": 0,
-            "volume_id": -2000,
-            "type_name": "Folder"
-          },
-          {
-            "id": 27123,
-            "name": "Extractor",
-            "parent_id": 6113,
-            "type": 0,
-            "volume_id": -2000,
-            "type_name": "Folder"
-          },
-          {
-            "id": 48243,
-            "name": "Tiny",
-            "parent_id": 27123,
-            "type": 0,
-            "volume_id": -2000,
-            "type_name": "Folder"
-          },
-          {
-            "id": 47803,
-            "name": "built-file1.txt",
-            "parent_id": 48243,
-            "type": 144,
-            "volume_id": -2000,
-            "type_name": "Document"
-          }
-        ]
-      },
-      "extractId": 47803,
-      "quarantine": {
-        "name": "quarantinedOTCSExtractor",
-        "key": 47803,
-        "value": 47803
-      },
-      "stagingId": 47803,
-    }
-  }
-  </pre>
+    <p>Example REST connection object:</p>
+    <pre class="code">{
+  "username": "otadmin@otds.admin",
+  "password": "otds",
+  "restUrl": "http://server.lan/cs/cs/api/"
+}</pre>
+    <p>Example SOAP connection object:</p>
+    <pre class="code">{
+  "username": "otadmin@otds.admin",
+  "password": "otds",
+  "authUrl": "http://server.lan/cws/services/Authentication",
+  "docManUrl": "http://server.lan/cws/services/DocumentManagement",
+  "useSoap": true
+}</pre>
+    <p>The SOAP webservices will have different URLs depending on whether they are using Java or .NET. The example above
+      uses the default Java URL. A .NET URL would be <code>http://server.lan/cws/DocumentManagement.svc</code>.
+      It's always safest to put the URL in a browser to check you have the right format.</p>
 
-  <p id="otcs-staging" class="subtitle is-5 docs-subhead">OTCSStaging</p>
-  <p><a href="pages/runner-config/runner-status/"><span class="tag is-primary">Production</span></a></p>
+  </section>
 
-  <p>This runner will copy files from Content Server to the specified storage location. It has the following configuration options:</p>
-  <ul>
-    <li><code>allVersions</code> <i>boolean</i> - whether to extract all versions or just the latest, defaults to false, which is latest version</li>
-    <li><code>connection</code> <strong>mandatory</strong> <i>object</i> - <a href="pages/runner-config/content-server/#otcs-connection">OTCS connection object</a></li>
-    <li><code>hashName</code> <i>string</i> - the lookup name for storing the source object hash, a version specific hash will be created</li>
-    <li><code>node</code> <i>string</i> - the message attribute containing the OTCS node object, defaults to node</li>
-    <li><code>nodeAdd</code> <i>boolean</i> - if true will add the node to the message if it's missing, defaults to false</li>
-    <li><code>stagingId</code> <i>string</i> - the message attribute containing the OTCS id of the object to be staged, defaults to stagingId</li>
-    <li><code>stagingProvider</code> <strong>mandatory</strong> <i>object</i> - the location where the document content is stored</li>
-    <li><code>streamFilesLimit</code> <i>number</i> - number of bytes when the extractor should use a large file streaming approach, defaults to 1048576 (5 mb). Only relevant to SOAP API.</li>
-  </ul>
-  <p>It uses the following message attributes:</p>
-  <ul>
-    <li><code>stagingId</code> <strong>mandatory</strong> <i>number</i> - the id of the object to be staged</li>
-  </ul>
-  <p>Message attribute names can be changed in the config section.</p>
-  <hr>
-  <p>Example runner and message configuration:</p>
-  <pre class="code">
-  {
-    "name": "Test migration",
-    "runner": {
-      "type": "OTCSStaging",
-      "config": {
-        "connection": {"name": "connections", "key": "otcs.dev"},
-        "hashName":"ProdMigrationOne",
-        "stagingProvider": {
-          "type": "FileSystem",
-          "path": "E:\\data\\staging",
-        }
-      }
-    },
-    "runners": {...},
-    "message": {
-      "extractId": 47803,
-      "extractId": 5707,
-      "node": {...},
-      "stagingId": 47803,
-    }
-    "id": "6UQtP8-CdXAMg_GQCOSLd"
-  }
-  </pre>
-  <p>It populates the following attributes in the new tasks it creates:</p>
-  <ul>
-    <li><code>sourceFile</code> a version or array of versions that were staged</li>
-  </ul>
-  <pre class="code">
-  {
-    "message": {
-      "extractId": 47803,
-      "extractId": 5707,
-      "node": {...},
-      "stagingId": 47803,
-      "sourceFile": [
-        {
-          "createdDate: "2024-02-02T07:03:11",
-          "filename": "built-file1.txt",
-          "id": "42H2Y8j2RhqyCmJXncGK0",
-          "mimeType": "text/plain",
-          "modifiedDate": "2024-02-02T07:03:11",
-          "provider": {
-            "useOriginalName": false,
-            "type": "FileSystem",
-            "path": "E:\\test\\ethel-test\\otcs-staging",
-          },
-          "size": 59,
-          "sourceValues": {
-            version_id: 222413,
-          },
-          "systemId": "c701cc09851973dd1f5e3b8dd7bfa2cf32cc637b",
-        }
-      ]
-    }
-  }
-  </pre>
+  <section>
 
-  <p id="otcs-loader" class="subtitle is-5 docs-subhead">OTCSLoader</p>
-  <p><a href="pages/runner-config/runner-status/"><span class="tag is-info">Tested</span></a></p>
+    <h4 id="otcs-extractor" class="title is-4 docs-subhead">OTCSExtractor</h4>
+    <p><a href="pages/runner-config/runner-status/"><span class="tag is-primary">Production</span></a></p>
 
-  <p>This runner will load files or update objects in Content Server. It has the following configuration options:</p>
-  <ul>
-    <li><code>addHash</code> <i>boolean</i> - whether to add the currentHash lookup, defaults to true</li>
-    <li><code>connection</code> <strong>mandatory</strong> <i>object</i> - <a href="pages/runner-config/content-server/#otcs-connection">OTCS connection object</a></li>
-    <li><code>loadRoot</code> <strong>mandatory</strong> <i>number</i> - the id where objects will be loaded</li>
-    <li><code>loadItem</code> <i>string</i> - the message attribute containing the item to be loaded, defaults to loadItem</li>
-    <li><code>overwrite</code> <i>boolean</i> - whether to add the document as a new version if it already exists, defaults to false</li>
-  </ul>
-  <p>It uses the following message attributes:</p>
-  <ul>
-    <li><code>loadItem</code> <strong>mandatory</strong> <i>object</i> - the item to be loaded, must be a valid OTCSLoadItem object</li>
-  </ul>
-  <p>Message attribute names can be changed in the config section.</p>
-  <hr>
-  <p>Example runner and message configuration:</p>
-  <pre class="code">
-  {
-    "name": "Test migration",
-    "runner": {
-      "type": "OTCSLoader",
-      "config": {
-        "connection": {"name": "connections", "key": "otcs.dev"},
-        "extractRoot": 48243,
-      }
-    },
-    "runners": {...},
-    "message": {
-      "node": {
-        "properties": {
-          "container": false,
-          "name": "built-file1",
-          "type": 144,
-          "path": ":built-dir1:",
-        },
-        "versions": [
-          {...},
-        ],
-      },
-      "loadAction": "add",
-    }
-    "id": "6UQtP8-CdXAMg_GQCOSLd"
-  }
-  </pre>
+    <p>This runner will extract information from Content Server. It will not extract any files from Content Server. To
+      extract files from Content Server to upload to other systems add the OTCSStaging runner after this runner.</p>
 
-  <p id="fs-otcs" class="subtitle is-5 docs-subhead">FSToOTCSTransformer</p>
-  <p><a href="pages/runner-config/runner-status/"><span class="tag is-info">Tested</span></a></p>
+    <h5 class="title is-5">Configuration options</h5>
 
-  <p>This runner will transform file system objects into Content Server objects. This runner assumes the message was created by the FileSystemExtractor. It has the following configuration options:</p>
-  <ul>
-    <li><code>extractRoot</code> <i>string</i> - the message attribute containing the root file path for the extraction, defaults to extractRoot</li>
-    <li><code>item</code> <i>string</i> - the message attribute containing the file system object, defaults to item</li>
-    <li><code>removeExtension</code> <i>boolean</i> - whether to remove the extension from the name of document objects, defaults to true</li>
-    <li><code>sourceFile</code> <i>string</i> - the message attribute containing the of the file or directory that was extracted, defaults to sourceFile</li>
-  </ul>
-  <p>It uses the following message attributes:</p>
-  <ul>
-    <li><code>extractRoot</code> <strong>mandatory</strong> <i>string</i> - the root file path for the extraction</li>
-    <li><code>item</code> <strong>mandatory</strong> <i>string</i> - the file system stats object</li>
-    <li><code>sourceFile</code> <i>string | object</i> - the file to be added, either path or StagedFile object</li>
-  </ul>
-  <p>Message attribute names can be changed in the config section.</p>
-  <hr>
-  <p>Example runner configuration:</p>
-  <pre class="code">
-  {
-    "type": "FSToOTCSTransformer",
-    "config": {
-      "removeExtension": false,
-    },
-    "message": {
-      "item": {
-        "name": "built-file3.txt",
-        "extension": ".txt",
-        "path": "C:\\code\\test\\fs-extract\\built-dir5\\built-dir4\\built-dir2\\built-dir4\\built-dir1\\built-file3.txt",
-        "stats": {
-          "dev": 3967843523,
-          "mode": 33206,
-          "nlink": 1,
-          "uid": 0,
-          "gid": 0,
-          "rdev": 0,
-          "blksize": 4096,
-          "ino": 48132221017659290,
-          "size": 59,
-          "blocks": 0,
-          "atimeMs": 1683609498896.2495,
-          "mtimeMs": 1680502568908.2917,
-          "ctimeMs": 1680502568908.2917,
-          "birthtimeMs": 1681442581303.0498,
-          "atime": "2023-05-09T05:18:18.896Z",
-          "mtime": "2023-04-03T06:16:08.908Z",
-          "ctime": "2023-04-03T06:16:08.908Z",
-          "birthtime": "2023-04-14T03:23:01.303Z",
-        },
-        "isDirectory": false,
-      },
-      "extractId": "ef15711093fce44857f960c27f239414ee7beaaa",
-      "extractRoot": "C:\\code\\test\\fs-extract",
-      "sourceFile":
-        "C:\\code\\test\\fs-extract\\built-dir5\\built-dir4\\built-dir2\\built-dir4\\built-dir1\\built-file3.txt",
-    }
-  }
-  </pre>
-  <p>It will raise the next task with the following message elements:</p>
-  <ul>
-    <li><code>node</code> the data of the object that is to be loaded</li>
-  </ul>
-  <p>Example message object for new task:</p>
-  <pre class="code">
-  {
-    "message": {
-      "node": {
-        "properties": {
-          "container": false,
-          "name": "built-file1",
-          "type": 144,
-          "path": ":built-dir1:",
-        },
-        "versions": [
-          {...},
-        ],
-      },
-      loadAction: "add",
-    }
-  }
-  </pre>
+    <table class="table is-fullwidth">
+      <thead>
+        <th>Option</th>
+        <th>Data type</th>
+        <th>Default</th>
+        <th>Description</th>
+      </thead>
+      <tbody>
+        <tr>
+          <td>addSummary</td>
+          <td>boolean</td>
+          <td><code>false</code></td>
+          <td>Whether to add a summary for each extractRoot, adds load so only use when needed</td>
+        </tr>
+        <tr>
+          <td>batchConfig</td>
+          <td>number | BatchConfig, <strong>mandatory</strong></td>
+          <td>none</td>
+          <td>See <a href="pages/runner-config/common-options/#batches">batches</a></td>
+        </tr>
+        <tr>
+          <td>cancelCheckNumber</td>
+          <td>number</td>
+          <td><code>50</code></td>
+          <td>How often, in tasks raised, to check if the extract should be cancelled</td>
+        </tr>
+        <tr>
+          <td>connection</td>
+          <td>LookupDetails, <strong>mandatory</strong></td>
+          <td>none</td>
+          <td>The name and key to the lookup with the <a href="pages/runner-config/content-server/#otcs-connection">OTCS
+              connection</a> details</td>
+        </tr>
+        <tr>
+          <td>extractRoot</td>
+          <td>number | number[], <strong>mandatory</strong></td>
+          <td>none</td>
+          <td>The id numbers of containers to extract.</td>
+        </tr>
+        <tr>
+          <td>hashName</td>
+          <td>string, <strong>mandatory</strong></td>
+          <td>none</td>
+          <td>The lookup name used to store the extract hash</td>
+        </tr>
+        <tr>
+          <td>ignore</td>
+          <td>any</td>
+          <td>none</td>
+          <td>See <a href="pages/runner-config/common-options/#ignore">ignore items</a>. This runner only supports file
+            system based ignore options.</td>
+        </tr>
+        <tr>
+          <td>include</td>
+          <td>any</td>
+          <td><code>{ objectTypes: [144, 170] }</code></td>
+          <td>Value for the object types to extract</td>
+        </tr>
+        <tr>
+          <td>quarantinedLookupName</td>
+          <td>string</td>
+          <td><code>quarantinedOTCSExtractor</code></td>
+          <td>Name value for the quarantine lookup name</td>
+        </tr>
+      </tbody>
+    </table>
+    <hr>
 
-  <p id="fs-otcs" class="subtitle is-5 docs-subhead">SPToOTCSTransformer</p>
-  <p><a href="pages/runner-config/runner-status/"><span class="tag is-link">Developed</span></a></p>
+    <p>It adds the following attributes to the message object of raised tasks:</p>
+    <ul>
+      <li><code>extractItem</code> metadata for the item extracted</li>
+      <li><code>quarantine</code> quarantine lookup for the item</li>
+      <li><code>extractHash</code> lookup name used to store the extract hash, if hashName is configured</li>
+    </ul>
+    <hr>
 
-  <p>This runner will transform SharePoint objects into Content Server objects. This runner assumes the message was
-    created by the SharePointStaging runner. It has the following configuration options:</p>
-  <ul>
-    <li><code>item</code> <i>string</i> - the message attribute containing the file system object, defaults to item</li>
-    <li><code>listName</code> <i>string</i> - the message attribute with the list or library name, defaults to listName</li>
-    <li><code>metadata</code> <i>object</i> - the mappings of SharePoint field names to CS attribute ids, key-value pairs with SP name as the key</li>
-    <li><code>removeExtension</code> <i>boolean</i> - whether to remove the extension from the name of document objects, defaults to true</li>
-    <li><code>siteRelativeUrl</code> <i>string</i> - the message attribute with the server relative URL to the site, defaults to siteRelativeUrl</li>
-    <li><code>sourceFile</code> <i>string</i> - the message attribute containing the sourceFile information, defaults to sourceFile</li>
-  </ul>
-  <p>It uses the following message attributes:</p>
-  <ul>
-    <li><code>item</code> <strong>mandatory</strong> <i>string</i> - the file system stats object</li>
-    <li><code>listName</code> <strong>mandatory</strong> <i>string</i> - the list or library name, i.e. the name from the URL, not the title</li>
-    <li><code>siteRelativeUrl</code> <strong>mandatory</strong> <i>string</i> - the URL to the site, minus the host name</li>
-    <li><code>sourceFile</code> <i>string | object</i> - the file to be added, either path or StagedFile object</li>
-  </ul>
-  <p>Message attribute names can be changed in the config section.</p>
-  <hr>
-  <p>Example runner configuration:</p>
-  <pre class="code">
-  {
-    "type": "SPToOTCSTransformer",
-    "config": {
-      "removeExtension": false,
-    },
-    "message": {
-      "item": {
-        "__metadata": {
-          "id": "efbb6411-2d6f-41df-a956-6fb832fac0da",
-          "uri": "https://w6n3w.sharepoint.com/sites/ethel-test/_api/Web/Lists(guid"5f4a27ce-5e30-433f-9536-10c1dc8d782f")/Items(5010)",
-          "etag": ""2"",
-          "type": "SP.Data.Shared_x0020_DocumentsItem",
-        },
-        ...
-      },
-      "siteRelativeUrl": "/sites/ethel-test/",
-      "listName": "Shared Documents",
-      "sourceFile": [
-        {...}      
-      ]
-    }
-  }
-  </pre>
-  <p>It will raise the next task with the following message elements:</p>
-  <ul>
-    <li><code>node</code> the data of the object that is to be loaded</li>
-  </ul>
-  <p>Example message object for new task:</p>
-  <pre class="code">
-  {
-    "message": {
-      "node": {
-        "properties": {
-          "container": false,
-          "name": "built-file1",
-          "type": 144,
-          "path": ":built-dir1:",
-        },
-        "versions": [
-          {...},
-        ],
-      },
-      loadAction: "add",
-    }
-  }
-  </pre>
+  </section>
+
+  <section>
+
+    <h4 id="otcs-staging" class="title is-4 docs-subhead">OTCSStaging</h4>
+    <p><a href="pages/runner-config/runner-status/"><span class="tag is-primary">Production</span></a></p>
+
+    <p>This runner will copy files from Content Server to a staging location.</p>
+
+    <h5 class="title is-5">Configuration options</h5>
+
+    <table class="table is-fullwidth">
+      <thead>
+        <th>Option</th>
+        <th>Data type</th>
+        <th>Default</th>
+        <th>Description</th>
+      </thead>
+      <tbody>
+        <tr>
+          <td>allVersions</td>
+          <td>boolean</td>
+          <td><code>false</code></td>
+          <td>Whether to extract all versions or just the latest</td>
+        </tr>
+        <tr>
+          <td>connection</td>
+          <td>LookupDetails, <strong>mandatory</strong></td>
+          <td>none</td>
+          <td>The name and key to the lookup with the <a href="pages/runner-config/content-server/#otcs-connection">OTCS
+              connection</a> details.</td>
+        </tr>
+        <tr>
+          <td>extractItem</td>
+          <td>string</td>
+          <td><code>extractItem</code></td>
+          <td>The message attribute containing the extracted item</td>
+        </tr>
+        <tr>
+          <td>stagingProvider</td>
+          <td>any, <strong>mandatory</strong></td>
+          <td>none</td>
+          <td>The configuration details for the storage provider</td>
+        </tr>
+        <tr>
+          <td>streamFilesLimit</td>
+          <td>number</td>
+          <td><code>52428800</code></td>
+          <td>Number of bytes when the extractor should use a large file streaming approach</td>
+        </tr>
+      </tbody>
+    </table>
+    <hr>
+
+    <h5 class="title is-5">Message attributes</h5>
+
+    <table class="table is-fullwidth">
+      <thead>
+        <th>Option</th>
+        <th>Data type</th>
+        <th>Description</th>
+      </thead>
+      <tr>
+        <td>extractItem</td>
+        <td>CSNode, <strong>mandatory</strong></td>
+        <td>The item extracted from Content Server</td>
+      </tr>
+      </tbody>
+    </table>
+
+    <p>It adds the following attributes to the message object:</p>
+    <ul>
+      <li><code>sourceFile</code> the extracted file information</li>
+    </ul>
+
+  </section>
+
+  <section>
+
+    <h4 id="otcs-loader" class="title is-4 docs-subhead">OTCSLoader</h4>
+    <p><a href="pages/runner-config/runner-status/"><span class="tag is-primary">Production</span></a></p>
+
+    <p>This runner will create objects in Content Server</p>
+
+    <h5 class="title is-5">Configuration options</h5>
+
+    <table class="table is-fullwidth">
+      <thead>
+        <th>Option</th>
+        <th>Data type</th>
+        <th>Default</th>
+        <th>Description</th>
+      </thead>
+      <tbody>
+        <tr>
+          <td>addCategoriesAfterCreate</td>
+          <td>boolean</td>
+          <td><code>false</code></td>
+          <td>Whether to add the categories when the item is created or in the next transaction</td>
+        </tr>
+        <tr>
+          <td>addFullItem</td>
+          <td>boolean</td>
+          <td><code>false</code></td>
+          <td>Whether to add the full created item to the message or just the node ID</td>
+        </tr>
+        <tr>
+          <td>addHash</td>
+          <td>boolean</td>
+          <td><code>true</code></td>
+          <td>Whether to save the extractHash lookup</td>
+        </tr>
+        <tr>
+          <td>connection</td>
+          <td>LookupDetails, <strong>mandatory</strong></td>
+          <td>none</td>
+          <td>The name and key to the lookup with the <a href="pages/runner-config/content-server/#otcs-connection">OTCS
+              connection</a> details.</td>
+        </tr>
+        <tr>
+          <td>handleExisting</td>
+          <td>string</td>
+          <td><code>error</code></td>
+          <td>This runner supports three options:
+            <ul>
+              <li><code>complete</code> - complete the task and add the hash</li>
+              <li><code>error</code> - throw an error</li>
+              <li><code>overwrite</code> - overwrite the existing file with the newly extracted file</li>
+            </ul>
+          </td>
+        </tr>
+        <tr>
+          <td>ignoreCase</td>
+          <td>boolean</td>
+          <td><code>false</code></td>
+          <td>When checking for existing items, use case sensitive or insenstive checks</td>
+        </tr>
+        <tr>
+          <td>loadItem</td>
+          <td>stromg</td>
+          <td><code>loadItem</code></td>
+          <td>The message attribute that contains the OTCSLoadItem object</td>
+        </tr>
+        <tr>
+          <td>loadedItemLabel</td>
+          <td>string</td>
+          <td><code>OTCSLoadedItem</code></td>
+          <td>The label to use for the loaded item in the message</td>
+        </tr>
+      </tbody>
+    </table>
+    <hr>
+
+    <h5 class="title is-5">Message attributes</h5>
+
+    <table class="table is-fullwidth">
+      <thead>
+        <th>Option</th>
+        <th>Data type</th>
+        <th>Description</th>
+      </thead>
+      <tbody>
+        <tr>
+          <td>extractHash</td>
+          <td>Lookup</td>
+          <td>The extract hash object</td>
+        </tr>
+        <tr>
+          <td>loadItem</td>
+          <td>OTCSLoadItem, <strong>mandatory</strong></td>
+          <td>The information used by the loader to create the item.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p>Message attribute names can be changed in the configuration options.</p>
+
+    <p>It adds the following attributes to the message object:</p>
+    <ul>
+      <li><code>OTCSLoadedItem</code> the created object, either the ID number of the full object depending on
+        configuration</li>
+    </ul>
+    <hr>
+
+  </section>
+
+  <section>
+
+    <h4 id="fs-otcs" class="title is-4 docs-subhead">FSToOTCSTransformer</h4>
+    <p><a href="pages/runner-config/runner-status/"><span class="tag is-primary">Production</span></a></p>
+
+    <p>This runner will transform file system objects into Content Server objects. This runner assumes the message was
+      created by the FileSystemExtractor</p>
+
+    <h5 class="title is-5">Configuration options</h5>
+
+    <table class="table is-fullwidth">
+      <thead>
+        <th>Option</th>
+        <th>Data type</th>
+        <th>Default</th>
+        <th>Description</th>
+      </thead>
+      <tbody>
+        <tr>
+          <td>extractItem</td>
+          <td>string</td>
+          <td><code>extractItem</code></td>
+          <td>The message attribute containing the extracted item</td>
+        </tr>
+        <tr>
+          <td>loadRoot</td>
+          <td>number, <strong>mandatory</strong></td>
+          <td>none</td>
+          <td>The id where objects will be loaded.</td>
+        </tr>
+        <tr>
+          <td>removeExtension</td>
+          <td>boolean</td>
+          <td><code>false</code></td>
+          <td>Whether to remove the extension from the name of document objects</td>
+        </tr>
+        <tr>
+          <td>sourceFile</td>
+          <td>string</td>
+          <td><code>sourceFile</code></td>
+          <td>The message attribute with the extracted file information</td>
+        </tr>
+      </tbody>
+    </table>
+    <hr>
+
+    <h5 class="title is-5">Message attributes</h5>
+
+    <table class="table is-fullwidth">
+      <thead>
+        <th>Option</th>
+        <th>Data type</th>
+        <th>Description</th>
+      </thead>
+      <tbody>
+        <tr>
+          <td>extractItem</td>
+          <td>FSExtractItem, <strong>mandatory</strong></td>
+          <td>The FSExtractItem object</td>
+        </tr>
+        <tr>
+          <td>sourceFile</td>
+          <td>string | SourceFile</td>
+          <td>The extracted file information</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p>Message attribute names can be changed in the configuration options.</p>
+
+    <p>It adds the following attributes to the message object:</p>
+    <ul>
+      <li><code>loadItem</code> the OTCSLoadItem object</li>
+    </ul>
+    <hr>
+
+  </section>
+
+  <section>
+
+    <h4 id="sp-otcs" class="title is-4 docs-subhead">SPToOTCSTransformer</h4>
+    <p><a href="pages/runner-config/runner-status/"><span class="tag is-primary">Production</span></a></p>
+
+    <p>This runner will transform SharePoint objects into Content Server objects. This runner assumes the message was
+      created by the SharePointStaging runner.</p>
+
+    <h5 class="title is-5">Configuration options</h5>
+
+    <table class="table is-fullwidth">
+      <thead>
+        <th>Option</th>
+        <th>Data type</th>
+        <th>Default</th>
+        <th>Description</th>
+      </thead>
+      <tbody>
+        <tr>
+          <td>extractFields</td>
+          <td>string</td>
+          <td><code>extractFields</code></td>
+          <td>The message attribute containing the extracted field definitions</td>
+        </tr>
+        <tr>
+          <td>extractItem</td>
+          <td>string</td>
+          <td><code>extractItem</code></td>
+          <td>The message attribute containing the SharePoint item</td>
+        </tr>
+        <tr>
+          <td>extractRoot</td>
+          <td>string</td>
+          <td><code>extractRoot</code></td>
+          <td>The message attribute with the initial extractor config</td>
+        </tr>
+        <tr>
+          <td>extractValues</td>
+          <td>string</td>
+          <td><code>extractValues</code></td>
+          <td>The message attribute containing the extracted field values</td>
+        </tr>
+        <tr>
+          <td>handleMetadataError</td>
+          <td>string</td>
+          <td><code>error</code></td>
+          <td>Whether to throw an error or log a warning if there is an error in mapping the metadata. Use
+            <i>warning</i> for just logging a warning
+          </td>
+        </tr>
+        <tr>
+          <td>loadRoot</td>
+          <td>number, <strong>mandatory</strong></td>
+          <td>none</td>
+          <td>The id number of the container where the load starts</td>
+        </tr>
+        <tr>
+          <td>metadataMapping</td>
+          <td>{ [source: string]: string }</td>
+          <td>none</td>
+          <td>The mappings of SharePoint field names to CS attribute ids. Key value pairs with the SharePoint field as
+            the key.</td>
+        </tr>
+        <tr>
+          <td>removeExtension</td>
+          <td>boolean</td>
+          <td><code>false</code></td>
+          <td>Whether to remove the extension from the name of document objects</td>
+        </tr>
+        <tr>
+          <td>sourceFile</td>
+          <td>string</td>
+          <td><code>sourceFile</code></td>
+          <td>The message attribute with the extracted file information</td>
+        </tr>
+      </tbody>
+    </table>
+    <hr>
+
+    <h5 class="title is-5">Message attributes</h5>
+
+    <table class="table is-fullwidth">
+      <thead>
+        <th>Option</th>
+        <th>Data type</th>
+        <th>Description</th>
+      </thead>
+      <tbody>
+        <tr>
+          <td>extractFields</td>
+          <td>object[]</td>
+          <td>The extracted SharePoint field definitions</td>
+        </tr>
+        <tr>
+          <td>extractItem</td>
+          <td>object, <strong>mandatory</strong></td>
+          <td>The SharePoint list item ojbect</td>
+        </tr>
+        <tr>
+          <td>extractRoot</td>
+          <td>object, <strong>mandatory</strong></td>
+          <td>The configuration used for the extract item</td>
+        </tr>
+        <tr>
+          <td>extractValues</td>
+          <td>{ [EntityPropertyName: string]: any }</td>
+          <td>The extracted SharePoint field values</td>
+        </tr>
+        <tr>
+          <td>sourceFile</td>
+          <td>SourceFile[]</td>
+          <td>The extracted file information</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p>Message attribute names can be changed in the configuration options.</p>
+
+    <p>It adds the following attributes to the message object:</p>
+    <ul>
+      <li><code>loadItem</code> the OTCSLoadItem object</li>
+    </ul>
+    <hr>
+
+  </section>
 
 </div>
         </div>
         <div class="container is-fluid dl-footer">
           <a href="https://driverlane.com.au">Driver Lane</a>
-          &copy; 2020-2024
+          &copy; 2020-2025
         </div>
       </div>
     </div>

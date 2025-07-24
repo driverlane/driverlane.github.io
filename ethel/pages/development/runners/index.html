@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="Description" content="Documentation for Ethel">
     <title>Ethel Docs</title>
-    <base href="/ethel/">
+    <base href="/">
     <link rel="icon" type="image/x-icon" href="favicon.ico">
     <link rel="stylesheet" href="assets/styles.css">
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.6.0/styles/default.min.css">
@@ -39,7 +39,7 @@
                 
               </li>
               <li>
-                <a href="pages/basic/running-ethel/">Running ethel</a>
+                <a href="pages/basic/deployment/">Deployment</a>
                 
               </li>
               <li>
@@ -50,11 +50,11 @@
           <p class="menu-label">Runner config</p>
           <ul class="menu-list">
               <li>
-                <a href="pages/runner-config/runners/">Runner types</a>
+                <a href="pages/runner-config/common-options/">Common options</a>
                 
               </li>
               <li>
-                <a href="pages/runner-config/common-options/">Common options</a>
+                <a href="pages/runner-config/runners/">Runner types</a>
                 
               </li>
               <li>
@@ -107,15 +107,19 @@
           <p class="menu-label">Development</p>
           <ul class="menu-list">
               <li>
+                <a href="pages/development/design/">Design</a>
+                
+              </li>
+              <li>
                 <a href="pages/development/repository/">Repository</a>
                 
               </li>
               <li>
-                <a href="pages/development/runners/">Runners</a>
+                <a href="pages/development/server/">Server</a>
                 
               </li>
               <li>
-                <a href="pages/development/architecture/">Architecture</a>
+                <a href="pages/development/runners/">Runners</a>
                 
               </li>
           </ul>
@@ -125,49 +129,19 @@
       <div class="section">
         <div class="container is-fluid">
           
-<p class="title is-4">Runner development</p>
+<p class="title is-3">Runner development</p>
 <div class="content">
 
   <p>When starting a new runner, look for the most recently updated runner of the type you're working on to use as a
     reference.</p>
 
-  <p>All runners have access to a number of useful functions via the task and logging services as well as the BaseRunner
-    class.</p>
-    
-  <p id="task-runner" class="subtitle is-5 docs-subhead">Task runner base class</p>
-  <ul>
-    <li>config - the full job config object</li>
-    <li>hashGet - creates a hash of the value supplied</li>
-    <li>logger - the logger service</li>
-    <li>nextRunnerGet - returns the next task runner defined in the job</li>
-    <li>processTask - this is the stub function called by the server that should be overloaded in each runner</li>
-    <li>raiseNextTask - starts the next task runner defined in the job</li>
-    <li>stateSave - saves the state on the current task</li>
-    <li>task - the config object for this task runner</li>
-    <li>taskService - the TaskService object</li>
-    <li>toCamelCase - converts a string with spaces to camel case</li>
-    <li>wait - simple sleep function</li>
-  </ul>
+  <p>Any class implementing the interface and extending the base class have access to a bunch of functionality. Check
+    the BaseRunner class and IRunnersService interface for the functionality available.</p>
 
-  <p id="task-service" class="subtitle is-5 docs-subhead">Task service</p>
-  <ul>
-    <li>cache - an optional object that implements the CacheProvider interface</li>
-    <li>lookupAdd - adds a lookup. Set encrypted to true if it is an encrypted lookup</li>
-    <li>lookupDelete - deletes a lookup</li>
-    <li>lookupGet - gets a lookup</li>
-    <li>lookupGetValue - gets the value stored on a lookup</li>
-    <li>lookupUpdate - updates a lookup. Set encrypted to true if it is an encrypted lookup.</li>
-    <li>stateSave - saves the state on the current task</li>
-    <li>taskRaise - general method for raising a new task. Multiple examples in existing runners</li>
-  </ul>
+  <h4 class="title is-4 docs-subhead">Lookups</h4>
 
-  <p id="logger-service" class="subtitle is-5 docs-subhead">Logger-service</p>
-  <p>Use <i>this.logger.verbose('...'), this.logger.debug('...')</i>, etc. to log information to the verbose, debug,
-    log, warn and error log levels. These levels are used to stay lin line with those used in Nest.js.</p>
-
-  <p id="lookups" class="subtitle is-5 docs-subhead">Lookups</p>
-  <p>Lookups provide a way of storing values in an in-memory cache or the database for later use. Use the lookup
-    functions on the task service.</p>
+  <p>Lookups provide a way of storing values in the database for later use. Use the lookup functions on the task
+    service. Most often used for storing encrypted information.</p>
   <ul>
     <li>lookupAdd - adds a lookup. Supplying a time to live value will use an in-memory cache if one is available.</li>
     <li>lookupDelete - deletes the specified lookup</li>
@@ -175,11 +149,23 @@
     <li>lookupUpdate - updates the specified lookup</li>
   </ul>
 
+  <h4 class="title is-4 docs-subhead">Conventions</h4>
+
+  <p>Runners should only extract their values in the processTask function and they should be supplied to
+    other functions in the class via the config object. Reasons for the config object:</p>
+  <ul>
+    <li>avoid hard coding value locations throughout the runner. This is useful if a value moves from the message
+      object to the config object, or vice versa. In some cases the value may be in either location depending on
+      configruation.</li>
+    <li>It's also better to use the messageValueGet function to retrieve items from the message object as it handles
+      non-standard attribute names that dot notation will not. e.g. number based attributes.</li>
+  </ul>
+
 </div>
         </div>
         <div class="container is-fluid dl-footer">
           <a href="https://driverlane.com.au">Driver Lane</a>
-          &copy; 2020-2024
+          &copy; 2020-2025
         </div>
       </div>
     </div>

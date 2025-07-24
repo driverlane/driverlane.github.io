@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="Description" content="Documentation for Ethel">
     <title>Ethel Docs</title>
-    <base href="/ethel/">
+    <base href="/">
     <link rel="icon" type="image/x-icon" href="favicon.ico">
     <link rel="stylesheet" href="assets/styles.css">
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.6.0/styles/default.min.css">
@@ -39,7 +39,7 @@
                 
               </li>
               <li>
-                <a href="pages/basic/running-ethel/">Running ethel</a>
+                <a href="pages/basic/deployment/">Deployment</a>
                 
               </li>
               <li>
@@ -50,11 +50,11 @@
           <p class="menu-label">Runner config</p>
           <ul class="menu-list">
               <li>
-                <a href="pages/runner-config/runners/">Runner types</a>
+                <a href="pages/runner-config/common-options/">Common options</a>
                 
               </li>
               <li>
-                <a href="pages/runner-config/common-options/">Common options</a>
+                <a href="pages/runner-config/runners/">Runner types</a>
                 
               </li>
               <li>
@@ -107,15 +107,19 @@
           <p class="menu-label">Development</p>
           <ul class="menu-list">
               <li>
+                <a href="pages/development/design/">Design</a>
+                
+              </li>
+              <li>
                 <a href="pages/development/repository/">Repository</a>
                 
               </li>
               <li>
-                <a href="pages/development/runners/">Runners</a>
+                <a href="pages/development/server/">Server</a>
                 
               </li>
               <li>
-                <a href="pages/development/architecture/">Architecture</a>
+                <a href="pages/development/runners/">Runners</a>
                 
               </li>
           </ul>
@@ -125,7 +129,7 @@
       <div class="section">
         <div class="container is-fluid">
           
-<p class="title is-4">Common options</p>
+<h3 class="title is-3">Common options</h3>
 <div class="content">
 
   <p>This page details a number of common configuration options that are available within many or all runners.</p>
@@ -139,7 +143,7 @@
     <li><a href="pages/runner-config/common-options/#text-replacement">Text replacement</a></li>
   </ul>
 
-  <p id="retry-policy" class="subtitle is-5 docs-subhead">Error handling and retry</p>
+  <p id="retry-policy" class="title is-4 docs-subhead">Error handling and retry</p>
   <p>By default, when a runner hits an error it records the error message and stops processing the task, setting it's
     status to suspended. You can then manually restart the task via the client or API.</p>
   <p>By adding a retry policy the runner can automatically retry the task. Retries can be configured to control the
@@ -147,75 +151,72 @@
     option is available for all runners.</p>
   <p>This simplest retry policy is to set a number of retry attempts. There will be a five second delay between each
     retry by default. Example of this with two retry attempts:</p>
-  <pre class="code">
-  {
-    ...
-    "retry": {
-      "limit": 2
-    }
+  <pre class="code">{
+  "type": "PSTLoader",
+  "config": {...},
+  "retry": {
+    "limit": 2
   }
-  </pre>
+}</pre>
   <p>You can also specify a different amount of delay, as well as the ability to increase the delay between each retry.
     The delay is specified in milliseconds and the backoff option multiplies the delay by the number of retries.</p>
-  <pre class="code">
-  {
-    ...
-    "retry": {
-      "limit": 2,
-      "delay": 10000,
-      "pattern": "backoff"
-    }
+  <pre class="code">{
+  "type": "PSTLoader",
+  "config": {...},
+  "retry": {
+    "limit": 2,
+    "delay": 10000,
+    "pattern": "backoff"
   }
-  </pre>
+}</pre>
   <p>In addition to changing the number of retries and the delay between retries you can also specify error messages
     that will not be retried and can either be suspended or quarantined. A task with an error message matching a
     quarantined message is stopped and a quarantine lookup is created. An item with a quarantine lookup will not be
     processed again until the quarantine is removed by deleting the lookup. Suspended errors can be retried by
     restarting the task via the client or API.</p>
-  <pre class="code">
-  {
-    ...
-    "retry": {
-      "limit": 2,
-      "delay": 10000,
-      "pattern": "backoff",
-      "suspendMessages": [
-        "System is unavailable"
-      ], 
-      "quarantineMessages": [
-        "Item already exists"
-      ]
-    }
+  <pre class="code">{
+  "type": "PSTLoader",
+  "config": {...},
+  "retry": {
+    "limit": 2,
+    "delay": 10000,
+    "pattern": "backoff",
+    "suspendMessages": [
+      "System is unavailable"
+    ], 
+    "quarantineMessages": [
+      "Item already exists"
+    ]
   }
-  </pre>
+}</pre>
 
-  <p id="queues" class="subtitle is-5 docs-subhead">Runner queues</p>
-  <p>By default all tasks are sent to a message queue called <i>tasks</i> and all core instances listen to the tasks
-    queue. In some situations you may want a runner to use an alternative queue or configure a core instance or the
-    ethel-agent to listen on queues other than <i>tasks</i>.</p>
-  <p>One example would be a job working with Personal Storage Table (.pst) files. There are a number of .NET libraries
-    for  managing pst files, but limited support in Node.js. If it's ever written you could configure a .NET core instance
-    that consumes tasks on  the <i>mail</i> queue and the job configuration you would use the <i>mail</i> queue rather
-    than the default <i>tasks</i> queue.
+  <p id="queues" class="title is-4 docs-subhead">Runner queues</p>
+  <p>By default all tasks are sent to a message queue called <strong>Tasks</strong> and all instances create a
+    <strong>Tasks</strong> consumer. In some situations you may want a runner to use an alternative queue or configure
+    an instance to consume queues other than <strong>Tasks</strong>.
   </p>
-  <pre class="code">
-  {
-    "type": "PSTLoader",
-    "config": {
-      ...
-    },
-    "queue": "mail"
-  }
-  </pre>
-  <p>The core instance configuration would be set to:</p>
-  
-  <pre class="code">ETHEL_QUEUE={"type":"RabbitMQ","url":"aqmps://server.tld:15672","consumers":['mail']}</pre>
+  <p>A common example is that one of the target or source systems is only available after working hours. In this case
+    you can create a queue, say <i>AfterHours</i>. Consumers of this queue can then be configured to only process tasks
+    after working hours. To send tasks for a particular runner to the other queue, update the queue attribute of the
+    runner</p>
+  <pre class="code">"runners":{
+    ...
+  "load": [
+    {
+      "type": "PSTLoader",
+      "config": {
+        ...
+      },
+      "queue": "AfterHours"
+    }
+  ]
+}</pre>
+  <p>In the ETHEL_CONSUMERS environment variable an AfterHours consumer would be defined:</p>
+  <pre
+    class="code">ETHEL_CONSUMERS='["Tasks",{"name":"AfterHours","operatingHours":[{"enabled":true,"cron":"0 18 * * 1-5"},{"enabled":false,"cron":"0 6 * * 1-5"}]}]'</pre>
 
-  <p>Any other core instances would use the default tasks queue:</p>
 
-  <pre class="code">ETHEL_QUEUE={"type":"RabbitMQ","url":"aqmps://server.tld:15672"}</pre>
-
-  <p id="batches" class="subtitle is-5 docs-subhead">Batches</p>
+  <p id="batches" class="title is-4 docs-subhead">Batches</p>
   <p>Most extractors provide the option to split a large job into multiple batches. This can be useful when multiple
     different run types are being processed and a very large run will block the queue from processing other smaller
     runs.
@@ -223,23 +224,23 @@
   <p>To set up batches the config will require a batch config object and a hash name in the runner config. The batch
     config object has the following values:</p>
   <ul>
-    <li><code>queueNextRun</code> boolean - whether the next run is automatically generated, defaults to false</li>
+    <li><code>queueNextRun</code> boolean - whether the next run is automatically generated. Defaults to false</li>
     <li><code>size</code> <strong>mandatory</strong> number - how many tasks generated in the batch</li>
   </ul>
 
   <p>Example config is:</p>
-  <pre class="code">
+  <pre class="code">{
+  "type": "PSTLoader",
   "config": {
     "hashName": "DevHRMigration",
     "batchConfig": {
       "size": 50000,
       "queueNextRun": true
     },
-    ...
-  
-  </pre>
+  }
+}</pre>
 
-  <p id="repeating-runs" class="subtitle is-5 docs-subhead">Repeating runs</p>
+  <p id="repeating-runs" class="title is-4 docs-subhead">Repeating runs</p>
   <p>Most extract runners provide the ability to repeat the extract and ignore unchanged data. To allow this to happen
     the configuration section requires a hashName. The hashName will be used to store a value as a lookup that is used
     to compare the data on later runs to see if it has changed.</p>
@@ -263,19 +264,18 @@
     </li>
   </ul>
   <p>To support the ability to ignore unchanged items in multiple runs add the following to the runner config:</p>
-  <pre class="code">
-  {
-    "config": {
-        ...
-      "hashName": "DevHRMigration",
-    ...
-    }
+  <pre class="code">{
+  "type": "PSTLoader",
+  "config": {
+      ...
+    "hashName": "DevHRMigration",
+  ...
   }
-  </pre>
+}</pre>
   <p>As these values are lookups they can be reset by using the Lookups section in the client. Find the lookups with
     the name specified and delete these lookups to reset the check.</p>
 
-  <p id="quarantine" class="subtitle is-5 docs-subhead">Quarantine</p>
+  <p id="quarantine" class="title is-4 docs-subhead">Quarantine</p>
   <p>The quarantine functionality allows you to stop a particular item in the migration from being processed. This would
     be used when there's a problem that needs to be resolved before another attempt is made to process the item.</p>
   <p>Quarantining a task creates a lookup using the item identifier created by the extract runner and the quarantine
@@ -284,32 +284,25 @@
   <p>Items can be quarantined via the client, via an error retry configuration or via the API. To quarantine an item in
     the client find the task that has the issue and click the Quarantine button.</p>
   <p>Example extract configuration is:</p>
-  <pre class="code">
-  {
-    "config": {
-        ...
-      "quarantinedLookupName": "DevHRMigrationQuarantine",
-    ...
-    }
+  <pre class="code">{
+  "type": "PSTLoader",
+  "config": {
+    "quarantinedLookupName": "DevHRMigrationQuarantine",
   }
-  </pre>
+}</pre>
   <p>Example error handling config for a runner is:</p>
-  <pre class="code">
-  {
-    "type": "OTCSLoader",
-    "config": {
-      ...
-    },
-    "retry": {
-      "limit": 2,
-      "quarantineMessages": [
-        "Item already exists"
-      ]
-    }
+  <pre class="code">{
+  "type": "OTCSLoader",
+  "config": {...},
+  "retry": {
+    "limit": 2,
+    "quarantineMessages": [
+      "Item already exists"
+    ]
   }
-  </pre>
+}</pre>
 
-  <p id="ignore" class="subtitle is-5 docs-subhead">Ignoring items</p>
+  <p id="ignore" class="title is-4 docs-subhead">Ignoring items</p>
   <p>There are two sets of ignore functionality. For extractors that process arrays of data you can use the object
     ignore option. The other ignore options can be used for file system type extractors.</p>
   <p>Ignore options are:</p>
@@ -322,26 +315,28 @@
     <li>path - ignore an item based on it's path</li>
   </ul>
   <p>Example ignore configuration:</p>
-  <pre class="code">
-    "config": {
-      "ignore": {
-        "minSize": 350,
-        "name": [{"names": ["system.ini","Superseded"], "caseSensitive": true}],
-        "path": [{"paths": ["drafts"]}]
-      },
-    }
-  </pre>
-  <pre class="code">
-    "config": {
-      "ignore": {
-        "object": [{"Name": "fred"}, {"field3": "abcd"}],
-      },
-    }
-  </pre>
+  <pre class="code">{
+  "type": "OTCSLoader",
+  "config": {
+    "ignore": {
+      "minSize": 350,
+      "name": [{"names": ["system.ini","Superseded"], "caseSensitive": true}],
+      "path": [{"paths": ["drafts"]}]
+    },
+  }
+}</pre>
+  <pre class="code">{
+  "type": "OTCSLoader",
+  "config": {
+    "ignore": {
+      "object": [{"Name": "fred"}, {"field3": "abcd"}],
+    },
+  }
+}</pre>
   <p>The minSize and maxSize options do not have any unit of measure assumed. Supply the ignore value in the units
     that the system uses. For example, the FileSystemExtractor and ContentServerExtractor runners both use bytes.</p>
 
-  <p id="text-replacement" class="subtitle is-5 docs-subhead">Text replacement</p>
+  <p id="text-replacement" class="title is-4 docs-subhead">Text replacement</p>
   <p>Strings can be processed by the parseTemplateString function from the task-runner base class.
     This function will find all occurences of <code>${.*}</code> in the supplied text string.</p>
   <p>For each occurrence it will assume the value is in the message attribute of the task and will split the value by
@@ -354,7 +349,7 @@
         </div>
         <div class="container is-fluid dl-footer">
           <a href="https://driverlane.com.au">Driver Lane</a>
-          &copy; 2020-2024
+          &copy; 2020-2025
         </div>
       </div>
     </div>

@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="Description" content="Documentation for Ethel">
+    <title>Ethel Docs</title>
+    <base href="/">
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="stylesheet" href="assets/styles.css">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.6.0/styles/default.min.css">
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.6.0/highlight.min.js"></script>
+  </head>
+  <body class="app">
+    <section class="header">
+      <div class="name">
+        <a href="">Ethel Docs</a>
+      </div>
+    </section>
+    <aside class="panel menu">
+      <div class="docs-menu">
+        
+          <p class="menu-label">Basics</p>
+          <ul class="menu-list">
+              <li>
+                <a href="">Overview</a>
+                
+              </li>
+              <li>
+                <a href="pages/basic/jobs/">Jobs and runs</a>
+                
+              </li>
+              <li>
+                <a href="pages/basic/notifications/">Notifications</a>
+                
+              </li>
+              <li>
+                <a href="pages/basic/client/">Client</a>
+                
+              </li>
+              <li>
+                <a href="pages/basic/deployment/">Deployment</a>
+                
+              </li>
+              <li>
+                <a href="pages/basic/core-config/">Core configuration</a>
+                
+              </li>
+          </ul>
+          <p class="menu-label">Runner config</p>
+          <ul class="menu-list">
+              <li>
+                <a href="pages/runner-config/common-options/">Common options</a>
+                
+              </li>
+              <li>
+                <a href="pages/runner-config/runners/">Runner types</a>
+                
+              </li>
+              <li>
+                <a href="pages/runner-config/mock/">Mock runners</a>
+                
+              </li>
+              <li>
+                <a href="pages/runner-config/text-files/">Text files</a>
+                
+              </li>
+              <li>
+                <a href="pages/runner-config/file-system/">File system</a>
+                
+              </li>
+              <li>
+                <a href="pages/runner-config/databases/">Databases</a>
+                
+              </li>
+              <li>
+                <a href="pages/runner-config/email/">Email</a>
+                
+              </li>
+              <li>
+                <a href="pages/runner-config/ot/">OpenText runners</a>
+                
+                  <ul>
+                      <li>
+                        <a href="pages/runner-config/archive-center/">Archive Server</a>
+                      </li>
+                      <li>
+                        <a href="pages/runner-config/content-server/">Content Server</a>
+                      </li>
+                      <li>
+                        <a href="pages/runner-config/success-factors/">Success Factors</a>
+                      </li>
+                  </ul>
+                
+              </li>
+              <li>
+                <a href="pages/runner-config/microsoft/">Microsoft runners</a>
+                
+                  <ul>
+                      <li>
+                        <a href="pages/runner-config/sharepoint/">SharePoint</a>
+                      </li>
+                  </ul>
+                
+              </li>
+          </ul>
+          <p class="menu-label">Development</p>
+          <ul class="menu-list">
+              <li>
+                <a href="pages/development/design/">Design</a>
+                
+              </li>
+              <li>
+                <a href="pages/development/repository/">Repository</a>
+                
+              </li>
+              <li>
+                <a href="pages/development/server/">Server</a>
+                
+              </li>
+              <li>
+                <a href="pages/development/runners/">Runners</a>
+                
+              </li>
+          </ul>
+      </div>
+    </aside>
+    <section class="panel">
+      <div class="section">
+        <div class="container is-fluid">
+          
+<h3 class="title is-3">Deploying ethel</h3>
+<div class="content">
+
+  <p>These instructions are for customer deployments and assume a Windows server:</p>
+  <ul>
+    <li><a href="pages/basic/deployment/#build">Build</a></li>
+    <li><a href="pages/basic/deployment/#build">Plugins</a></li>
+    <li><a href="pages/basic/deployment/#database">Database options</a></li>
+    <li><a href="pages/basic/deployment/#rabbit">RabbitMQ</a></li>
+    <li><a href="pages/basic/deployment/#ethel">ethel</a></li>
+  </ul>
+
+  <h4 id="build" class="title is-4 docs-subhead">Building ethel</h4>
+  <p>ethel is currently distributed as zipped archives. These are built and attached to the recent releases in
+    <a href="https://github.com/driverlane/ethel/releases" target="_blank">github</a>. You should use these unless
+    testing a proposed fix.
+  </p>
+  <p>Use the <code>build-current.ps1</code> script in the root of the repository to create core and client archives of
+    the current project state. This will transfer the state of any npm link based updates for the shared or runners
+    projects.</p>
+
+  <h4 id="plugins" class="title is-4 docs-subhead">Plugin runners</h4>
+  <p>Job specific runners are called plugins. These can be copied to the default plugins folder location, which is a
+    <code>./plugins</code> folder at the root of the project</code>. Or the plugins can be located anywhere on the
+    server and the path to the plugins added to the <strong>ETHEL_PLUGINS_PATHS</strong> environment variable. This
+    environment variable accepts an array of paths. Using the environment variable is simpler when you are using NPM
+    modules not available in the the ethel core project.
+  </p>
+  <p>A starter project for custom runners is available in <a href="https://github.com/driverlane/ethel-plugins"
+      target="_blank">github</a>. If you are using this project the simplest approach is to add the path to the dist
+    folder of that project to the <strong>ETHEL_PLUGINS_PATHS</strong> array.</p>
+
+  <h4 id="database" class="title is-4 docs-subhead">Database options</h4>
+  <p>Ethel supports SQLite, SQL Server and Postgres. SQLite is the default option and by far the most performant
+    option. If the job involves the migration of millions of items, runs will need to be deleted, or exported and
+    deleted, regularly to control the size of the database.
+  </p>
+  <p>If a different database is used, it is expected that the customer or a PaaS solution would be used. Once accesss is
+    provided update the <strong>ETHEL_DATA</strong> environment variable to use the database.</p>
+
+  <h4 id="rabbit" class="title is-4 docs-subhead">RabbitMQ</h4>
+  <p>While the default queue solution, BetterQueue, works well in most cases, RabbitMQ provides extra flexibility that
+    can be useful in many scenarios.There are two install options, manual or using Chocolately. The Chocolately install
+    can cause problems in some scenarios.</p>
+  <ul>
+    <li>Use Chocolately if you have an internet connection and are not using a service account to run RabbitMQ.</li>
+    <li>Use the manual install if you are using a service account or don't have an internet connection.</li>
+  </ul>
+
+  <h5 class="title is-5">Chocolatey install</h5>
+
+  <ul>
+    <li>Create a directory to hold the application data, e.g. <code>D:\rabbitmq</code>. Then create the
+      <code>RABBITMQ_BASE</code> system environment variable and point it to this directory.
+    </li>
+    <li>Run <code>choco install rabbitmq</code>.</li>
+  </ul>
+
+  <h5 class="title is-5">Manual install</h5>
+
+  <p>Grab the RabbitMQ installer first. Then check the <a href="https://www.rabbitmq.com/docs/which-erlang">Erlang
+      Version Requirements</a> to determine the version of Erlang to download. Download the installer from the
+    <a href="https://www.erlang.org/downloads" target="_blank">Erlang downloads</a> page. Once you've transferred the
+    installers to the server, do the following:
+  </p>
+  <ul>
+    <li>If you're not using a service account create a directory to hold the RabbitMQ application data, e.g.
+      <code>D:\RabbitMQ</code>.
+      Then create the <code>RABBITMQ_BASE</code> system environment variable and point it to this directory.
+    </li>
+    <li>Run the Erlang OTP installer, accepting the defaults.</li>
+    <li>After the installer completes, create the <code>ERLANG_HOME</code> system environment variable. This should
+      point to the bin folder in the Erlang directory, e.g. <code>C:\Program Files\Erlang OTP\bin</code>.</li>
+    <li>Confirm that the required environment variables are available by opening a PowerShell console and typing
+      <code>$env:ERLANG_HOME</code>
+      and if not using a service account <code>$env:RABBITMQ_BASE</code>
+    </li>
+    <li>Run the RabbitMQ installer, accepting the defaults. If you are using a service acccount do not start the
+      service.</li>
+    <li>RabbitMQ defaults to using <code>%APPDATA%/RabbitMQ</code> to store application data. The installer creates a
+      number of files in this path and these should be moved to the equivalent path for the service account folder path.
+      Once moved, update the service log on details and start the service.</li>
+  </ul>
+
+  <h5 class="title is-5">Finalise configuration</h5>
+
+  <p>Complete the following configuration steps:</p>
+  <ul>
+    <li>Make sure the RabbitMQ service is running, then check cli access by opening a PowerShell session and navigating
+      to the sbin folder in the RabbitMQ folder. Run <code>.\rabbitmqctl.bat status</code> to get the current
+      configuration.</li>
+    <li>If there is a connection error the installer probably copied an out of date Erlang cookie to your user folder.
+      Get the current version of the cookie by copying
+      <code>C:\Windows\System32\config\systemprofile\.erlang.cookie</code> to the root
+      of your <code>C:\Users\{username}</code> folder. Run <code>.\rabbitmqctl.bat status</code> again to check if this
+      resolved the connection issue. If not it's google time.
+    </li>
+    <li>Add a user for ethel <code>.\rabbitmqctl.bat add_user ethel &lt;password&gt;</code> and then give them
+      permissions
+      <code>.\rabbitmqctl.bat set_permissions -p / ethel ".*" ".*" ".*"</code>. Or you could do this via the management
+      GUI.
+    </li>
+  </ul>
+
+  <h5 class="title is-5">Other configuration</h5>
+
+  <p>Optional configuration changes:</p>
+  <ul>
+    <li>If you want the management web GUI install the plugin via
+      <code>.\rabbitmq-plugins.bat enable rabbitmq_management</code>.
+      The default URL for the GUI is <code>http://localhost:15672</code> and the default user is <code>guest</code> with
+      a password of <code>guest</code>. The guest user can only log from the server. Remote login is disabled for this
+      account.
+    </li>
+    <li>You can use environment variables to change most common configuration options, like port numbers. A full list is
+      <a href="https://www.rabbitmq.com/docs/configure#supported-environment-variables" target="_blank">here</a>. To
+      change the port the nodes are listening on use <code>RABBITMQ_NODE_PORT</code>. When changing an environment
+      variable recreate the service using the <code>rabbitmq-service.bat</code> tool, running <code>remove</code>,
+      <code>install</code> and <code>start</code>.
+    </li>
+  </ul>
+
+  <p id="ethel" class="title is-4 docs-subhead">Windows server</p>
+  <p><a href="https://pm2.io/" target="_blank">PM2</a> is used to run ethel on Windows servers. Install instructions and
+    configuration information is available in the ethel repository at <code>./resources/pm2</code>.</p>
+
+</div>
+        </div>
+        <div class="container is-fluid dl-footer">
+          <a href="https://driverlane.com.au">Driver Lane</a>
+          &copy; 2020-2025
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

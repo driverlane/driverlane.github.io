@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="Description" content="Documentation for Ethel">
     <title>Ethel Docs</title>
-    <base href="/ethel/">
+    <base href="/">
     <link rel="icon" type="image/x-icon" href="favicon.ico">
     <link rel="stylesheet" href="assets/styles.css">
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.6.0/styles/default.min.css">
@@ -39,7 +39,7 @@
                 
               </li>
               <li>
-                <a href="pages/basic/running-ethel/">Running ethel</a>
+                <a href="pages/basic/deployment/">Deployment</a>
                 
               </li>
               <li>
@@ -50,11 +50,11 @@
           <p class="menu-label">Runner config</p>
           <ul class="menu-list">
               <li>
-                <a href="pages/runner-config/runners/">Runner types</a>
+                <a href="pages/runner-config/common-options/">Common options</a>
                 
               </li>
               <li>
-                <a href="pages/runner-config/common-options/">Common options</a>
+                <a href="pages/runner-config/runners/">Runner types</a>
                 
               </li>
               <li>
@@ -107,15 +107,19 @@
           <p class="menu-label">Development</p>
           <ul class="menu-list">
               <li>
+                <a href="pages/development/design/">Design</a>
+                
+              </li>
+              <li>
                 <a href="pages/development/repository/">Repository</a>
                 
               </li>
               <li>
-                <a href="pages/development/runners/">Runners</a>
+                <a href="pages/development/server/">Server</a>
                 
               </li>
               <li>
-                <a href="pages/development/architecture/">Architecture</a>
+                <a href="pages/development/runners/">Runners</a>
                 
               </li>
           </ul>
@@ -125,7 +129,7 @@
       <div class="section">
         <div class="container is-fluid">
           
-<p class="title is-4">Database runners</p>
+<h3 class="title is-3">Database runners</h3>
 <div class="content">
 
   <p>These runners read from, or write to, databases.</p>
@@ -133,219 +137,529 @@
   <ul>
     <li><a href="pages/runner-config/databases/#postgres-extractor">PostgresExtractor</a></li>
     <li><a href="pages/runner-config/databases/#postgres-loader">PostgresLoader</a></li>
+    <li><a href="pages/runner-config/databases/#sqlite-extractor">SQLiteExtractor</a></li>
+    <li><a href="pages/runner-config/databases/#sqlite-loader">SQLiteLoader</a></li>
     <li><a href="pages/runner-config/databases/#sqlserver-extractor">SQLServerExtractor</a></li>
     <li><a href="pages/runner-config/databases/#sqlserver-loader">SQLServerLoader</a></li>
   </ul>
 
-  <p id="postgres-extractor" class="subtitle is-5 docs-subhead">PostgresExtractor</p>
-  <p><a href="pages/runner-config/runner-status/"><span class="tag is-link">Developed</span></a></p>
+  <section>
 
-  <p>This runner extracts data from a Postgres database. It has the following configuration options:</p>
-  <ul>
-    <li><code>batchConfig</code> <i>number | RunnerBatchConfig</i> - see <a href="pages/runner-config/common-options/#batches">batches</a> - needs a hashName value or it will be ignored</li>
-    <li><code>connection</code> <strong>mandatory</strong> <i>object</i> - lookup name and key to object with the following values:
-      <ul>
-        <li>database</li>
-        <li>user</li>
-        <li>password</li>
-        <li>host - the server running Postgres, defaults to localhost</li>
-        <li>port - the port where Postgres is listening, defaults to 5432</li>
-      </ul>
-    </li>
-    <li><code>hashName</code> <i>string</i> - the lookup name for storing the source object hash</li>
-    <li><code>ignore</code> <i>object</i> - only supports object based ignore, see <a href="pages/runner-config/common-options/#ignore">ignore items</a></li>
-    <li><code>keepAliveCount</code> <i>number</i> - how often to save the extractor status, defaults to 1000 tasks created</li>
-    <li><code>quarantinedLookupName</code> <i>string</i> - the name for the quarantine lookup, defaults to quarantinedPostgresExtractor</li>
-    <li><code>query</code> <strong>mandatory</strong> <i>string</i> - the query to be run</li>
-  </ul>
-  <hr>
-  <p>Example runner configuration:</p>
-  <pre class="code">
-  {
-    "type": "PostgresExtractor",
-    "config": {
-      "connection": { "name": "connections", "key": "postgres.etheltest" },
-      "query": "SELECT * FROM customer INNER JOIN address on customer.address_id = address.address_id LIMIT 10;",
-    },
-  }
-  </pre>
+    <p id="postgres-extractor" class="title is-4 docs-subhead">PostgresExtractor</p>
+    <p><a href="pages/runner-config/runner-status/"><span class="tag is-info">Tested</span></a></p>
 
-  <p>For each row it will raise the next task with the following message elements:</p>
-  <ul>
-    <li><code>extractId</code> the extract id</li>
-    <li><code>item</code> the values returned by the query with the column name</li>
-  </ul>
-  <pre class="code">
-  "message": {
-    "extractId": "DGJP3bsPxDHsW2wv1fRRW",
-    "item": {
-      "customer": "MARYSMITH",
-      "email": "MARY.SMITH@sakilacustomer.org",
-      "address": "1913 Hanoi Way",
-      "district": "Nagasaki",
-      "postal_code": "35200",
-      "phone": "28303384290"
-    }
-  }
-  </pre>
+    <p>This runner extracts data from a Postgres database</p>
 
-  <p id="postgres-loader" class="subtitle is-5 docs-subhead">PostgresLoader</p>
-  <p><a href="pages/runner-config/runner-status/"><span class="tag is-link">Developed</span></a></p>
+    <h5 class="title is-5">Configuration options</h5>
 
-  <p>This runner extracts loads data into a Postgres database. It has the following configuration options:</p>
-  <ul>
-    <li><code>addHash</code> <i>boolean</i> - whether to add the currentHash lookup, defaults to true</li>
-    <li><code>addResultToMessage</code> <i>boolean</i> - whether the result of the query is added to the message,
-      defaults to false</li>
-    <li><code>connection</code> <strong>mandatory</strong> <i>object</i> - lookup name and key to object with the
-      following values:
-      <ul>
-        <li>database</li>
-        <li>user</li>
-        <li>password</li>
-        <li>host - the server running Postgres, defaults to localhost</li>
-        <li>port - the port where Postgres is listening, defaults to 5432</li>
-      </ul>
-    </li>
-    <li><code>query</code> <i>string</i> - the attribute in the message that contains the query, defaults to 'query'
-    </li>
-  </ul>
-  <p>It uses the following message attributes:</p>
-  <ul>
-    <li><code>query</code> <strong>mandatory</strong> <i>string</i> - the insert/update to be run, supports <a
-        href="pages/runner-config/common-options/#text-replacement">text replacement</a></li>
-  </ul>
-  <p>Message attribute names can be changed in the config section.</p>
-  <hr>
-  <p>Example runner configuration:</p>
-  <pre class="code">
-  {
-    "type": "PostgresLoader",
-    "config": {
-      "connection": { "name": "connections", "key": "postgres.etheltest" },
-      "query": "update"
-    },
-    "message": {
-      "update": "UPDATE customers SET name = ${item.name} WHERE ID = ${extractId};"
-    }
-  }
-  </pre>
+    <table class="table is-fullwidth">
+      <thead>
+        <th>Option</th>
+        <th>Data type</th>
+        <td>Default</td>
+        <th>Description</th>
+      </thead>
+      <tbody>
+        <tr>
+          <td>batchConfig</td>
+          <td>number | BatchConfig, <strong>mandatory</strong></td>
+          <td>none</td>
+          <td>See <a href="pages/runner-config/common-options/#batches">batches</a></td>
+        </tr>
+        <tr>
+          <td>cancelCheckNumber</td>
+          <td>number</td>
+          <td><code>100</code></td>
+          <td>How often, in tasks raised, to check if the extract should be cancelled</td>
+        </tr>
+        <tr>
+          <td>connection</td>
+          <td>LookupDetails, <strong>mandatory</strong></td>
+          <td>none</td>
+          <td>The name and key to the lookup with the connection details.</td>
+        </tr>
+        <tr>
+          <td>hashName</td>
+          <td>string, <strong>mandatory</strong></td>
+          <td>none</td>
+          <td>The lookup name used to store the extract hash</td>
+        </tr>
+        <tr>
+          <td>ignore</td>
+          <td>object</td>
+          <td>none</td>
+          <td>See <a href="pages/runner-config/common-options/#ignore">ignore items</a>. This runner only supports
+            object based ignore options.</td>
+        </tr>
+        <tr>
+          <td>quarantinedLookupName</td>
+          <td>string</td>
+          <td><code>quarantinedPostgresExtractor</code></td>
+          <td>Name value for the quarantine lookup</td>
+        </tr>
+        <tr>
+          <td>query</td>
+          <td>string, <strong>mandatory</strong></td>
+          <td>none</td>
+          <td>The query to be run</td>
+        </tr>
+      </tbody>
+    </table>
 
-  <p>For each row it will raise the next task with the following message elements:</p>
-  <ul>
-    <li><code>PostgresLoaderResults</code> optionally include the results of the query in the message object</li>
-    <li><code>PostgresLoaderComplete</code> the date and time the runner completed</li>
-  </ul>
+    <p>The connection value should include these values:</p>
+    <ul>
+      <li>database</li>
+      <li>user</li>
+      <li>password</li>
+      <li>host - the server running Postgres. Defaults to localhost</li>
+      <li>port - the port where Postgres is listening. Defaults to 5432</li>
+    </ul>
+    <hr>
 
-  <p id="sqlserver-extractor" class="subtitle is-5 docs-subhead">SQLServerExtractor</p>
-  <p><a href="pages/runner-config/runner-status/"><span class="tag is-link">Developed</span></a></p>
+    <h5 class="title is-5">Message attributes</h5>
 
-  <p>This runner extracts data from a SQLServer database. It has the following configuration options:</p>
-  <ul>
-    <li><code>batchConfig</code> <i>number | RunnerBatchConfig</i> - see <a
-        href="pages/runner-config/common-options/#batches">batches</a> - needs a hashName value
-      or it will be ignored</li>
-    <li><code>connection</code> <strong>mandatory</strong> <i>object</i> - lookup name and key to JSON connection
-      object from the <a href="https://github.com/tediousjs/node-mssql#longer-example-connect-via-config-object"
-        target="_blank">mssql project</a></li>
-    <li><code>hashName</code> <i>string</i> - the lookup name for storing the source object hash</li>
-    <li><code>ignore</code> <i>object</i> - only supports object based ignore, see <a
-        href="pages/runner-config/common-options/#ignore">ignore items</a></li>
-    <li><code>keepAliveCount</code> <i>number</i> - how often to save the extractor status, defaults to 1000 tasks
-      created</li>
-    <li><code>quarantinedLookupName</code> <i>string</i> - the name for the quarantine lookup, defaults to
-      quarantinedSQLServerExtractor</li>
-    <li><code>query</code> <strong>mandatory</strong> <i>string</i> - the query to be run</li>
-  </ul>
-  <hr>
-  <p>Example connection object for a local docker instance:</p>
-  <pre class="code">
-  {
-    "user": "ethel",
-    "password": "Sup#rSecret",
-    "database": "ethel",
-    "server": "localhost",
-    "options": {
-      "trustServerCertificate": true
-    }
-  }
-  </pre>
-  <p>Example runner configuration:</p>
-  <pre class="code">
-  {
-    "type": "SQLServerExtractor",
-    "config": {
-      "connection": { "name": "connections", "key": "sqlserver.dev" },
-      "query": "SELECT TOP 10 * FROM customers;",
-    },
-  }
-  </pre>
+    <p>It adds the following attributes to the message object of raised tasks:</p>
+    <ul>
+      <li><code>extractItem</code> the row extracted from the database</li>
+    </ul>
+    <hr>
 
-  <p>For each row it will raise the next task with the following message elements:</p>
-  <ul>
-    <li><code>extractId</code> the extract id</li>
-    <li><code>item</code> the values returned by the query with the column name</li>
-  </ul>
-  <pre class="code">
-  "message": {
-    "extractId": "DGJP3bsPxDHsW2wv1fRRW",
-    "item": {
-      "customer": "MARYSMITH",
-      "email": "MARY.SMITH@sakilacustomer.org",
-      "address": "1913 Hanoi Way",
-      "district": "Nagasaki",
-      "postal_code": "35200",
-      "phone": "28303384290"
-    }
-  }
-  </pre>
+  </section>
 
-  <p id="sqlserver-loader" class="subtitle is-5 docs-subhead">SQLServerLoader</p>
-  <p><a href="pages/runner-config/runner-status/"><span class="tag is-link">Developed</span></a></p>
+  <section>
 
-  <p>This runner extracts data from a SQLServer database. It has the following configuration options:</p>
-  <ul>
-    <li><code>addHash</code> <i>boolean</i> - whether to add the currentHash lookup, defaults to true</li>
-    <li><code>addResultToMessage</code> <i>boolean</i> - whether the result of the query is added to the message,
-      defaults to false</li>
-    <li><code>connection</code> <strong>mandatory</strong> <i>object</i> - lookup name and key to JSON connection
-      object from the <a href="https://github.com/tediousjs/node-mssql#longer-example-connect-via-config-object"
-        target="_blank">mssql project</a></li>
-    <li><code>query</code> <i>string</i> - the message attribute that contains the query, defaults to 'query'
-    </li>
-  </ul>
-  <p>It uses the following message attributes:</p>
-  <ul>
-    <li><code>query</code> <strong>mandatory</strong> <i>string</i> - the insert/update to be run, supports <a
-        href="pages/runner-config/common-options/#text-replacement">text replacement</a></li>
-  </ul>
-  <p>Message attribute names can be changed in the config section.</p>
-  <hr>
-  <p>Example runner configuration:</p>
-  <pre class="code">
-  {
-    "type": "SQLServerLoader",
-    "config": {
-      "connection": { "name": "connections", "key": "sqlserver.dev" },
-      "query": "update"
-    },
-    "message": {
-      "update": "UPDATE customers SET name = ${item.name} WHERE ID = ${extractId};"
-    }
-  }
-  </pre>
+    <p id="postgres-loader" class="title is-4 docs-subhead">PostgresLoader</p>
+    <p><a href="pages/runner-config/runner-status/"><span class="tag is-info">Tested</span></a></p>
 
-  <p>For each row it will raise the next task with the following message elements:</p>
-  <ul>
-    <li><code>SQLServerLoaderResults</code> optionally include the results of the query in the message object</li>
-    <li><code>SQLServerLoaderComplete</code> the date and time the runner completed</li>
-  </ul>
+    <p>This runner loads data into a Postgres database</p>
+
+    <h5 class="title is-5">Configuration options</h5>
+
+    <table class="table is-fullwidth">
+      <thead>
+        <th>Option</th>
+        <th>Data type</th>
+        <th>Default</th>
+        <th>Description</th>
+      </thead>
+      <tbody>
+        <tr>
+          <td>addHash</td>
+          <td>boolean</td>
+          <td><code>true</code></td>
+          <td>Whether to save the extractHash lookup</td>
+        </tr>
+        <tr>
+          <td>connection</td>
+          <td>LookupDetails, <strong>mandatory</strong></td>
+          <td>none</td>
+          <td>The name and key to the lookup with the connection details.</td>
+        </tr>
+        <tr>
+          <td>query</td>
+          <td>string, <strong>mandatory</strong></td>
+          <td>none</td>
+          <td>The insert/update to be run</td>
+        </tr>
+        <tr>
+          <td>queryValues</strong></td>
+          <td>string</td>
+          <td><code>queryValues</code></td>
+          <td>The message attribute containing any values used by the query</td>
+        </tr>
+        <tr>
+          <td>queryValuesTemplate</strong></td>
+          <td>string</td>
+          <td>none</td>
+          <td>The query values used by the query using template literals. If populated queryValues is ignored.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p>The connection value should include these values:</p>
+    <ul>
+      <li>database</li>
+      <li>user</li>
+      <li>password</li>
+      <li>host - the server running Postgres. Defaults to localhost</li>
+      <li>port - the port where Postgres is listening. Defaults to 5432</li>
+    </ul>
+    <hr>
+
+    <h5 class="title is-5">Message attributes</h5>
+
+    <table class="table is-fullwidth">
+      <thead>
+        <th>Option</th>
+        <th>Data type</th>
+        <th>Description</th>
+      </thead>
+      <tbody>
+        <tr>
+          <td>extractHash</td>
+          <td>Lookup</td>
+          <td>The current extract hash object</td>
+        </tr>
+        <tr>
+          <td>queryValues</td>
+          <td>any[]</td>
+          <td>The values used in the query.</td>
+        </tr>
+      </tbody>
+    </table>
+    <p>Message attribute names can be changed in the configuration options.</p>
+    <p>This runner does not update the message object.</p>
+    <hr>
+
+  </section>
+
+  <section>
+
+    <p id="sqlite-extractor" class="title is-4 docs-subhead">SQLiteExtractor</p>
+    <p><a href="pages/runner-config/runner-status/"><span class="tag is-primary">Production</span></a></p>
+
+    <p>This runner extracts data from a SQLite database</p>
+
+    <h5 class="title is-5">Configuration options</h5>
+
+    <table class="table is-fullwidth">
+      <thead>
+        <th>Option</th>
+        <th>Data type</th>
+        <th>Default</th>
+        <th>Description</th>
+      </thead>
+      <tbody>
+        <tr>
+          <td>batchConfig</td>
+          <td>number | BatchConfig, <strong>mandatory</strong></td>
+          <td>none</td>
+          <td>See <a href="pages/runner-config/common-options/#batches">batches</a></td>
+        </tr>
+        <tr>
+          <td>cancelCheckNumber</td>
+          <td>number</td>
+          <td><code>100</code></td>
+          <td>How often, in tasks raised, to check if the extract should be cancelled</td>
+        </tr>
+        <tr>
+          <td>dbPath</td>
+          <td>string, <strong>mandatory</strong></td>
+          <td>none</td>
+          <td>The path to the database file.</td>
+        </tr>
+        <tr>
+          <td>hashName</td>
+          <td>string, <strong>mandatory</strong></td>
+          <td>none</td>
+          <td>The lookup name used to store the extract hash</td>
+        </tr>
+        <tr>
+          <td>ignore</td>
+          <td>object</td>
+          <td>none</td>
+          <td>See <a href="pages/runner-config/common-options/#ignore">ignore items</a>. This runner only supports
+            object based ignore options.</td>
+        </tr>
+        <tr>
+          <td>quarantinedLookupName</td>
+          <td>string</td>
+          <td><code>quarantinedSQLiteExtractor</code></td>
+          <td>Name value for the quarantine lookup</td>
+        </tr>
+        <tr>
+          <td>query</td>
+          <td>string, <strong>mandatory</strong></td>
+          <td>none</td>
+          <td>The query to be run</td>
+        </tr>
+      </tbody>
+    </table>
+    <hr>
+
+    <h5 class="title is-5">Message attributes</h5>
+
+    <p>It adds the following attributes to the message object of raised tasks:</p>
+    <ul>
+      <li><code>extractItem</code> the row extracted from the database</li>
+    </ul>
+    <hr>
+
+  </section>
+
+  <section>
+
+    <p id="sqlite-loader" class="title is-4 docs-subhead">SQLiteLoader</p>
+    <p><a href="pages/runner-config/runner-status/"><span class="tag is-primary">Production</span></a></p>
+
+    <p>This runner loads data into a SQLite database</p>
+
+    <h5 class="title is-5">Configuration options</h5>
+
+    <table class="table is-fullwidth">
+      <thead>
+        <th>Option</th>
+        <th>Data type</th>
+        <th>Default</th>
+        <th>Description</th>
+      </thead>
+      <tbody>
+        <tr>
+          <td>addHash</td>
+          <td>boolean</td>
+          <td><code>true</code></td>
+          <td>Whether to save the extractHash lookup</td>
+        </tr>
+        <tr>
+          <td>dbPath</td>
+          <td>string, <strong>mandatory</strong></td>
+          <td>none</td>
+          <td>The path to the database file</td>
+        </tr>
+        <tr>
+          <td>query</td>
+          <td>string, <strong>mandatory</strong></td>
+          <td>none</td>
+          <td>The insert/update to be run.</td>
+        </tr>
+        <tr>
+          <td>queryValues</td>
+          <td>string</td>
+          <td><code>queryValues</code></td>
+          <td>The message attribute containing any values used by the query</td>
+        </tr>
+        <tr>
+          <td>queryValuesTemplate</strong></td>
+          <td>string</td>
+          <td>none</td>
+          <td>The query values used by the query using template literals. If populated queryValues is ignored.</td>
+        </tr>
+      </tbody>
+    </table>
+    <hr>
+
+    <h5 class="title is-5">Message attributes</h5>
+
+    <table class="table is-fullwidth">
+      <thead>
+        <th>Option</th>
+        <th>Data type</th>
+        <th>Description</th>
+      </thead>
+      <tbody>
+        <tr>
+          <td>extractHash</td>
+          <td>Lookup</td>
+          <td>The current extract hash object</td>
+        </tr>
+        <tr>
+          <td>queryValues</td>
+          <td>any[]</td>
+          <td>The values used in the query.</td>
+        </tr>
+      </tbody>
+    </table>
+    <p>Message attribute names can be changed in the configuration options.</p>
+    <p>This runner does not update the message object.</p>
+    <hr>
+
+  </section>
+
+  <section>
+    <p id="sqlserver-extractor" class="title is-4 docs-subhead">SQLServerExtractor</p>
+    <p><a href="pages/runner-config/runner-status/"><span class="tag is-info">Tested</span></a></p>
+
+    <p>This runner extracts data from a SQLServer database</p>
+
+    <h5 class="title is-5">Configuration options</h5>
+
+    <table class="table is-fullwidth">
+      <thead>
+        <th>Option</th>
+        <th>Data type</th>
+        <th>Default</th>
+        <th>Description</th>
+      </thead>
+      <tbody>
+        <tr>
+          <td>batchConfig</td>
+          <td>number | BatchConfig, <strong>mandatory</strong></td>
+          <td>none</td>
+          <td>See <a href="pages/runner-config/common-options/#batches">batches</a></td>
+        </tr>
+        <tr>
+          <td>cancelCheckNumber</td>
+          <td>number</td>
+          <td><code>100</code></td>
+          <td>How often, in tasks raised, to check if the extract should be cancelled</td>
+        </tr>
+        <tr>
+          <td>connection</td>
+          <td>LookupDetails, <strong>mandatory</strong></td>
+          <td>none</td>
+          <td>The name and key to the lookup with the connection details</td>
+        </tr>
+        <tr>
+          <td>hashName</td>
+          <td>string, <strong>mandatory</strong></td>
+          <td>none</td>
+          <td>The lookup name used to store the extract hash</td>
+        </tr>
+        <tr>
+          <td>ignore</td>
+          <td>object</td>
+          <td>none</td>
+          <td>See <a href="pages/runner-config/common-options/#ignore">ignore items</a>. This runner only supports
+            object based ignore options.
+          </td>
+        </tr>
+        <tr>
+          <td>quarantinedLookupName</td>
+          <td>string</td>
+          <td><code>quarantinedSQLServerExtractor</code></td>
+          <td>Name value for the quarantine lookup name</td>
+        </tr>
+        <tr>
+          <td>query</td>
+          <td>string, <strong>mandatory</strong></td>
+          <td>none</td>
+          <td>The query to be run</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p>Information on the connection details in the <a
+        href="https://github.com/tediousjs/node-mssql#longer-example-connect-via-config-object" target="_blank">mssql
+        project</a></p>
+    <hr>
+
+    <h5 class="title is-5">Message attributes</h5>
+
+    <p>It adds the following attributes to the message object of raised tasks:</p>
+    <ul>
+      <li><code>extractItem</code> the row extracted from the database</li>
+    </ul>
+    <hr>
+
+  </section>
+
+  <section>
+    <p id="sqlserver-loader" class="title is-4 docs-subhead">SQLServerLoader</p>
+    <p><a href="pages/runner-config/runner-status/"><span class="tag is-info">Tested</span></a></p>
+
+    <p>This runner loads data into a SQLServer database</p>
+
+    <h5 class="title is-5">Configuration options</h5>
+
+    <table class="table is-fullwidth">
+      <thead>
+        <th>Option</th>
+        <th>Data type</th>
+        <th>Default</th>
+        <th>Description</th>
+      </thead>
+      <tbody>
+        <tr>
+          <td>addHash</td>
+          <td>boolean</td>
+          <td><code>true</code></td>
+          <td>Whether to save the extractHash lookup</td>
+        </tr>
+        <tr>
+          <td>connection</td>
+          <td>LookupDetails, <strong>mandatory</strong></td>
+          <td>none</td>
+          <td>The name and key to the lookup with the connection details.</td>
+        </tr>
+        <tr>
+          <td>query</td>
+          <td>string, <strong>mandatory</strong></td>
+          <td>none</td>
+          <td>The insert/update to be run.</td>
+        </tr>
+        <tr>
+          <td>queryValues</td>
+          <td>string</td>
+          <td><code>queryValues</code></td>
+          <td>The message attribute containing any values used by the query</td>
+        </tr>
+        <tr>
+          <td>queryValuesTemplate</strong></td>
+          <td>string</td>
+          <td>none</td>
+          <td>The query values used by the query using template literals. If populated queryValues is ignored.</td>
+        </tr>
+      </tbody>
+    </table>
+    <hr>
+
+    <h5 class="title is-5">Message attributes</h5>
+
+    <table class="table is-fullwidth">
+      <thead>
+        <th>Option</th>
+        <th>Data type</th>
+        <th>Description</th>
+      </thead>
+      <tbody>
+        <tr>
+          <td>extractHash</td>
+          <td>Lookup</td>
+          <td>The current extract hash object</td>
+        </tr>
+        <tr>
+          <td>queryValues</td>
+          <td>{ name: string; type: SQLServerLoaderDataType; value: any; }[]</td>
+          <td>The values used in the query.</td>
+        </tr>
+      </tbody>
+    </table>
+    <p>Message attribute names can be changed in the configuration options.</p>
+
+    <p>This runner does not update the message object.</p>
+    <hr>
+
+    <p>SQLServerLoaderDataType values:</p>
+    <pre class="code">'Bit'
+'BigInt'
+'Decimal'
+'Float'
+'Int'
+'Money'
+'Numeric'
+'SmallInt'
+'SmallMoney'
+'Real'
+'TinyInt'
+'Char'
+'NChar'
+'Text'
+'NText'
+'VarChar'
+'NVarChar'
+'Xml'
+'Time'
+'Date'
+'DateTime'
+'DateTime2'
+'DateTimeOffset'
+'SmallDateTime'
+'UniqueIdentifier'
+'Variant'
+'Binary'
+'VarBinary'
+'Image'
+'UDT'
+'Geography'
+'Geometry'</pre>
+
+  </section>
 
 </div>
         </div>
         <div class="container is-fluid dl-footer">
           <a href="https://driverlane.com.au">Driver Lane</a>
-          &copy; 2020-2024
+          &copy; 2020-2025
         </div>
       </div>
     </div>

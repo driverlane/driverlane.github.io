@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="Description" content="Documentation for Ethel">
     <title>Ethel Docs</title>
-    <base href="/ethel/">
+    <base href="/">
     <link rel="icon" type="image/x-icon" href="favicon.ico">
     <link rel="stylesheet" href="assets/styles.css">
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.6.0/styles/default.min.css">
@@ -39,7 +39,7 @@
                 
               </li>
               <li>
-                <a href="pages/basic/running-ethel/">Running ethel</a>
+                <a href="pages/basic/deployment/">Deployment</a>
                 
               </li>
               <li>
@@ -50,11 +50,11 @@
           <p class="menu-label">Runner config</p>
           <ul class="menu-list">
               <li>
-                <a href="pages/runner-config/runners/">Runner types</a>
+                <a href="pages/runner-config/common-options/">Common options</a>
                 
               </li>
               <li>
-                <a href="pages/runner-config/common-options/">Common options</a>
+                <a href="pages/runner-config/runners/">Runner types</a>
                 
               </li>
               <li>
@@ -107,15 +107,19 @@
           <p class="menu-label">Development</p>
           <ul class="menu-list">
               <li>
+                <a href="pages/development/design/">Design</a>
+                
+              </li>
+              <li>
                 <a href="pages/development/repository/">Repository</a>
                 
               </li>
               <li>
-                <a href="pages/development/runners/">Runners</a>
+                <a href="pages/development/server/">Server</a>
                 
               </li>
               <li>
-                <a href="pages/development/architecture/">Architecture</a>
+                <a href="pages/development/runners/">Runners</a>
                 
               </li>
           </ul>
@@ -125,7 +129,7 @@
       <div class="section">
         <div class="container is-fluid">
           
-<p class="title is-4">Text file runners</p>
+<h3 class="title is-3">Text file runners</h3>
 <div class="content">
 
   <p>These runners read from, or write to, text files.</p>
@@ -135,254 +139,398 @@
     <li><a href="pages/runner-config/text-files/#csv-loader">CSVLoader</a></li>
     <li><a href="pages/runner-config/text-files/#json-extractor">JSONExtractor</a></li>
     <li><a href="pages/runner-config/text-files/#json-loader">JSONLoader</a></li>
+    <li><a href="pages/runner-config/text-files/#xml-extractor">XMLExtractor</a></li>
   </ul>
 
-  <p id="csv-extractor" class="subtitle is-5 docs-subhead">CSVExtractor</p>
-  <p><a href="pages/runner-config/runner-status/"><span class="tag is-primary">Production</span></a></p>
+  <section class="CSVExtractor">
 
-  <p>This runner extracts data from a CSV file. It will raise one new task per row. It has the following configuration
-    options:</p>
-  <ul>
-    <li><code>batchConfig</code> <i>number | RunnerBatchConfig</i> - see <a
-        href="pages/runner-config/common-options/#batches">batches</a> - needs a hashName value
-      or it will be ignored</li>
-    <li><code>dataFile</code> <strong>mandatory</strong> <i>string</i> - the path to the CSV file</li>
-    <li><code>delimiter</code> <i>string</i> - the delimiter between columns, defaults to ","</li>
-    <li><code>hasHeaders</code> <i>boolean</i> - whether the file has a header row, defaults to true</li>
-    <li><code>hashName</code> <i>string</i> - the lookup name for storing the source object hash</li>
-    <li><code>headersToCamelCase</code> <i>boolean</i> - whether to convert the heading column into camel case</li>
-    <li><code>ignore</code> <i>object</i> - only supports object based ignore, see <a
-        href="pages/runner-config/common-options/#ignore">ignore items</a></li>
-    <li><code>ignoreHeaders</code> <i>boolean</i> - use column numbers instead of the first row as column names</li>
-    <li><code>keepAliveCount</code> <i>number</i> - how often to save the extractor status, defaults to 1000 tasks
-      created</li>
-    <li><code>quarantinedLookupName</code> <i>string</i> - the name for the quarantine lookup, defaults to
-      quarantinedCSVExtractor</li>
-  </ul>
-  <hr>
-  <p>Example runner configuration:</p>
-  <pre class="code">
-  {
-    "type": "CSVExtractor",
-    "config": {
-      "dataFile": "C://data/source.csv",
-      "batchConfig": 100,
-      "hasHeaders": false,
-      "hashName": "hashNameForJob",
-      "headersToCamelCase": 10,
-      "ignoreHeaders": 10
-    }
-  }
-  </pre>
+    <h4 id="csv-extractor" class="title is-4 docs-subhead">CSVExtractor</h4>
+    <p><a href="pages/runner-config/runner-status/"><span class="tag is-primary">Production</span></a></p>
 
-  <p>For each row it will raise the next task with the following message elements:</p>
-  <ul>
-    <li><code>extractLine</code> the line number from the CSV file</li>
-    <li><code>item</code> the row of data from the source file</li>
-    <li><code>currentHash</code> the hash of the data. Added if a hashName is configured.</li>
-    <li><code>quarantine</code> the lookup to add to quarantine the object</li>
-    <li><code>previousHash</code> the hash of the previous extract. Added if a hashName is configured and the item is
-      updated.</li>
-  </ul>
-  <p>Example message object for new task:</p>
-  <pre class="code">
-  {
-    "message": {
-      "item": {
-        "column0": "J6BT8ITBAA9BFJI6",
-        "column1": "2012-12-23",
-        "column2": "Donte",
-        "column3": "Villasenor",
-        "column4": "allan.nugent4635@islam.com"
-      },
-      "lineNumber": "5324",
-      "quarantine": {
-        "name": "quarantinedCSVExtractor",
-        "key": "991eabc7590a6ad8ff350fbe1ded0a1293507137",
-        "value": "991eabc7590a6ad8ff350fbe1ded0a1293507137"
-      }
-    }
-  }
-  </pre>
+    <p>This runner extracts data from a CSV file. It will raise one new task per row</p>
 
-  <p id="csv-loader" class="subtitle is-5 docs-subhead">CSVLoader</p>
-  <p><a href="pages/runner-config/runner-status/"><span class="tag is-link">Developed</span></a></p>
+    <h5 class="title is-5">Configuration options</h5>
 
-  <p>This runner adds an entry to a CSV file. It has the following configuration options:</p>
-  <ul>
-    <li><code>addHash</code> <i>boolean</i> - whether to add the currentHash lookup, defaults to true</li>
-    <li><code>csvHeaders</code> <i>string</i> - a header row to be added to the CSV file on creation</li>
-    <li><code>csvTemplate</code> <strong>mandatory</strong> <i>string</i> - the CSV data template</li>
-    <li><code>targetPath</code> <i>string</i> - defaults to targetPath
-      <ul>
-        <li>if targetPathInMessage is true, the message attribute containing the path to the file</li>
-        <li>if targetPathInMessage is false, <strong>mandatory</strong> the path to the file</li>
-      </ul>
-    </li>
-    <li><code>targetPathInMessage</code> <i>boolean</i> - if the targetPath is in the message object, defaults to false</li>
-  </ul>
-  <p>It uses the following message attributes:</p>
-  <ul>
-    <li><code>targetPath</code> <i>string</i> - the path to the file to update, <strong>mandatory</strong> if targetPathInMessage is true</li>
-  </ul>
-  <p>Message attribute names can be changed in the config section.</p>
-  <hr>
-  <p>Example runner and message configuration:</p>
-  <pre class="code">
-    {
-      "runner": {
-        "type": "CSVLoader",
-        "config": {
-          "csvHeaders": "\\"user_name\\",\\"first_name\\",\\"last_name\\"",
-          "csvTemplate": "\\"${user_name}\\",\\"${first_name}\\",\\"${last_name}\\"",
-          "targetPath": "C:\\code\\test\\csv-loader\\${batchId}users.csv",
-        }
-      },
-      "message": {
-        "batchId": "IRFa-VaY2b",
-        "first_name": "Fred",
-        "last_name": "Nerk",
-        "user_name": "nerkf"    
-      }
-    }
-  </pre>
+    <table class="table is-fullwidth">
+      <thead>
+        <th>Attribute</th>
+        <th>Data type</th>
+        <th>Default</th>
+        <th>Description</th>
+      </thead>
+      <tbody>
+        <tr>
+          <td>batchConfig</td>
+          <td>number | BatchConfig, <strong>mandatory</strong></td>
+          <td>none</td>
+          <td>See <a href="pages/runner-config/common-options/#batches">batches</a></td>
+        </tr>
+        <tr>
+          <td>cancelCheckNumber</td>
+          <td>number</td>
+          <td><code>100</code></td>
+          <td>How often, in tasks raised, to check if the extract should be cancelled</td>
+        </tr>
+        <tr>
+          <td>dataFile</td>
+          <td>string, <strong>mandatory</strong></td>
+          <td>none</td>
+          <td>The path to the CSV file</td>
+        </tr>
+        <tr>
+          <td>delimiter</td>
+          <td>string</td>
+          <td><code>,</code></td>
+          <td>The delimiter between columns</td>
+        </tr>
+        <tr>
+          <td>hasHeaders</td>
+          <td>boolean</td>
+          <td><code>true</code></td>
+          <td>Whether the file has a header row</td>
+        </tr>
+        <tr>
+          <td>hashName</td>
+          <td>string, <strong>mandatory</strong></td>
+          <td>none</td>
+          <td>The lookup name used to store the extract hash</td>
+        </tr>
+        <tr>
+          <td>headers</td>
+          <td>string</td>
+          <td>none</td>
+          <td>Override the headers in the document, or supply missing headers.</td>
+        </tr>
+        <tr>
+          <td>ignore</td>
+          <td>any</td>
+          <td>none</td>
+          <td>See <a href="pages/runner-config/common-options/#ignore">ignore items</a>. This runner only supports
+            object based ignore options.</td>
+        </tr>
+        <tr>
+          <td>ignoreHeaders</td>
+          <td>boolean</td>
+          <td><code>false</code></td>
+          <td>Whether to ignore any supplied headers and use the column number as the attribute name</td>
+        </tr>
+        <tr>
+          <td>quarantinedLookupName</td>
+          <td>string</td>
+          <td><code>quarantinedCSVExtractor</code></td>
+          <td>Name value for the quarantine lookup</td>
+        </tr>
+      </tbody>
+    </table>
+    <hr>
 
-  <p>For each row it will raise the next task with the following message or output elements:</p>
-  <ul>
-    <li><code>csvValue</code> the CSV data written to the file</li>
-    <li><code>targetPath</code> the path of the file that was updated</li>
-    <li><code>CSVLoaderComplete</code> the date and time the runner completed</li>
-  </ul>
+    <h5 class="title is-5">Message attributes</h5>
 
-  <p id="json-extractor" class="subtitle is-5 docs-subhead">JSONExtractor</p>
-  <p><a href="pages/runner-config/runner-status/"><span class="tag is-link">Developed</span></a></p>
+    <p>It adds the following attributes to the message object of raised tasks:</p>
+    <ul>
+      <li><code>extractLine</code> the line number from the CSV file</li>
+      <li><code>extractItem</code> the row of data from the source file</li>
+      <li><code>extractHash</code> the hash of the extracted item, if a hashName is supplied.</li>
+      <li><code>quarantine</code> the lookup to add to quarantine the object</li>
+    </ul>
+    <hr>
 
-  <p>This runner extracts tasks from a JSON file. One task per object. It has the following configuration options:</p>
-  <ul>
-    <li><code>batchConfig</code> <i>number | RunnerBatchConfig</i> - see <a
-        href="pages/runner-config/common-options/#batches">batches</a> - needs a hashName value
-      or it will be ignored</li>
-    <li><code>dataFile</code> <strong>mandatory</strong> <i>string</i> - the path to the JSON file</li>
-    <li><code>ignore</code> <i>object</i> - only supports object based ignore, see <a
-        href="pages/runner-config/common-options/#ignore">ignore items</a></li>
-    <li><code>keepAliveCount</code> <i>number</i> - how often to save the extractor status, defaults to 1000 tasks
-      created</li>
-    <li><code>hashName</code> <i>string</i> - the lookup name for storing the source object hash</li>
-    <li><code>keysToCamelCase</code> <i>boolean</i> - convert the property name to camel case, defaults to false</li>
-    <li><code>quarantinedLookupName</code> <i>string</i> - the name for the quarantine lookup, defaults to
-      quarantinedJSONExtractor</li>
-  </ul>
-  <hr>
-  <p>Example runner configuration:</p>
-  <pre class="code">
-  {
-    "type": "JSONExtractor",
-    "config": {
-      "batchConfig": 500,
-      "dataFile": "C:\\code\\test\\example.json",
-      "hashName": "prodFinanceMigration",
-      "quarantinedLookupName": "prodFinanceMigrationQuarantined"
-    }
-  }
-  </pre>
+  </section>
 
-  <p>It will raise the next task with the following message elements:</p>
-  <ul>
-    <li><code>extractId</code> an ID used to connect all runners to the source item</li>
-    <li><code>currentHash</code> the lookup to provide a current of the data, if a hashName is configured</li>
-    <li><code>item</code> the object from the source file</li>
-    <li><code>quarantine</code> the lookup to add to quarantine the object</li>
-    </li>
-  </ul>
-  <p>Example message object for new task:</p>
-  <pre class="code">
-  {
-    "message": {
-      "item": {
-        "Id": "HTAKQDMOYG1NKLFR",
-        "name": "Synthia Sorrell",
-        "dob": "2018-07-30",
-        "address": {
-          "street": "7173 Clay",
-          "town": "Beaumaris",
-          "postode": "KW95 5LK"
-        },
-        "telephone": "+90-1385-287-372",
-        "pets": [
-          "Cali",
-          "Jax"
-        ],
-        "score": 9.8,
-        "email": "mia.foust0@music.cash",
-        "url": "http://comment.com",
-        "description": "properties midlands dod weak cities hourly prize q consecutive slide pin christians carolina rural founder forced verizon sphere waterproof cash",
-        "verified": true,
-        "salary": 62850
-      },
-      "extractId": "0d9f7b39b9c72740faa363e939af32554ec81ed9",
-      "quarantine": {
-        "name": "prodFinanceMigrationQuarantined",
-        "key": "0d9f7b39b9c72740faa363e939af32554ec81ed9",
-        "value": "0d9f7b39b9c72740faa363e939af32554ec81ed9"
-      }
-    }
-  }
-  </pre>
+  <section class="CSVLoader">
 
-  <p id="json-loader" class="subtitle is-5 docs-subhead">JSONLoader</p>
-  <p><a href="pages/runner-config/runner-status/"><span class="tag is-link">Developed</span></a></p>
+    <h4 id="csv-loader" class="title is-4 docs-subhead">CSVLoader</h4>
+    <p><a href="pages/runner-config/runner-status/"><span class="tag is-info">Tested</span></a></p>
 
-  <p>This runner adds an entry to a JSON file. It has the following configuration options:</p>
-  <ul>
-    <li><code>addHash</code> <i>boolean</i> - whether to add the currentHash lookup, defaults to true</li>
-    <li><code>jsonTemplate</code> <strong>mandatory</strong> <i>string</i> - the json object template</li>
-    <li><code>targetPath</code> <i>string</i> - defaults to targetPath
-      <ul>
-        <li>if targetPathInMessage is true, the message attribute containing the path to the file</li>
-        <li>if targetPathInMessage is false, <strong>mandatory</strong> the path to the file</li>
-      </ul>
-    </li>
-    <li><code>targetPathInMessage</code> <i>boolean</i> - if the targetPath is in the message object, defaults to false
-    </li>
-  </ul>
-  <p>It uses the following message attributes:</p>
-  <ul>
-    <li><code>targetPath</code> <i>string</i> - the path to the file to update, <strong>mandatory</strong> if
-      targetPathInMessage is true</li>
-  </ul>
-  <p>Message attribute names can be changed in the config section.</p>
-  <hr>
-  <p>Example runner and message configuration:</p>
-  <pre class="code">
-    {
-      "runner": {
-        "type": "JSONLoader",
-        "config": {
-          "jsonTemplate": {"first_name":"${first_name}","last_name":"${last_name}","user_name":"${user_name}"}
-          "targetPathInMessage": true
-        }
-      },
-      "message": {
-        "targetPath": "C:\\code\\test\\json-loader\\administrators.json",
-        "first_name": "Fred",
-        "last_name": "Nerk",
-        "user_name": "nerkf"    
-      }
-      "id": "6UQtP8-CdXAMg_GQCOSLd"
-    }
-  </pre>
+    <p>This runner adds an entry to a CSV file</p>
 
-  <p>For each row it will raise the next task with the following message elements:</p>
-  <ul>
-    <li><code>jsonObject</code> the object added to the JSON file</li>
-    <li><code>targetPath</code> the path of the file that was updated</li>
-    <li><code>JSONLoaderComplete</code> the date and time the runner completed</li>
-  </ul>
+    <h5 class="title is-5">Configuration options</h5>
+
+    <table class="table is-fullwidth">
+      <thead>
+        <th>Attribute</th>
+        <th>Data type</th>
+        <th>Default</th>
+        <th>Description</th>
+      </thead>
+      <tbody>
+        <tr>
+          <td>addHash</td>
+          <td>boolean</td>
+          <td><code>true</code></td>
+          <td>Whether to save the extractHash lookup</td>
+        </tr>
+        <tr>
+          <td>csvHeaders</td>
+          <td>string</td>
+          <td>none</td>
+          <td>If supplied, the first line of the CSV file.</td>
+        </tr>
+        <tr>
+          <td>csvTemplate</td>
+          <td>string, <strong>mandatory</strong></td>
+          <td>none</td>
+          <td>The CSV line as a template literal.</td>
+        </tr>
+        <tr>
+          <td>targetPath</td>
+          <td>string</td>
+          <td><code>targetPath</code></td>
+          <td>The message attribute with the path to the CSV file to be updated</td>
+        </tr>
+        <tr>
+          <td>targetPathTemplate</td>
+          <td>string</td>
+          <td>none</td>
+          <td>The path to csv file containing a template literal</td>
+        </tr>
+      </tbody>
+    </table>
+    <hr>
+
+    <h5 class="title is-5">Message attributes</h5>
+
+    <table class="table is-fullwidth">
+      <thead>
+        <th>Option</th>
+        <th>Data type</th>
+        <th>Description</th>
+      </thead>
+      <tbody>
+        <tr>
+          <td>targetPath, <strong>mandatory</strong></td>
+          <td>string</td>
+          <td>The path to the file where the CSV is added. Mandatory if no targetPathTemplate provided.</td>
+        </tr>
+      </tbody>
+    </table>
+    <p>Message attribute names can be changed in the configuration options.</p>
+
+    <p>This runner does not update the message object.</p>
+    <hr>
+
+  </section>
+
+  <section class="JSONExtractor">
+
+    <h4 id="json-extractor" class="title is-4 docs-subhead">JSONExtractor</h4>
+    <p><a href="pages/runner-config/runner-status/"><span class="tag is-primary">Production</span></a></p>
+
+    <p>This runner extracts tasks from a JSON file. One task per object</p>
+
+    <h5 class="title is-5">Configuration options</h5>
+
+    <table class="table is-fullwidth">
+      <thead>
+        <th>Attribute</th>
+        <th>Data type</th>
+        <th>Default</th>
+        <th>Description</th>
+      </thead>
+      <tbody>
+        <tr>
+          <td>batchConfig</td>
+          <td>number | BatchConfig, <strong>mandatory</strong></td>
+          <td>none</td>
+          <td>See <a href="pages/runner-config/common-options/#batches">batches</a></td>
+        </tr>
+        <tr>
+          <td>cancelCheckNumber</td>
+          <td>number</td>
+          <td><code>100</code></td>
+          <td>How often, in tasks raised, to check if the extract should be cancelled</td>
+        </tr>
+        <tr>
+          <td>dataFile</td>
+          <td>string, <strong>mandatory</strong></td>
+          <td>none</td>
+          <td>The path to the CSV file.</td>
+        </tr>
+        <tr>
+          <td>hashName</td>
+          <td>string, <strong>mandatory</strong></td>
+          <td>none</td>
+          <td>The lookup name used to store the extract hash</td>
+        </tr>
+        <tr>
+          <td>ignore</td>
+          <td>any</td>
+          <td>none</td>
+          <td>See <a href="pages/runner-config/common-options/#ignore">ignore items</a>. This runner only supports
+            object based ignore options.</td>
+        </tr>
+        <tr>
+          <td>quarantinedLookupName</td>
+          <td>string</td>
+          <td><code>quarantinedJSONExtractor</code></td>
+          <td>Name value for the quarantine lookup</td>
+        </tr>
+        <tr>
+          <td>startingObject</td>
+          <td>string</td>
+          <td>none</td>
+          <td>The object that contains the array to extract using dot notation, e.g. <code>enterprise.users</code>.</td>
+        </tr>
+      </tbody>
+    </table>
+    <hr>
+
+    <h5 class="title is-5">Message attributes</h5>
+
+    <p>It adds the following attributes to the message object of raised tasks:</p>
+    <ul>
+      <li><code>extractHash</code> the hash of the extracted item, if a hashName is supplied.</li>
+      <li><code>extractItem</code> the object from the source file</li>
+      <li><code>quarantine</code> the lookup used to quarantine the object</li>
+      </li>
+    </ul>
+    <hr>
+
+  </section>
+
+  <section class="JSONLoader">
+
+    <h4 id="json-loader" class="title is-4 docs-subhead">JSONLoader</h4>
+    <p><a href="pages/runner-config/runner-status/"><span class="tag is-info">Tested</span></a></p>
+
+    <p>This runner adds an entry to a JSON file</p>
+
+    <h5 class="title is-5">Configuration options</h5>
+
+    <table class="table is-fullwidth">
+      <thead>
+        <th>Attribute</th>
+        <th>Data type</th>
+        <th>Default</th>
+        <th>Description</th>
+      </thead>
+      <tbody>
+        <tr>
+          <td>addHash</td>
+          <td>boolean</td>
+          <td><code>true</code></td>
+          <td>Whether to save the extractHash lookup</td>
+        </tr>
+        <tr>
+          <td>jsonTemplate</td>
+          <td>string, <strong>mandatory</strong></td>
+          <td>none</td>
+          <td>The JSON object as a template literal.</td>
+        </tr>
+        <tr>
+          <td>targetPath</td>
+          <td>string</td>
+          <td><code>targetPath</code></td>
+          <td>The message attribute with the path to the JSON file to be updated</td>
+        </tr>
+      </tbody>
+    </table>
+    <hr>
+
+    <h5 class="title is-5">Message attributes</h5>
+
+    <table class="table is-fullwidth">
+      <thead>
+        <th>Option</th>
+        <th>Data type</th>
+        <th>Description</th>
+      </thead>
+      <tbody>
+        <tr>
+          <td>targetPath, <strong>mandatory</strong></td>
+          <td>string</td>
+          <td>The path to the file where the JSON is added.</td>
+        </tr>
+      </tbody>
+    </table>
+    <p>Message attribute names can be changed in the configuration options.</p>
+
+    <p>This runner does not update the message object.</p>
+    <hr>
+
+  </section>
+
+  <section class="XMLExtractor">
+
+    <h4 id="xml-extractor" class="title is-4 docs-subhead">XMLExtractor</h4>
+    <p><a href="pages/runner-config/runner-status/"><span class="tag is-info">Tested</span></a></p>
+
+    <p>This runner extracts data from a CSV file. It will raise one new task per row</p>
+
+    <h5 class="title is-5">Configuration options</h5>
+
+    <table class="table is-fullwidth">
+      <thead>
+        <th>Attribute</th>
+        <th>Data type</th>
+        <th>Default</th>
+        <th>Description</th>
+      </thead>
+      <tbody>
+        <tr>
+          <td>batchConfig</td>
+          <td>number | BatchConfig, <strong>mandatory</strong></td>
+          <td>none</td>
+          <td>See <a href="pages/runner-config/common-options/#batches">batches</a></td>
+        </tr>
+        <tr>
+          <td>cancelCheckNumber</td>
+          <td>number</td>
+          <td><code>100</code></td>
+          <td>How often, in tasks raised, to check if the extract should be cancelled</td>
+        </tr>
+        <tr>
+          <td>dataFile</td>
+          <td>string, <strong>mandatory</strong></td>
+          <td>none</td>
+          <td>The path to the CSV file.</td>
+        </tr>
+        <tr>
+          <td>hashName</td>
+          <td>string, <strong>mandatory</strong></td>
+          <td>none</td>
+          <td>The lookup name used to store the extract hash</td>
+        </tr>
+        <tr>
+          <td>ignore</td>
+          <td>any</td>
+          <td>none</td>
+          <td>See <a href="pages/runner-config/common-options/#ignore">ignore items</a>. This runner only supports
+            object based ignore options.</td>
+        </tr>
+        <tr>
+          <td>quarantinedLookupName</td>
+          <td>string</td>
+          <td><code>quarantinedXMLExtractor</code></td>
+          <td>Name value for the quarantine lookup</td>
+        </tr>
+        <tr>
+          <td>startingObject</td>
+          <td>string, <strong>mandatory</strong></td>
+          <td>none</td>
+          <td>The object that contains the array to extract using dot notation, e.g. <code>catalog.book</code>.</td>
+        </tr>
+      </tbody>
+    </table>
+    <hr>
+
+    <h5 class="title is-5">Message attributes</h5>
+
+    <p>It adds the following attributes to the message object of raised tasks:</p>
+    <ul>
+      <li><code>extractHash</code> the hash of the extracted item, if a hashName is supplied.</li>
+      <li><code>extractItem</code> the row of data from the source file</li>
+      <li><code>quarantine</code> the lookup to add to quarantine the object</li>
+    </ul>
+    <hr>
+
+  </section>
+
 </div>
         </div>
         <div class="container is-fluid dl-footer">
           <a href="https://driverlane.com.au">Driver Lane</a>
-          &copy; 2020-2024
+          &copy; 2020-2025
         </div>
       </div>
     </div>

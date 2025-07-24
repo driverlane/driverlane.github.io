@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="Description" content="Documentation for Ethel">
     <title>Ethel Docs</title>
-    <base href="/ethel/">
+    <base href="/">
     <link rel="icon" type="image/x-icon" href="favicon.ico">
     <link rel="stylesheet" href="assets/styles.css">
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.6.0/styles/default.min.css">
@@ -39,7 +39,7 @@
                 
               </li>
               <li>
-                <a href="pages/basic/running-ethel/">Running ethel</a>
+                <a href="pages/basic/deployment/">Deployment</a>
                 
               </li>
               <li>
@@ -50,11 +50,11 @@
           <p class="menu-label">Runner config</p>
           <ul class="menu-list">
               <li>
-                <a href="pages/runner-config/runners/">Runner types</a>
+                <a href="pages/runner-config/common-options/">Common options</a>
                 
               </li>
               <li>
-                <a href="pages/runner-config/common-options/">Common options</a>
+                <a href="pages/runner-config/runners/">Runner types</a>
                 
               </li>
               <li>
@@ -107,15 +107,19 @@
           <p class="menu-label">Development</p>
           <ul class="menu-list">
               <li>
+                <a href="pages/development/design/">Design</a>
+                
+              </li>
+              <li>
                 <a href="pages/development/repository/">Repository</a>
                 
               </li>
               <li>
-                <a href="pages/development/runners/">Runners</a>
+                <a href="pages/development/server/">Server</a>
                 
               </li>
               <li>
-                <a href="pages/development/architecture/">Architecture</a>
+                <a href="pages/development/runners/">Runners</a>
                 
               </li>
           </ul>
@@ -125,7 +129,7 @@
       <div class="section">
         <div class="container is-fluid">
           
-<p class="title is-4">Archive Center runners</p>
+<h3 class="title is-3">Archive Center runners</h3>
 <div class="content">
 
   <p>These runners are related to working with OpenText Archive Center.</p>
@@ -134,81 +138,99 @@
     <li><a href="pages/runner-config/archive-center/#otac-staging">OTACStaging</a></li>
   </ul>
 
-  <p id="otac-staging" class="subtitle is-5 docs-subhead">OTACStaging</p>
-  <p><a href="pages/runner-config/runner-status/"><span class="tag is-primary">Production</span></a></p>
+  <section>
 
-  <p>This runner will copy files from Archive Center to the specified storage location. It has the following configuration options:</p>
-  <ul>
-    <li><code>archive</code> <i>string</i> - the message attribute containing the archive name, defaults to archive</li>
-    <li><code>docId</code> <i>string</i> - the message attribute containing the id of the document to be staged, defaults to docId</li>
-    <li><code>filename</code> <i>string</i> - the message attribute containing the filename of the document to be staged, defaults to filename</li>
-    <li><code>otacServer</code> <strong>mandatory</strong> <i> string</i> - the OTAC servername including protocol and port, e.g. https://server.domain.tld/</li>
-    <li><code>stagingProvider</code> <strong>mandatory</strong> <i> object</i> - the location where the document content is stored</li>
-    <li><code>timings</code> <i>boolean</i> - whether to log request timings or not, defaults to false</li>
-  </ul>
-  <p>It uses the following message attributes:</p>
-  <ul>
-    <li><code>archive</code> <strong>mandatory</strong> <i> string</i> - the name of the archive that contains the document</li>
-    <li><code>docId</code> <strong>mandatory</strong> <i> string</i> - the id of the document to be staged</li>
-    <li><code>filename</code> <i>string</i> - the filename of the blob, if not supplied defaults to data</li>
-  </ul>
-  <p>Message attribute names can be changed in the config section.</p>
-  <hr>
-  <p>Example runner and message configuration:</p>
-  <pre class="code">
-  {
-    "name": "Test migration",
-    "runner": {
-      "type": "OTACStaging",
-      "config": {
-        "otacServer":"http://localhost:8888/",
-        "stagingProvider": {
-          "type": "FileSystem",
-          "path": "E:\\data\\staging",
-        }
-      }
-    },
-    "runners": {...},
-    "message": {
-      "docId": "abscfq8alfsdji9asdf",
-      "archive": "EMAILARCHIVE",
-    }
-  }
-  </pre>
+    <h4 id="otac-staging" class="title is-4 docs-subhead">OTACStaging</h4>
+    <p><a href="pages/runner-config/runner-status/"><span class="tag is-primary">Production</span></a></p>
 
-  <p>It populates the following attributes in the new tasks it creates:</p>
-  <ul>
-    <li><code>sourceFile</code> the path or staged file object of the file extracted</li>
-  </ul>
-  <pre class="code">
-  {
-    "message": {
-      "sourceFile": {
-        "createdDate": "2024-02-02T07:03:11",
-        "filename": "built-file1.txt",
-        "id": "42H2Y8j2RhqyCmJXncGK0",
-        "mimeType": "text/plain",
-        "modifiedDate": "2024-02-02T07:03:11",
-        "provider": {
-          "useOriginalName": false,
-          "type": "FileSystem",
-          "path": "E:\\test\\ethel-test\\otcs-staging",
-        },
-        "size": 59,
-        "sourceValues": {
-          "version_id": 222413,
-        },
-        "systemId": "c701cc09851973dd1f5e3b8dd7bfa2cf32cc637b",
-      }
-    }
-  }
-  </pre>
+    <p>This runner will copy files from Archive Center to the specified storage location.</p>
+
+    <h5 class="title is-5">Configuration options</h5>
+
+    <table class="table is-fullwidth">
+      <thead>
+        <th>Option</th>
+        <th>Data type</th>
+        <th>Default</th>
+        <th>Description</th>
+      </thead>
+      <tbody>
+        <tr>
+          <td>archive</td>
+          <td>string</td>
+          <td><code>archive</code></td>
+          <td>The message attribute containing the archive name</td>
+        </tr>
+        <tr>
+          <td>docId</td>
+          <td>string</td>
+          <td><code>docId</code></td>
+          <td>The message attribute containing the id of the document to be staged</td>
+        </tr>
+        <tr>
+          <td>filename</td>
+          <td>string</td>
+          <td><code>filename</code></td>
+          <td>The message attribute containing the filename of the document to be staged</td>
+        </tr>
+        <tr>
+          <td>otacServer</td>
+          <td>string, <strong>mandatory</strong></td>
+          <td>none</td>
+          <td>URL of the OTAC server, including protocol and port, e.g. <code>https://server.domain.tld:8443/</code>.
+          </td>
+        </tr>
+        <tr>
+          <td>stagingProvider</td>
+          <td>any, <strong>mandatory</strong></td>
+          <td>none</td>
+          <td>The configuration details for the storage provider</td>
+        </tr>
+      </tbody>
+    </table>
+    <hr>
+
+    <h5 class="title is-5">Message attributes</h5>
+
+    <table class="table is-fullwidth">
+      <thead>
+        <th>Option</th>
+        <th>Data type</th>
+        <th>Description</th>
+      </thead>
+      <tbody>
+        <tr>
+          <td>archive</td>
+          <td>string, <strong>mandatory</strong></td>
+          <td>The name of the archive that contains the document.</td>
+        </tr>
+        <tr>
+          <td>docId</td>
+          <td>string, <strong>mandatory</strong></td>
+          <td>The id of the document to be staged.</td>
+        </tr>
+        <tr>
+          <td>filename</td>
+          <td>string</td>
+          <td>The filename of the blob, will default to <code>blob</code> if not supplied</td>
+        </tr>
+      </tbody>
+    </table>
+    <p>Message attribute names can be changed in the configuration options.</p>
+
+    <p>It adds the following attributes to the message object of raised tasks:</p>
+    <ul>
+      <li><code>sourceFile</code> the extracted file information</li>
+    </ul>
+    <hr>
+
+  </section>
 
 </div>
         </div>
         <div class="container is-fluid dl-footer">
           <a href="https://driverlane.com.au">Driver Lane</a>
-          &copy; 2020-2024
+          &copy; 2020-2025
         </div>
       </div>
     </div>

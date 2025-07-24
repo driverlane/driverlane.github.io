@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="Description" content="Documentation for Ethel">
     <title>Ethel Docs</title>
-    <base href="/ethel/">
+    <base href="/">
     <link rel="icon" type="image/x-icon" href="favicon.ico">
     <link rel="stylesheet" href="assets/styles.css">
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.6.0/styles/default.min.css">
@@ -39,7 +39,7 @@
                 
               </li>
               <li>
-                <a href="pages/basic/running-ethel/">Running ethel</a>
+                <a href="pages/basic/deployment/">Deployment</a>
                 
               </li>
               <li>
@@ -50,11 +50,11 @@
           <p class="menu-label">Runner config</p>
           <ul class="menu-list">
               <li>
-                <a href="pages/runner-config/runners/">Runner types</a>
+                <a href="pages/runner-config/common-options/">Common options</a>
                 
               </li>
               <li>
-                <a href="pages/runner-config/common-options/">Common options</a>
+                <a href="pages/runner-config/runners/">Runner types</a>
                 
               </li>
               <li>
@@ -107,15 +107,19 @@
           <p class="menu-label">Development</p>
           <ul class="menu-list">
               <li>
+                <a href="pages/development/design/">Design</a>
+                
+              </li>
+              <li>
                 <a href="pages/development/repository/">Repository</a>
                 
               </li>
               <li>
-                <a href="pages/development/runners/">Runners</a>
+                <a href="pages/development/server/">Server</a>
                 
               </li>
               <li>
-                <a href="pages/development/architecture/">Architecture</a>
+                <a href="pages/development/runners/">Runners</a>
                 
               </li>
           </ul>
@@ -125,146 +129,507 @@
       <div class="section">
         <div class="container is-fluid">
           
-<p class="title is-4">Core configuration</p>
+<p class="title is-3">Core configuration</p>
 <div class="content">
 
-  <p>Core has the following configuration options:</p>
+  <p>ethel core supports the following configuration options:</p>
   <ul>
     <li><a href="pages/basic/core-config/#general">General</a></li>
-    <li><a href="pages/basic/core-config/#data-adapters">Data adapters</a></li>
-    <li><a href="pages/basic/core-config/#queue-adapters">Queue adapters</a></li>
+    <li><a href="pages/basic/core-config/#logging">Logging</a></li>
+    <li><a href="pages/basic/core-config/#data">Data</a></li>
+    <li><a href="pages/basic/core-config/#queue">Queue</a></li>
+    <li><a href="pages/basic/core-config/#queue-config">QueueConfig</a></li>
+    <li><a href="pages/basic/core-config/#other">Other options</a></li>
+    <li><a href="pages/basic/core-config/#reconnect">Reconnect</a></li>
   </ul>
 
-  <p>When running via the command line use either a .env file or environment variables. When running via containers use
-    environment variables. All variables are assumed to be a string and are converted to the appropriate type.</p>
+  <p>When running via the command line or docker use a <code>.server.env</code> file for environment variables. When
+    running via PM2 use an ecosystem config file and include the environment variables there.</p>
 
-  <p id="general" class="subtitle is-5 docs-subhead">General</p>
+  <section class="subhead general">
 
-  <p>The core configuration options are:</p>
-  <ul>
-    <li><code>ETHEL_CRYPTO_KEY</code> <strong>mandatory</strong> - a seed value used for encrypting and decrypting text and must be exactly 32 characters long</li>
-    <li><code>ETHEL_PORT</code> - the port number where ethel is listening, defaults to 3000</li>
-    <li><code>ETHEL_CONCURRENT_RUNS</code> - the number of tasks on a queue being processed concurrently, defaults to 1</li>
-    <li><code>ETHEL_REQUEUE_RUN</code> - how long to wait until requeueing a run's tasks when there has been no update, defaults to 10 minutes</li>
-    <li><code>ETHEL_SUSPEND_RUN</code> - how long to wait until a run is suspended when there has been no update, defaults to 15 minutes</li>
-    <li><code>ETHEL_UPDATE_RUNS</code> - how often to update the run metadata, a cron expression, defaults to */5 * * * *</li>
-    <li><code>ETHEL_ENABLE_CONSOLE</code> - by default the console only shows warnings and errors, setting this to true shows log messages as well</li>
-    <li><code>ETHEL_ENABLE_TRACE</code> - creates a log file with all log entries</li>
-    <li><code>ETHEL_LOGS_PATH</code> - the path to the log files folder, defaults to logs in the root of the core instance</li>
-    <li><code>ETHEL_DATA</code> - the data adapter to be used, defaults to SQLite. See below for data adapter configuration options.</li>
-    <li><code>ETHEL_QUEUE</code> - the queue adapter to be used, defaults to BetterQueue. See below for queue adapter configuration options.</li>
-  </ul>
+    <p id="general" class="title is-4 docs-subhead">General</p>
 
-  <p>Some example configuration settings:</p>
-  <pre class="code">
-    ETHEL_CRYPTO_KEY=u&9*oB&Pm&*EL&0K2zS3sS@Dn&*k6m^p
-    ETHEL_PORT=3005
-    ETHEL_DATA={"type":"PostgreSQL","host":"db","user":"ethel","password":"H0JfPgyoMy$Y*0g@x","database":"ethel","port":"5432"}
-    ETHEL_CONCURRENT_RUNS=5
-    ETHEL_QUEUE={"type":"RabbitMQ","url":"amqp://rabbitmq","consumers":["staging"]}
-   </pre>
+    <p>These are more commonly used configuration options:</p>
 
-  <p id="data-adapters" class="subtitle is-5 docs-subhead">Data adapters</p>
+    <table class="table is-fullwidth">
+      <thead>
+        <th>Option</th>
+        <th>Data type</th>
+        <th>Default</th>
+        <th>Description</th>
+      </thead>
+      <tbody>
+        <tr>
+          <td>ETHEL_CRYPTO_KEY, <strong>mandatory</strong></td>
+          <td>string</td>
+          <td>none</td>
+          <td>A seed value used for encrypting and decrypting text and must be exactly 32 characters long</td>
+        </tr>
+        <tr>
+          <td>ETHEL_PORT</td>
+          <td>number</td>
+          <td>3000</td>
+          <td>The port number where the ethel API is listening</td>
+        </tr>
+        <tr>
+          <td>ETHEL_DATA</td>
+          <td>JSON stringified object</td>
+          <td>{"type":"SQLite"}</td>
+          <td>The database type to be used, more options in the <a href="pages/basic/core-config/#data">data</a> section
+            below</td>
+        </tr>
+        <tr>
+          <td>ETHEL_QUEUE</td>
+          <td>JSON stringified object</td>
+          <td>{"type":"BetterQueue"}</td>
+          <td>The queue type to be used, more options in the <a href="pages/basic/core-config/#queue">queue</a> section
+            below</td>
+        </tr>
+        <tr>
+          <td>ETHEL_CONSUMERS</td>
+          <td>JSON stringified array of queue names or QueueConfig objects</td>
+          <td>'["Tasks"]'</td>
+          <td>The queues being consumed by this instance, <a
+              href="pages/basic/core-config/#queue-config">QueueConfig</a> options detailed below.</td>
+        </tr>
+        <tr>
+          <td>ETHEL_LOGS_PATH</td>
+          <td>string</td>
+          <td>./logs</td>
+          <td>The path to the log files folder</td>
+        </tr>
+        <tr>
+          <td>ETHEL_PLUGINS_PATHS</td>
+          <td>string</td>
+          <td>'["./plugins"]'</td>
+          <td>Array of file paths to custom runners.</td>
+        </tr>
+      </tbody>
+    </table>
 
-  <p>Supply a stringified JSON object. The default adapter is SQLite.</p>
+    <p>Some example configuration settings:</p>
+    <pre class="code">ETHEL_CRYPTO_KEY=ur9ToBbPmpcEL90K2zS3sSuDnu5k6mzp
+ETHEL_PORT=4000
+ETHEL_DATA={"type":"SQLite","path":"D:\\ethel\\data"}
+ETHEL_LOGS_PATH=D:\ethel\logs
+ETHEL_DATA={"type":"PostgreSQL","host":"db","user":"ethel","password":"H0JfPgyoMy$Y*0g@x","database":"ethel","port":"5432"}
+ETHEL_QUEUE={"type":"RabbitMQ","url":"amqps://ethel:Wn1xyCun%$C##42o@docker.lan:15672"}</pre>
 
-  <p class="subtitle is-6">SQLite</p>
+  </section>
 
-  <p>The adapter configuration options are:</p>
-  <ul>
-    <li><code>type</code> <strong>mandatory</strong> - the name of the adapter, i.e. SQLite</li>
-    <li><code>path</code> - the path where the data files are stored, defaults to a folder named data in the root of the project folder</li>
-  </ul>
+  <section class="subhead logging">
 
-  <p>Some example adapter configurations:</p>
-  <pre class="code">
-    ETHEL_DATA={"type":"SQLite","path":"C:/data/projectA/"}
-  </pre>
+    <p id="logging" class="title is-4 docs-subhead">Logging</p>
 
-  <p class="subtitle is-6">PostgreSQL</p>
+    <p>By default logging will output all warning, error or fatal messages to the console and to the issues.log file</p>
+    <p>Logging of all levels can be turned on by setting the ETHEL_ENABLE_TRACE to true</p>
 
-  <p>The adapter configuration options are:</p>
-  <ul>
-    <li><code>type</code> <strong>mandatory</strong> - the name of the adapter, i.e. PostgreSQL</li>
-    <li><code>user</code> <strong>mandatory</strong> - user name for the connection</li>
-    <li><code>password</code> <strong>mandatory</strong> - the password for the connection</li>
-    <li><code>host</code> - server name for the connection, defaults to localhost</li>
-    <li><code>port</code> - port for the connection, defaults to 5454</li>
-    <li><code>database</code> - database name for the connection, defaults to postgres</li>
-    <li><code>reconnect</code> - a reconnect options object, defaults to reconnecting. See <a href="pages/basic/core-config/#reconnect">reconnect</a> for options.</li>
-  </ul>
+    <table class="table is-fullwidth">
+      <thead>
+        <th>Option</th>
+        <th>Data type</th>
+        <th>Default</th>
+        <th>Description</th>
+      </thead>
+      <tbody>
+        <tr>
+          <td>ETHEL_LOGS_PATH</td>
+          <td>string</td>
+          <td>./logs</td>
+          <td>The path to the log files folder</td>
+        </tr>
+        <tr>
+          <td>ETHEL_ENABLE_CONSOLE</td>
+          <td>boolean</td>
+          <td>false</td>
+          <td>Whether to enable to the console or not. The console adds load to the system, so avoid enabling it if you
+            can.</td>
+        </tr>
+        <tr>
+          <td>ETHEL_ENABLE_TRACE</td>
+          <td>boolean</td>
+          <td>false</td>
+          <td>Whether to enable all logs be written to file</td>
+        </tr>
+      </tbody>
+    </table>
 
-  <p>Some example adapter configurations:</p>
-  <pre class="code">
-    ETHEL_DATA={"type":"PostgreSQL","user":"postgres","password":"postgres"}
-    ETHEL_DATA={"type":"PostgreSQL","host":"db","user":"projectA","password":"v$t$jU##yoAHn4Gma","database":"projectA","port":"5432"}
-  </pre>
+  </section>
 
-  <p class="subtitle is-6">SQLServer</p>
+  <section class="subhead data">
 
-  <p>For configuration options see the <a target="_blank" href="https://github.com/tediousjs/node-mssql#Configuration-1">mssql docs</a>. There are a large number of options
-    supported. In addition you can specify reconnect options. </p>
-  <ul>
-    <li><code>reconnect</code> - a reconnect options object, defaults to reconnecting. See <a href="pages/basic/core-config/#reconnect">reconnect</a> for options.</li>
-  </ul>
+    <p id="data" class="title is-4 docs-subhead">Data options</p>
 
-  <p>Some example adapter configurations:</p>
-  <pre class="code">
-    ETHEL_DATA={"type":"SQLServer","user":"ethel","password":"WyWU5$vU1AQME2u#L","server":"db","database":"ethel","options":{"trustServerCertificate":true}}
-    ETHEL_DATA={"type":"SQLServer","user":"ethel","password":"WyWU5$vU1AQME2u#L","database":"ethel","options":{"trustServerCertificate":true},"reconnect":{"reconnect":false}}
-  </pre>
+    <p>Supply a stringified JSON object. The default adapter is SQLite.</p>
 
-  <p id="queue-adapters" class="subtitle is-5 docs-subhead">Queue adapters</p>
+    <section class="subhead sqlite">
 
-  <p class="subtitle is-6">BetterQueue</p>
+      <p class="title is-5">SQLite</p>
 
-  <p>The adapter configuration options are:</p>
-  <ul>
-    <li><code>type</code> <strong>mandatory</strong> - the name of the adapter, i.e. BetterQueue</li>
-    <li><code>fetchLimit</code> - the number of tasks on a queue being processed concurrently, defaults to 1</li>
-  </ul>
+      <p>The adapter configuration options are:</p>
+      <table class="table is-fullwidth">
+        <thead>
+          <th>Option</th>
+          <th>Data type</th>
+          <th>Description</th>
+        </thead>
+        <tbody>
+          <tr>
+            <td>optimiseOnStart</td>
+            <td>boolean</td>
+            <td>Optimise the database on startup. Recommended if there is no graceful shutdown, i.e. running via the
+              command
+              line. Defaults to <code>false</code>.</td>
+          </tr>
+          <tr>
+            <td>type, <strong>mandatory</strong></td>
+            <td>string</td>
+            <td>The name of the adapter, i.e. <code>SQLite</code>.
+            </td>
+          </tr>
+          <tr>
+            <td>path</td>
+            <td>string</td>
+            <td>Path to where the data files are created. Defaults to a folder named data in the root of the project
+              folder.
+            </td>
+          </tr>
+          <tr>
+            <td>reset</td>
+            <td>boolean</td>
+            <td>Drop existing tables and create new ones. Defaults to <code>false</code>.</td>
+          </tr>
+        </tbody>
+      </table>
 
-  <p>Some example adapter configurations:</p>
-  <pre class="code">
-    ETHEL_QUEUE={"type":"BetterQueue","fetchLimit":2}
-  </pre>
+      <p>Example adapter configuration:</p>
+      <pre class="code">ETHEL_DATA={"type":"SQLite","path":"/opt/ethel/data/"}</pre>
 
-  <p class="subtitle is-6">RabbitMQ</p>
+    </section>
 
-  <p>The adapter configuration options are:</p>
-  <ul>
-    <li><code>type</code> <strong>mandatory</strong> - the name of the adapter, i.e. BetterQueue</li>
-    <li><code>url</code> - the URL to connect to the RabbitMQ instance, defaults to amqp://localhost</li>
-    <li><code>consumers</code> - array of objects with the queue name and prefetch number, defaults to [{ queue: 'tasks', prefetch: 1 }]</li>
-    <li><code>durable</code> - whether the queues can resume after a crash/restart, defaults to true</li>
-    <li><code>reconnect</code> - a reconnect options object, defaults to reconnecting. See <a href="pages/basic/core-config/#reconnect">reconnect</a> for options.</li>
-  </ul>
+    <section class="subhead postgres">
 
-  <p>Producers for queues are automatically created. If you are only using the default tasks queue you will not need to specify any consumers.<br>If you are using any queues other than the tasks queue,
-    you will need to specify <strong>all</strong> queues in the consumers section of your configuration, including the tasks queue if you are still using it.<br>You can distribute the consumers of your 
-    queues however you like between the core instances but at least one consumer must be specified for every queue you are using.</p>
+      <p class="title is-5">PostgreSQL</p>
 
-  <p>Some example adapter configurations:</p>
-  <pre class="code">
-    ETHEL_QUEUE={"type":"RabbitMQ","url":"aqmps://server.tld:15672","fetchLimit":2,"queues":[{"queue":"tasks","prefetch":1},{"queue":"mail","prefetch":2]}
-  </pre>
+      <p>The adapter configuration options are:</p>
+      <table class="table is-fullwidth">
+        <thead>
+          <th>Option</th>
+          <th>Data type</th>
+          <th>Description</th>
+        </thead>
+        <tbody>
+          <tr>
+            <td>type, <strong>mandatory</strong></td>
+            <td>string</td>
+            <td>The name of the adapter, i.e. <code>PostgreSQL</code>.
+            </td>
+          </tr>
+          <tr>
+            <td>user, <strong>mandatory</strong></td>
+            <td>string</td>
+            <td>The name of the user for the connection.</td>
+          </tr>
+          <tr>
+            <td>password, <strong>mandatory</strong></td>
+            <td>string</td>
+            <td>The password of the user for the connection.</td>
+          </tr>
+          <tr>
+            <td>host</td>
+            <td>string</td>
+            <td>Server name for the connection. Defaults to <code>localhost</code>.</td>
+          </tr>
+          <tr>
+            <td>port</td>
+            <td>number</td>
+            <td>Port for the connection. Defaults to <code>5454</code>.</td>
+          </tr>
+          <tr>
+            <td>database</td>
+            <td>string</td>
+            <td>Database name for the connection. Defaults to <code>postgres</code>.</td>
+          </tr>
+          <tr>
+            <td>reconnect</td>
+            <td>any</td>
+            <td>A reconnect configuration options object. See <a href="pages/basic/core-config/#reconnect">reconnect</a>
+              for options. Defaults to reconnect.</td>
+          </tr>
+        </tbody>
+      </table>
 
-  <p id="reconnect" class="subtitle is-5 docs-subhead">Reconnect</p>
+      <p>Some example adapter configurations:</p>
+      <pre class="code">
+ETHEL_DATA={"type":"PostgreSQL","user":"ethel","password":"v$t$jU##yoAHn4Gma","database":"ethel"}
+ETHEL_DATA={"type":"PostgreSQL","host":"db.lan","user":"projectA","password":"v$t$jU##yoAHn4Gma","database":"projectA","port":"5432"}</pre>
 
-  <p>This configuration object controls whether core attempts to reconnect to a server that has crashed or did not
-    accept a conneciton.</p>
+    </section>
 
-  <ul>
-    <li><code>reconnect</code> - whether the adapter should automatically reconnect, defaults to true</li>
-    <li><code>maxAttempts</code> - maximum number of reconnection attempts, defaults to 10</li>
-    <li><code>wait</code> - how long to wait between connection attempts, defaults to 5000 milliseconds</li>
-    <li><code>backoff</code> - whether to back off the wait on each reconnect attempt, defaults to 2 which doubles the wait each attempt</li>
-  </ul>
+    <section class="subhead sqlserver">
+
+      <p class="title is-5">SQLServer</p>
+
+      <p>For connection options see the <a target="_blank"
+          href="https://github.com/tediousjs/node-mssql#Configuration-1">mssql docs</a>. There are a large number of
+        options supported</p>
+      <p>In addition a reconnect options object can be supplied.See <a
+          href="pages/basic/core-config/#reconnect">reconnect</a> for options.</p>
+
+      <p>Some example adapter configurations:</p>
+      <pre class="code">
+ETHEL_DATA={"type":"SQLServer","user":"ethel","password":"WyWU5$vU1AQME2u#L","server":"db","database":"ethel","options":{"trustServerCertificate":true}}
+ETHEL_DATA={"type":"SQLServer","user":"ethel","password":"WyWU5$vU1AQME2u#L","database":"ethel","options":{"trustServerCertificate":true},"reconnect":{"reconnect":false}}</pre>
+
+    </section>
+
+  </section>
+
+  <section class="subhead queue">
+    <p id="queue" class="title is-4 docs-subhead">Queue options</p>
+
+    <section class="subhead better-queue">
+
+      <p class="title is-5">BetterQueue</p>
+
+      <p>The adapter configuration options are:</p>
+      <table class="table is-fullwidth">
+        <thead>
+          <th>Option</th>
+          <th>Data type</th>
+          <th>Description</th>
+        </thead>
+        <tbody>
+          <tr>
+            <td>type, <strong>mandatory</strong></td>
+            <td>string</td>
+            <td>The name of the adapter, i.e. <code>BetterQueue</code>.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p>If you are using any queues other than the Tasks queue, you will need to specify
+        <strong>all</strong> queues in the ETHEL_CONSUMERS environment variable, including the Tasks queue if you are
+        still using it.
+      </p>
+
+      <p>Example adapter configuration:</p>
+      <pre class="code">ETHEL_QUEUE={"type":"BetterQueue"}</pre>
+
+    </section>
+
+    <section class="subhead rabbitmq">
+
+      <p class="title is-5">RabbitMQ</p>
+
+      <p>The adapter configuration options are:</p>
+      <table class="table is-fullwidth">
+        <thead>
+          <th>Option</th>
+          <th>Data type</th>
+          <th>Description</th>
+        </thead>
+        <tbody>
+          <tr>
+            <td>type, <strong>mandatory</strong></td>
+            <td>string</td>
+            <td>The name of the adapter, i.e. <code>RabbitMQ</code>.</td>
+          </tr>
+          <tr>
+            <td>url, <strong>mandatory</strong></td>
+            <td>string</td>
+            <td>The URL to connect to the RabbitMQ instance. Defaults to <code>amqp://localhost</code>.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p>If you are using any queues other than the Tasks queue, you will need to specify
+        <strong>all</strong> queues in the ETHEL_CONSUMERS environment variable, including the Tasks queue if you are
+        still using it.
+      </p>
+
+      <p>An example adapter configuration:</p>
+      <pre class="code">ETHEL_QUEUE={"type":"RabbitMQ","url":"aqmps://server.tld:15672"}</pre>
+
+    </section>
+
+  </section>
+
+  <section class="subhead queue-config">
+    <p id="queue-config" class="title is-4 docs-subhead">QueueConfig</p>
+
+    <p>The queue config object determines the behaviour of the tasks service for that particular queue.</p>
+
+    <table class="table is-fullwidth">
+      <thead>
+        <th>Option</th>
+        <th>Data type</th>
+        <th>Default</th>
+        <th>Description</th>
+      </thead>
+      <tbody>
+        <tr>
+          <td>isConsumer</td>
+          <td>boolean</td>
+          <td>true</td>
+          <td>Whether a queue consumer is created or not</td>
+        </tr>
+        <tr>
+          <td>name</td>
+          <td>string</td>
+          <td>none, <strong>mandatory</strong></td>
+          <td>The queue name</td>
+        </tr>
+        <tr>
+          <td>operatingHours</td>
+          <td>array of operating hours configuration objects</td>
+          <td>none</td>
+          <td>A set of enabled and cron attributes configuring when the consumer processes tasks</td>
+        </tr>
+        <tr>
+          <td>prefetch</td>
+          <td>number</td>
+          <td>2</td>
+          <td>The number of tasks the queue will send to consumers. Ignored by BetterQueue.</td>
+        </tr>
+        <tr>
+          <td>queue</td>
+          <td>object</td>
+          <td>none</td>
+          <td>Do not populate this. The system will insert this value based on the queue configuration</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p>Example configurations:</p>
+    <pre class="code">{"name":"Tasks","prefetch":4}
+
+This instance will not consumer the Load queue, but will populate it with tasks:
+{"name":"Load","isConsumer":false}
+
+This creates a consumer that stops at 6am Monday to Friday and starts at 6pm Monday to Fridays, running all weekend:
+{"name":"Load","operatingHours":[{"enabled":true,"cron":"0 18 * * 1-5"},{"enabled":false,"cron":"0 6 * * 1-5"}]}
+</pre>
+
+
+
+  </section>
+
+  <section class="subhead other">
+
+    <p id="other" class="title is-4 docs-subhead">Other options</p>
+
+    <p>These are lesser used options.</p>
+
+    <table class="table is-fullwidth">
+      <thead>
+        <th>Option</th>
+        <th>Data type</th>
+        <th>Default</th>
+        <th>Description</th>
+      </thead>
+      <tbody>
+        <tr>
+          <td>ETHEL_SUSPEND_RUN_WAIT</td>
+          <td>number</td>
+          <td>15</td>
+          <td>The number of minutes until a run without updates is suspended</td>
+        </tr>
+        <tr>
+          <td>ETHEL_SUSPEND_RUN_ERRORS</td>
+          <td>number</td>
+          <td>50</td>
+          <td>The number of errors per runner before a run is suspended</td>
+        </tr>
+        <tr>
+          <td>ETHEL_QUEUES</td>
+          <td>JSON stringified array of queue names or QueueConfig objects</td>
+          <td>'[]'</td>
+          <td>The queues being populated with tasks by this instance. This is only for queues without a consumer in the
+            instance.</td>
+        </tr>
+        <tr>
+          <td>ETHEL_QUEUE_LIMIT</td>
+          <td>integer</td>
+          <td>1000</td>
+          <td>The number of tasks to add to the queue in a batch</td>
+        </tr>
+        <tr>
+          <td>ETHEL_RUNS_LIMIT</td>
+          <td>number</td>
+          <td>1</td>
+          <td>The number of runs running at the same time</td>
+        </tr>
+        <tr>
+          <td>ETHEL_RUNNERS_PATH</td>
+          <td>string</td>
+          <td>./node_modules/@driverlane/ethel-runners/dist/runners</td>
+          <td>File path to the core runners</td>
+        </tr>
+        <tr>
+          <td>ETHEL_INSTANCE_ID</td>
+          <td>string</td>
+          <td>0</td>
+          <td>An identifier to differentiate each instance. If using PM2 this will be ignored and NODE_APP_INSTANCE
+            used.</td>
+        </tr>
+        <tr>
+          <td>ETHEL_MONITORING</td>
+          <td>JSON stringified array of strings</td>
+          <td>'[]'</td>
+          <td>Array of components where monitoring is enabled</td>
+        </tr>
+      </tbody>
+    </table>
+
+  </section>
+
+  <section class="subhead reconnect">
+
+    <p id="reconnect" class="title is-4 docs-subhead">Reconnect</p>
+
+    <p>This configuration object controls whether core attempts to reconnect to a server that has crashed or did not
+      accept a conneciton.</p>
+    <table class="table is-fullwidth">
+      <thead>
+        <th>Option</th>
+        <th>Data type</th>
+        <th>Description</th>
+      </thead>
+      <tbody>
+        <tr>
+          <td>reconnect</td>
+          <td>boolean</td>
+          <td>Whether or not to reconnect. Defaults to <code>true</code>.</td>
+        </tr>
+        <tr>
+          <td>maxAttempts</td>
+          <td>number</td>
+          <td><Mark></Mark>aximum number of reconnection attempts. Defaults to <code>10</code>.</td>
+        </tr>
+        <tr>
+          <td>wait</td>
+          <td>number</td>
+          <td>How long to wait between connection attempts. Defaults to <code>5000</code> milliseconds.</td>
+        </tr>
+        <tr>
+          <td>backoff</td>
+          <td>number</td>
+          <td>How far to back off the wait on each reconnect attempt. Defaults to <code>2</code>, which doubles the
+            wait
+            each attempt.</td>
+        </tr>
+      </tbody>
+    </table>
+
+  </section>
+
 </div>
         </div>
         <div class="container is-fluid dl-footer">
           <a href="https://driverlane.com.au">Driver Lane</a>
-          &copy; 2020-2024
+          &copy; 2020-2025
         </div>
       </div>
     </div>

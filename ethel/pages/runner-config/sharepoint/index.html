@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="Description" content="Documentation for Ethel">
     <title>Ethel Docs</title>
-    <base href="/ethel/">
+    <base href="/">
     <link rel="icon" type="image/x-icon" href="favicon.ico">
     <link rel="stylesheet" href="assets/styles.css">
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.6.0/styles/default.min.css">
@@ -39,7 +39,7 @@
                 
               </li>
               <li>
-                <a href="pages/basic/running-ethel/">Running ethel</a>
+                <a href="pages/basic/deployment/">Deployment</a>
                 
               </li>
               <li>
@@ -50,11 +50,11 @@
           <p class="menu-label">Runner config</p>
           <ul class="menu-list">
               <li>
-                <a href="pages/runner-config/runners/">Runner types</a>
+                <a href="pages/runner-config/common-options/">Common options</a>
                 
               </li>
               <li>
-                <a href="pages/runner-config/common-options/">Common options</a>
+                <a href="pages/runner-config/runners/">Runner types</a>
                 
               </li>
               <li>
@@ -107,15 +107,19 @@
           <p class="menu-label">Development</p>
           <ul class="menu-list">
               <li>
+                <a href="pages/development/design/">Design</a>
+                
+              </li>
+              <li>
                 <a href="pages/development/repository/">Repository</a>
                 
               </li>
               <li>
-                <a href="pages/development/runners/">Runners</a>
+                <a href="pages/development/server/">Server</a>
                 
               </li>
               <li>
-                <a href="pages/development/architecture/">Architecture</a>
+                <a href="pages/development/runners/">Runners</a>
                 
               </li>
           </ul>
@@ -125,15 +129,15 @@
       <div class="section">
         <div class="container is-fluid">
           
-<p class="title is-4">SharePoint runners</p>
+<h3 class="title is-3">SharePoint runners</h3>
 <div class="content">
 
   <p>These runners are related to working with Microsoft SharePoint.</p>
   <p>The runners documented here are:</p>
   <ul>
-    <li><a href="pages/runner-config/sharepoint/#sp-extractor">SharePointExtractor</a></li>
+    <li><a href="pages/runner-config/sharepoint/#sp-extractor">SPListItemExtractor</a></li>
     <li><a href="pages/runner-config/sharepoint/#sp-staging">SharePointStaging</a></li>
-    <li><a href="pages/runner-config/sharepoint/#sp-loader">SharePointLoader</a></li>
+    <li><a href="pages/runner-config/sharepoint/#sp-loader">SPListItemLoader</a></li>
     <li><a href="pages/runner-config/sharepoint/#fs-sp">FSToSPTransformer</a></li>
     <li><a href="pages/runner-config/sharepoint/#otcs-sp">OTCSToSPTransformer</a></li>
     <li><a href="pages/runner-config/sharepoint/#sp-sp">SPToSPTransformer</a></li>
@@ -144,692 +148,651 @@
     <li><a href="pages/runner-config/content-server/#sp-to-otcs">SPToOTCSTransformer</a></li>
   </ul>
 
-  <p id="sp-connection" class="subtitle is-5 docs-subhead">SharePoint connection</p>
-  <p>The connection object for all SharePoint runners changes depending on the SharePoint version and the organisation
-    hosting the server. Look at the examples below for different configuration combinations:</p>
-  <ul>
-    <li><code>spHost</code> <i>string</i> - the SharePoint host name</li>
-    <li><code>clientId</code> <i>string</i> - the ID for the Entra client configuration</li>
-    <li><code>clientCertificate:thumbprint</code> <i>string</i> - thumbprint used to idenitify the certificate</li>
-    <li><code>certPath</code> <i>string</i> - path to the certificate file</li>
-    <li><code>tenantId</code> <i>string</i> - the tenant ID for the host connection</li>
-    <li><code>username</code> <i>string</i> - username for NTLM connections</li>
-    <li><code>password</code> <i>boolean</i> - user password for NTLM connections</li>
-    <li><code>timings</code> <i>boolean</i> - whether to log request timings or not, defaults to false</li>
-    <li><code>useNTLM</code> <i>boolean</i> - whether to attempt an NTLM connection</li>
-  </ul>
-  <p>Example SharePoint online connection object:</p>
-  <pre class="code">
-  {
-    "clientId": "5c2d4774-bc67-4e1d-b9c1-3b56e82c1b1f",
-    "clientCertificate": {
-      "thumbprint": "A33177147C1CB4D1D1A63CAF8B5A9E38CA36DAE8",
-    },
-    "certPath": "E:\\certs\\ethel-w6n3w.sharepoint.com.pk.txt",
-    "spHost": "https://w6n3w.sharepoint.com",
-    "tenantId": "83fc94bd-cff5-40f5-91ef-04bc08b68f32",
+  <p>All of these runners have been used in production, but most have been rewritten to provide better support
+    for migrating metadata and other elements so the status has been reset to developed</p>
+
+  <section class="SPConnection">
+
+    <h4 id="sp-connection" class="title is-4 docs-subhead">SharePoint connection</h4>
+    <p>The connection object for all SharePoint runners changes depending on the SharePoint version and the organisation
+      hosting the server. Look at the examples below for different configuration combinations.</p>
+
+
+    <table class="table is-fullwidth">
+      <thead>
+        <th>Attribute</th>
+        <th>Data type</th>
+        <th>Description</th>
+      </thead>
+      <tbody>
+        <tr>
+          <td>spHost</td>
+          <td>string</td>
+          <td>The SharePoint host name.</td>
+        </tr>
+        <tr>
+          <td>clientId</td>
+          <td>string</td>
+          <td>The ID for the Entra client configuration.</td>
+        </tr>
+        <tr>
+          <td>clientCertificate.thumbprint</td>
+          <td>string</td>
+          <td>The thumbprint used to idenitify the certificate.</td>
+        </tr>
+        <tr>
+          <td>certPath</td>
+          <td>string</td>
+          <td>The path to the certificate file.</td>
+        </tr>
+        <tr>
+          <td>tenantId</td>
+          <td>string</td>
+          <td>The tenant ID for the host connection.</td>
+        </tr>
+        <tr>
+          <td>username</td>
+          <td>string</td>
+          <td>The username for an NTLM connection.</td>
+        </tr>
+        <tr>
+          <td>password</td>
+          <td>string</td>
+          <td>The password for an NTLM connection.</td>
+        </tr>
+        <tr>
+          <td>useNTLM</td>
+          <td>boolean</td>
+          <td>Whether to attempt an NTLM connection. Defaults to <code>false</code>.</td>
+        </tr>
+      </tbody>
+    </table>
+    <hr>
+
+    <p>Example SharePoint online connection object:</p>
+    <pre class="code">{
+  "clientId": "5c2d4774-bc67-4e1d-b9c1-3b56e82c1b1f",
+  "clientCertificate": {
+    "thumbprint": "A33177147C1CB4D1D1A63CAF8B5A9E38CA36DAE8",
+  },
+  "certPath": "D:\\certs\\ethel-piggles.sharepoint.com.pk.txt",
+  "spHost": "https://nerks.sharepoint.com",
+  "tenantId": "83fc94bd-cff5-40f5-91ef-04bc08b68f32",
+}
+</pre>
+
+    <p>Example NTLM connection object:</p>
+    <pre class="code">{
+  "username": "NERKS/fred.nerk",
+  "password": "nerk",
+  "spHost": "https://nerks.sharepoint.com",
+  "useNTLM": true
+}</pre>
+
+  </section>
+
+  <section class="SPListItemExtractor">
+
+    <h4 id="sp-extractor" class="title is-4 docs-subhead">SPListItemExtractor</h4>
+    <p><a href="pages/runner-config/runner-status/"><span class="tag is-link">Production</span></a></p>
+
+    <p>This runner will extract information from SharePoint. It will not extract any files from SharePoint. To
+      extract files from SharePoint to upload to other systems use the SharePointStaging runner.</p>
+
+    <h5 class="title is-5">Configuration options</h5>
+
+    <table class="table is-fullwidth">
+      <thead>
+        <th>Option</th>
+        <th>Data type</th>
+        <th>Default</th>
+        <th>Description</th>
+      </thead>
+      <tbody>
+        <tr>
+          <td>addSummary</td>
+          <td>boolean</td>
+          <td><code>false</code></td>
+          <td>Whether to add a summary for each extractRoot, adds load so only use when needed</td>
+        </tr>
+        <tr>
+          <td>batchConfig</td>
+          <td>number | BatchConfig, <strong>mandatory</strong></td>
+          <td>none</td>
+          <td>See <a href="pages/runner-config/common-options/#batches">batches</a></td>
+        </tr>
+        <tr>
+          <td>cancelCheckNumber</td>
+          <td>number</td>
+          <td><code>50</code></td>
+          <td>How often, in tasks raised, to check if the extract should be cancelled</td>
+        </tr>
+        <tr>
+          <td>connection</td>
+          <td>LookupDetails, <strong>mandatory</strong></td>
+          <td>none</td>
+          <td>The name and key to the lookup with the <a href="pages/runner-config/sharepoint/#sp-connection">SharePoint
+              connection</a> details.</td>
+        </tr>
+        <tr>
+          <td>extractRoot</td>
+          <td>(string | SPExtractRoot)[], <strong>mandatory</strong></td>
+          <td>none</td>
+          <td>If exporting the full list to another system you can use the list URL, otherwise use the SPExtractRoot
+            object</td>
+        </tr>
+        <tr>
+          <td>hashName</td>
+          <td>string, <strong>mandatory</strong></td>
+          <td>none</td>
+          <td>The lookup name used to store the extract hash</td>
+        </tr>
+        <tr>
+          <td>ignore</td>
+          <td>any</td>
+          <td>none</td>
+          <td>See <a href="pages/runner-config/common-options/#ignore">ignore items</a>. This runner only supports file
+            system based ignore options</td>
+        </tr>
+        <tr>
+          <td>quarantinedLookupName</td>
+          <td>string</td>
+          <td><code>quarantinedSPListItemExtractor</code></td>
+          <td>Name value for the quarantine lookup</td>
+        </tr>
+      </tbody>
+    </table>
+    <hr>
+
+    <h5 class="title is-5">Message attributes</h5>
+
+    <p>It populates the following attributes in the new tasks it creates:</p>
+    <ul>
+      <li><code>item</code> metadata for the item extracted</li>
+      <li><code>quarantine</code> quarantine lookup for the item</li>
+    </ul>
+    <hr>
+
+  </section>
+
+  <section class="SharePointStaging">
+
+    <h4 id="sp-staging" class="title is-4 docs-subhead">SharePointStaging</h4>
+    <p><a href="pages/runner-config/runner-status/"><span class="tag is-link">Developed</span></a></p>
+
+    <p>This runner will copy files from SharePoint to the specified storage location</p>
+
+    <h5 class="title is-5">Configuration options</h5>
+
+    <table class="table is-fullwidth">
+      <thead>
+        <th>Option</th>
+        <th>Data type</th>
+        <th>Default</th>
+        <th>Description</th>
+      </thead>
+      <tbody>
+        <tr>
+          <td>allVersions</td>
+          <td>boolean</td>
+          <td><code>false</code></td>
+          <td>Whether to extract the latest version or all versions</td>
+        </tr>
+        <tr>
+          <td>connection</td>
+          <td>LookupDetails, <strong>mandatory</strong></td>
+          <td>none</td>
+          <td>The name and key to the lookup with the <a href="pages/runner-config/sharepoint/#sp-connection">SharePoint
+              connection</a> details.</td>
+        </tr>
+        <tr>
+          <td>extractItem</td>
+          <td>string</td>
+          <td><code>extractItem</code></td>
+          <td>The message attribute containing the extracted item</td>
+        </tr>
+        <tr>
+          <td>extractRoot</td>
+          <td>string</td>
+          <td><code>extractRoot</code></td>
+          <td>The message attribute with the configuration used for the extract item</td>
+        </tr>
+        <tr>
+          <td>stagingProvider</td>
+          <td>any, <strong>mandatory</strong></td>
+          <td>none</td>
+          <td>The configuration details for the storage provider</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h5 class="title is-5">Message attributes</h5>
+
+    <table class="table is-fullwidth">
+      <thead>
+        <th>Option</th>
+        <th>Data type</th>
+        <th>Description</th>
+      </thead>
+      <tbody>
+        <tr>
+          <td>extractItem</td>
+          <td>SPListItem, <strong>mandatory</strong></td>
+          <td>The object extracted from the SharePoint API</td>
+        </tr>
+        <tr>
+          <td>extractRoot</td>
+          <td>SPExtractRoot, <strong>mandatory</strong></td>
+          <td>The configuration used for the extract item</td>
+        </tr>
+      </tbody>
+    </table>
+    <p>Message attribute names can be changed in the configuration options.</p>
+
+    <p>It populates the following attributes in the new tasks it creates:</p>
+    <ul>
+      <li><code>sourceFile</code> metadata for the item extracted</li>
+    </ul>
+    <hr>
+
+  </section>
+
+  <section class="SPListItemLoader">
+
+    <p id="sp-loader" class="title is-4 docs-subhead">SPListItemLoader</p>
+    <p><a href="pages/runner-config/runner-status/"><span class="tag is-link">Developed</span></a></p>
+
+    <p>This runner will create the SharePoint item using the loadItem message attribute</p>
+
+    <h5 class="title is-5">Configuration options</h5>
+
+    <table class="table is-fullwidth">
+      <thead>
+        <th>Option</th>
+        <th>Data type</th>
+        <th>Default</th>
+        <th>Description</th>
+      </thead>
+      <tbody>
+        <tr>
+          <td>addFields</td>
+          <td>boolean</td>
+          <td><code>false</code></td>
+          <td>Whether to add fields to the list if they are missing</td>
+        </tr>
+        <tr>
+          <td>addFullItem</td>
+          <td>boolean</td>
+          <td><code>false</code></td>
+          <td>Whether the loadedItem is the ServerRelativeURL or the full object</td>
+        </tr>
+        <tr>
+          <td>addHash</td>
+          <td>boolean</td>
+          <td><code>true</code></td>
+          <td>Whether to add the extractHash lookup</td>
+        </tr>
+        <tr>
+          <td>connection</td>
+          <td>LookupDetails, <strong>mandatory</strong></td>
+          <td>none</td>
+          <td>The name and key to the lookup with the <a href="pages/runner-config/sharepoint/#sp-connection">SharePoint
+              connection</a> details.</td>
+        </tr>
+        <tr>
+          <td>handleExisting</td>
+          <td>string</td>
+          <td>error</td>
+          <td>This runner supports three options:
+            <ul>
+              <li><code>complete</code> - complete the task and add the hash</li>
+              <li><code>error</code> - throw an error</li>
+              <li><code>overwrite</code> - overwrite the existing file with the newly extracted file</li>
+            </ul>
+          </td>
+        </tr>
+        <tr>
+          <td>loadItem</td>
+          <td>string</td>
+          <td>loadItem</td>
+          <td>The message attribute that contains the SPLoadItem object</td>
+        </tr>
+        <tr>
+          <td>loadedItemLabel</td>
+          <td>string</td>
+          <td>OTCSLoadedItem</td>
+          <td>The label to use for the loaded item in the message</td>
+        </tr>
+      </tbody>
+    </table>
+    <hr>
+
+    <h5 class="title is-5">Message attributes</h5>
+
+    <table class="table is-fullwidth">
+      <thead>
+        <th>Option</th>
+        <th>Data type</th>
+        <th>Description</th>
+      </thead>
+      <tbody>
+        <tr>
+          <td>extractHash</td>
+          <td>Lookup</td>
+          <td>The extract hash object</td>
+        </tr>
+        <tr>
+          <td>loadItem</td>
+          <td>SPLoadItem, <strong>mandatory</strong></td>
+          <td>The information used by the loader to create the item.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p>Message attribute names can be changed in the configuration options.</p>
+
+    <p>It populates the following attributes in the new tasks it creates:</p>
+    <ul>
+      <li><code>sourceFile</code> an array of versions that were staged</li>
+    </ul>
+    <hr>
+
+    <p>The SPLoadItem and SPLoadVersion class definitions:</p>
+    <pre class="code">export class SPLoadVersion {
+  order: number;
+  created?: string;
+  modified?: string;
+  filename?: string;
+  sourceFile: string | StagedFile;
+
+  constructor(values?: any) {
+    Object.assign(this, values);
   }
-  </pre>
-  <p>Example NTLM connection object:</p>
-  <pre class="code">
-  {
-    "username": "NERKS/fred.nerk",
-    "password": "nerk",
-    "spHost": "https://w6n3w.sharepoint.com",
-    "useNTLM": true
+}
+
+export class SPLoadItem {
+  skip = false;
+  type: 'Folder' | 'File' | 'ListItem';
+  name: string;
+  title: string;
+  listPath: string;
+  fields: { [name: string]: any } = {};
+  versions?: SPLoadVersion[];
+
+  constructor(values?: any) {
+    Object.assign(this, values);
   }
-  </pre>
+}</pre>
+    <hr>
 
-  <p id="sp-extractor" class="subtitle is-5 docs-subhead">SharePointExtractor</p>
-  <p><a href="pages/runner-config/runner-status/"><span class="tag is-link">Developed</span></a></p>
+  </section>
 
-  <p>This runner will extract information from SharePoint. It will not extract any files from SharePoint. To
-    extract files from SharePoint to upload to other systems use the SharePointStaging runner. The SharePointExtractor
-    has the following configuration options:</p>
-  <ul>
-    <li><code>batchConfig</code> <i>number | RunnerBatchConfig</i> - see <a href="pages/runner-config/common-options/#batches">batches</a> - needs a hashName value or it will be ignored</li>
-    <li><code>connection</code> <strong>mandatory</strong> <i>object</i> - <a href="pages/runner-config/sharepoint/#sp-connection">SharePoint connection object</a></li>
-    <li><code>hashName</code> <i>string</i> - the lookup name for storing the source object hash</li>
-    <li><code>ignore</code> see <a href="pages/runner-config/common-options/#ignore">ignore items</a>
-      <br>in addition you can specify a <i>subfolderRoot</i> path and all items outside that path will be ignored</li>
-    <li><code>keepAliveCount</code> <i>number</i> - how often to save the extractor status, defaults to 1000 tasks created</li>
-    <li><code>lists</code> <strong>mandatory</strong> <i>string</i> - string array - array of list URLs, e.g. ["https://w6n3w.sharepoint.com/sites/ethel-test/Shared%20Documents/"]</li>
-    <li><code>quarantinedLookupName</code> <i>string</i> - the name for the quarantine lookup, defaults to quarantinedSharePointExtractor</li>
-  </ul>
-  <hr>
-  <p>Example runner configuration:</p>
-  <pre class="code">
-  {
-    "type": "SharePointExtractor",
-    "config": {
-      "connection": {
-        "name": "connections",
-        "key": "sp.dev"
-      },
-      "hashName":"ProdMigrationOne",
-      "ignore": {
-        "objectTypes": ["Folder"],
-        "subfolderRoot": "Finance/2020/"
-      }
-      "lists": ["https://w6n3w.sharepoint.com/sites/ethel-test/Shared%20Documents/"],
-    }
-  }
-  </pre>
+  <section class="FSToSPTransformer">
 
-  <p>It populates the following attributes in the new tasks it creates:</p>
-  <ul>
-    <li><code>item</code> metadata for the item extracted</li>
-    <li><code>quarantine</code> quarantine lookup for the item</li>
-  </ul>
-  <pre class="code">
-    {
-      "item": {
-        "__metadata": {
-          "id": "efbb6411-2d6f-41df-a956-6fb832fac0da",
-          "uri": "https://w6n3w.sharepoint.com/sites/ethel-test/_api/Web/Lists(guid'5f4a27ce-5e30-433f-9536-10c1dc8d782f')/Items(5010)",
-          "etag": "\"2\"",
-          "type": "SP.Data.Shared_x0020_DocumentsItem"
-        },
-        "FirstUniqueAncestorSecurableObject": {
-          "__deferred": {
-            "uri": "https://w6n3w.sharepoint.com/sites/ethel-test/_api/Web/Lists(guid'5f4a27ce-5e30-433f-9536-10c1dc8d782f')/Items(5010)/FirstUniqueAncestorSecurableObject"
-          }
-        },
-        "RoleAssignments": {
-          "__deferred": {
-            "uri": "https://w6n3w.sharepoint.com/sites/ethel-test/_api/Web/Lists(guid'5f4a27ce-5e30-433f-9536-10c1dc8d782f')/Items(5010)/RoleAssignments"
-          }
-        },
-        "AttachmentFiles": {
-          "__deferred": {
-            "uri": "https://w6n3w.sharepoint.com/sites/ethel-test/_api/Web/Lists(guid'5f4a27ce-5e30-433f-9536-10c1dc8d782f')/Items(5010)/AttachmentFiles"
-          }
-        },
-        "ContentType": {
-          "__deferred": {
-            "uri": "https://w6n3w.sharepoint.com/sites/ethel-test/_api/Web/Lists(guid'5f4a27ce-5e30-433f-9536-10c1dc8d782f')/Items(5010)/ContentType"
-          }
-        },
-        "GetDlpPolicyTip": {
-          "__deferred": {
-            "uri": "https://w6n3w.sharepoint.com/sites/ethel-test/_api/Web/Lists(guid'5f4a27ce-5e30-433f-9536-10c1dc8d782f')/Items(5010)/GetDlpPolicyTip"
-          }
-        },
-        "FieldValuesAsHtml": {
-          "__deferred": {
-            "uri": "https://w6n3w.sharepoint.com/sites/ethel-test/_api/Web/Lists(guid'5f4a27ce-5e30-433f-9536-10c1dc8d782f')/Items(5010)/FieldValuesAsHtml"
-          }
-        },
-        "FieldValuesAsText": {
-          "__deferred": {
-            "uri": "https://w6n3w.sharepoint.com/sites/ethel-test/_api/Web/Lists(guid'5f4a27ce-5e30-433f-9536-10c1dc8d782f')/Items(5010)/FieldValuesAsText"
-          }
-        },
-        "FieldValuesForEdit": {
-          "__deferred": {
-            "uri": "https://w6n3w.sharepoint.com/sites/ethel-test/_api/Web/Lists(guid'5f4a27ce-5e30-433f-9536-10c1dc8d782f')/Items(5010)/FieldValuesForEdit"
-          }
-        },
-        "File": {
-          "__metadata": {
-            "id": "https://w6n3w.sharepoint.com/sites/ethel-test/_api/Web/Lists(guid'5f4a27ce-5e30-433f-9536-10c1dc8d782f')/Items(5010)/File",
-            "uri": "https://w6n3w.sharepoint.com/sites/ethel-test/_api/Web/Lists(guid'5f4a27ce-5e30-433f-9536-10c1dc8d782f')/Items(5010)/File",
-            "type": "SP.File"
-          },
-          "Author": {
-            "__deferred": {
-              "uri": "https://w6n3w.sharepoint.com/sites/ethel-test/_api/Web/Lists(guid'5f4a27ce-5e30-433f-9536-10c1dc8d782f')/Items(5010)/File/Author"
-            }
-          },
-          "CheckedOutByUser": {
-            "__deferred": {
-              "uri": "https://w6n3w.sharepoint.com/sites/ethel-test/_api/Web/Lists(guid'5f4a27ce-5e30-433f-9536-10c1dc8d782f')/Items(5010)/File/CheckedOutByUser"
-            }
-          },
-          "EffectiveInformationRightsManagementSettings": {
-            "__deferred": {
-              "uri": "https://w6n3w.sharepoint.com/sites/ethel-test/_api/Web/Lists(guid'5f4a27ce-5e30-433f-9536-10c1dc8d782f')/Items(5010)/File/EffectiveInformationRightsManagementSettings"
-            }
-          },
-          "InformationRightsManagementSettings": {
-            "__deferred": {
-              "uri": "https://w6n3w.sharepoint.com/sites/ethel-test/_api/Web/Lists(guid'5f4a27ce-5e30-433f-9536-10c1dc8d782f')/Items(5010)/File/InformationRightsManagementSettings"
-            }
-          },
-          "ListItemAllFields": {
-            "__deferred": {
-              "uri": "https://w6n3w.sharepoint.com/sites/ethel-test/_api/Web/Lists(guid'5f4a27ce-5e30-433f-9536-10c1dc8d782f')/Items(5010)/File/ListItemAllFields"
-            }
-          },
-          "LockedByUser": {
-            "__deferred": {
-              "uri": "https://w6n3w.sharepoint.com/sites/ethel-test/_api/Web/Lists(guid'5f4a27ce-5e30-433f-9536-10c1dc8d782f')/Items(5010)/File/LockedByUser"
-            }
-          },
-          "ModifiedBy": {
-            "__deferred": {
-              "uri": "https://w6n3w.sharepoint.com/sites/ethel-test/_api/Web/Lists(guid'5f4a27ce-5e30-433f-9536-10c1dc8d782f')/Items(5010)/File/ModifiedBy"
-            }
-          },
-          "Properties": {
-            "__metadata": {
-              "id": "https://w6n3w.sharepoint.com/sites/ethel-test/_api/Web/Lists(guid'5f4a27ce-5e30-433f-9536-10c1dc8d782f')/Items(5010)/File/Properties",
-              "uri": "https://w6n3w.sharepoint.com/sites/ethel-test/_api/Web/Lists(guid'5f4a27ce-5e30-433f-9536-10c1dc8d782f')/Items(5010)/File/Properties",
-              "type": "SP.PropertyValues"
-            },
-            "vti_x005f_supportsZipIt": "false",
-            "vti_x005f_compliancepreviewnextbsn": "100",
-            "vti_x005f_universalannotationnextbsnalloc": "100",
-            "vti_x005f_previewnextbsn": "100",
-            "vti_x005f_contenttag": "{D72A0E5A-4C7C-48B6-9CB5-C1DE48AD7D24},2,2",
-            "vti_x005f_author": "i:0#.f|membership|mark.farrall@w6n3w.onmicrosoft.com",
-            "vti_x005f_collabnextbsnalloc": "100",
-            "vti_x005f_ertimecreated": "2024-03-25T04:31:47",
-            "vti_x005f_iplabelpromotionversion": 0,
-            "vti_x005f_folderitemcount": 0,
-            "vti_x005f_asyncpreviewnextbsn": "100",
-            "vti_x005f_listbasetype": 1,
-            "vti_x005f_metainfoversion": 2,
-            "vti_x005f_writevalidationtoken": "isFxKXJ8Yqf6TkkyLTMjrZ2RF5M=",
-            "vti_x005f_timelastmodified": "2024-03-25T05:52:07",
-            "vti_x005f_rtag": "rt:D72A0E5A-4C7C-48B6-9CB5-C1DE48AD7D24@00000000002",
-            "vti_x005f_shareflags": 0,
-            "vti_x005f_nextbsn": "190",
-            "vti_x005f_genericcontenttempnextbsn": "100",
-            "vti_x005f_cowatchnextbsn": "100",
-            "vti_x005f_timecreated": "2024-03-25T04:31:47",
-            "vti_x005f_canmaybeedit": "true",
-            "vti_x005f_principalcount": 3,
-            "vti_x005f_parserversion": "16.0.0.24706",
-            "vti_x005f_parentid": "{C5BB18F4-FBF7-4F7C-B8E8-FEE4BDBD92B0}",
-            "vti_x005f_genericcontenttempnextbsnalloc": "100",
-            "vti_x005f_previewinvalidtime": "2024-03-25T04:31:47",
-            "vti_x005f_foldersubfolderitemcount": 0,
-            "vti_x005f_docstoreversion": 2,
-            "vti_x005f_previewnextbsnalloc": "100",
-            "vti_x005f_etag": "\"{D72A0E5A-4C7C-48B6-9CB5-C1DE48AD7D24},2\"",
-            "vti_x005f_areHybridOrphanHashedBlobsCleaned": "false",
-            "vti_x005f_virusvendorid": 1299,
-            "vti_x005f_doclibrowid": 5010,
-            "vti_x005f_filesize": 520,
-            "vti_x005f_dbschemaversion": "16.0.399.0",
-            "vti_x005f_docviznextbsn": "100",
-            "vti_x005f_sourcecontrolcookie": "fp_internal",
-            "vti_x005f_timelastwritten": "2024-03-25T05:52:07",
-            "vti_x005f_complianceflags": 0,
-            "vti_x005f_contentversionisdirty": "false",
-            "vti_x005f_bsn": "190",
-            "vti_x005f_sourcecontrolversion": "V2.0",
-            "vti_x005f_iplabelid": "",
-            "vti_x005f_listflags2": 229392,
-            "vti_x005f_listiplabelid": "",
-            "vti_x005f_nexttolasttimemodified": "2024-03-25T04:31:47",
-            "vti_x005f_universalannotationnextbsn": "100",
-            "vti_x005f_decryptdeferred": "false",
-            "vti_x005f_decryptskipreason": 6,
-            "vti_x005f_contentversion": 2,
-            "vti_x005f_level": 1,
-            "vti_x005f_sprocsschemaversion": "16.0.1088.0",
-            "vti_x005f_timelastwnssent": "2024-03-25T05:52:07",
-            "vti_x005f_additionalstreamssize": "0",
-            "vti_x005f_internalversion": 513,
-            "vti_x005f_listid": "{5F4A27CE-5E30-433F-9536-10C1DC8D782F}",
-            "vti_x005f_aspxpagesnextbsn": "100",
-            "vti_x005f_docstoretype": 0,
-            "vti_x005f_collabnextbsn": "100",
-            "vti_x005f_listflags": "36028797027356812",
-            "ContentTypeId": "0x010100DB55E39C6EC291438266E18E53CF4A92",
-            "vti_x005f_ertimelastmodified": "2024-03-25T05:52:07",
-            "vti_x005f_streamschema": 75,
-            "vti_x005f_nextbsnallocated": "190",
-            "vti_x005f_zipitempreviewnextbsn": "100",
-            "vti_x005f_setuppathversion": 16,
-            "vti_x005f_candeleteversion": "true",
-            "vti_x005f_streamhash": "0x028AC17129727C62A7FA4E49322D3323AD9D911793",
-            "vti_x005f_replid": "rid:{D72A0E5A-4C7C-48B6-9CB5-C1DE48AD7D24}",
-            "vti_x005f_excelrevisionlognextbsn": "100",
-            "vti_x005f_durablestreammetadatanextbsn": "100",
-            "vti_x005f_metadatanextbsn": "100",
-            "vti_x005f_zipitempreviewnextbsnalloc": "100",
-            "vti_x005f_orphannextbsn": "100",
-            "vti_x005f_virusstatus": 0,
-            "vti_x005f_modifiedby": "i:0#.f|membership|mark.farrall@w6n3w.onmicrosoft.com",
-            "vti_x005f_listservertemplate": 101
-          },
-          "VersionEvents": {
-            "__deferred": {
-              "uri": "https://w6n3w.sharepoint.com/sites/ethel-test/_api/Web/Lists(guid'5f4a27ce-5e30-433f-9536-10c1dc8d782f')/Items(5010)/File/VersionEvents"
-            }
-          },
-          "VersionExpirationReport": {
-            "__deferred": {
-              "uri": "https://w6n3w.sharepoint.com/sites/ethel-test/_api/Web/Lists(guid'5f4a27ce-5e30-433f-9536-10c1dc8d782f')/Items(5010)/File/VersionExpirationReport"
-            }
-          },
-          "Versions": {
-            "results": [
-              {
-                "__metadata": {
-                  "id": "https://w6n3w.sharepoint.com/sites/ethel-test/_api/SP.FileVersion1acfeb2a-793f-4018-8f9f-6d822c08ab6f",
-                  "uri": "https://w6n3w.sharepoint.com/sites/ethel-test/_api/SP.FileVersion1acfeb2a-793f-4018-8f9f-6d822c08ab6f",
-                  "type": "SP.FileVersion"
-                },
-                "CreatedBy": {
-                  "__deferred": {
-                    "uri": "https://w6n3w.sharepoint.com/sites/ethel-test/_api/SP.FileVersion1acfeb2a-793f-4018-8f9f-6d822c08ab6f/CreatedBy"
-                  }
-                },
-                "CheckInComment": "",
-                "Created": "2024-03-25T04:31:47Z",
-                "ID": 512,
-                "IsCurrentVersion": false,
-                "Length": "520",
-                "Size": 520,
-                "Url": "_vti_history/512/Shared Documents/data.txt",
-                "VersionLabel": "1.0"
-              }
-            ]
-          },
-          "CheckInComment": "",
-          "CheckOutType": 2,
-          "ContentTag": "{D72A0E5A-4C7C-48B6-9CB5-C1DE48AD7D24},2,2",
-          "CustomizedPageStatus": 0,
-          "ETag": "\"{D72A0E5A-4C7C-48B6-9CB5-C1DE48AD7D24},2\"",
-          "Exists": true,
-          "ExistsAllowThrowForPolicyFailures": true,
-          "IrmEnabled": false,
-          "Length": "520",
-          "Level": 1,
-          "LinkingUri": null,
-          "LinkingUrl": "",
-          "MajorVersion": 2,
-          "MinorVersion": 0,
-          "Name": "data.txt",
-          "ServerRelativeUrl": "/sites/ethel-test/Shared Documents/data.txt",
-          "TimeCreated": "2024-03-25T04:31:47Z",
-          "TimeLastModified": "2024-03-25T05:52:07Z",
-          "Title": null,
-          "UIVersion": 1024,
-          "UIVersionLabel": "2.0",
-          "UniqueId": "d72a0e5a-4c7c-48b6-9cb5-c1de48ad7d24"
-        },
-        "LikedByInformation": {
-          "__deferred": {
-            "uri": "https://w6n3w.sharepoint.com/sites/ethel-test/_api/Web/Lists(guid'5f4a27ce-5e30-433f-9536-10c1dc8d782f')/Items(5010)/LikedByInformation"
-          }
-        },
-        "ParentList": {
-          "__deferred": {
-            "uri": "https://w6n3w.sharepoint.com/sites/ethel-test/_api/Web/Lists(guid'5f4a27ce-5e30-433f-9536-10c1dc8d782f')/Items(5010)/ParentList"
-          }
-        },
-        "Properties": {
-          "__deferred": {
-            "uri": "https://w6n3w.sharepoint.com/sites/ethel-test/_api/Web/Lists(guid'5f4a27ce-5e30-433f-9536-10c1dc8d782f')/Items(5010)/Properties"
-          }
-        },
-        "Versions": {
-          "__deferred": {
-            "uri": "https://w6n3w.sharepoint.com/sites/ethel-test/_api/Web/Lists(guid'5f4a27ce-5e30-433f-9536-10c1dc8d782f')/Items(5010)/Versions"
-          }
-        },
-        "FileSystemObjectType": 0,
-        "Id": 5010,
-        "ServerRedirectedEmbedUri": null,
-        "ServerRedirectedEmbedUrl": "",
-        "ContentTypeId": "0x010100DB55E39C6EC291438266E18E53CF4A92",
-        "OData__ColorTag": null,
-        "ComplianceAssetId": null,
-        "Title": null,
-        "Surname": null,
-        "ID": 5010,
-        "Created": "2024-03-25T04:31:48Z",
-        "AuthorId": 9,
-        "Modified": "2024-03-25T05:52:07Z",
-        "EditorId": 9,
-        "OData__CopySource": null,
-        "CheckoutUserId": null,
-        "OData__UIVersionString": "2.0",
-        "GUID": "fc08406b-9f08-44db-bda1-0aa67af10d67",
-        "type": "File",
-        "container": false
-      },
-      "siteRelativeUrl": "/sites/ethel-test/",
-      "listName": "Shared Documents",
-      "quarantine": {
-        "name": "quarantinedSharePointExtractor",
-        "key": "fc08406b-9f08-44db-bda1-0aa67af10d67",
-        "value": "fc08406b-9f08-44db-bda1-0aa67af10d67"
-      }
-    }
-    </pre>
+    <p id="fs-sp" class="title is-4 docs-subhead">FSToSPTransformer</p>
+    <p><a href="pages/runner-config/runner-status/"><span class="tag is-link">Developed</span></a></p>
 
-  <p id="sp-staging" class="subtitle is-5 docs-subhead">SharePointStaging</p>
-  <p><a href="pages/runner-config/runner-status/"><span class="tag is-link">Developed</span></a></p>
+    <p>This runner transforms file system extractor messages to the SPLoadItem format</p>
 
-  <p>This runner will copy files from SharePoint to the specified storage location. It has the following configuration options:</p>
-  <ul>
-    <li><code>allVersions</code> <i>boolean</i> - whether to extract the latest version or all versions, defaults to false</li>
-    <li><code>connection</code> <strong>mandatory</strong> <i>object</i> - <a href="pages/runner-config/sharepoint/#sp-connection">SharePoint connection object</a></li>
-    <li><code>item</code> <i>string</i> - the message attribute with the API definition of the object, defaults to item</li>
-    <li><code>siteRelativeUrl</code> <i>string</i> - the message attribute with the server relative URL to the site, defaults to siteRelativeUrl</li>
-    <li><code>stagingProvider</code> <strong>mandatory</strong> <i>object</i> - the location where the document content is stored</li>
-  </ul>
-  <p>It uses the following message attributes:</p>
-  <ul>
-    <li><code>item</code> <strong>mandatory</strong> <i>object</i> - the item object from the SharePoint API</li>
-    <li><code>siteRelativeUrl</code> <strong>mandatory</strong> <i>number</i> - the URL to the site, minus the host name</li>
-  </ul>
-  <hr>
-  <p>Example runner configuration:</p>
-  <pre class="code">
-  {
-    "id": "6UQtP8-CdXAMg_GQCOSLd",
-    "name": "Test migration",
-    "runner": {
-      "type": "SharePointStaging",
-      "config": {
-        "connection": {
-          "name": "connections",
-          "key": "sp.dev"
-        }
-      }
-    },
-    "message": {
-      "item": {...},
-      "siteRelativeUrl": "/sites/ethel-test/",
-    }
-  }
-  </pre>
+    <h5 class="title is-5">Configuration options</h5>
 
-  <p>It populates the following attributes in the new tasks it creates:</p>
-  <ul>
-    <li><code>sourceFile</code> metadata for the item extracted</li>
-  </ul>
-  <pre class="code">
-    "message": {
-      "item": {...},
-      "siteRelativeUrl": "/sites/ethel-test/",
-      "sourceFile": [
-        {
-          "createdDate": "2024-03-25T04:31:47Z",
-          "filename": "data.txt",
-          "id": "G2KlXr06Gg6Q1lck38TU0",
-          "mimeType": "text/plain",
-          "modifiedDate": "2024-03-25T05:52:07Z",
-          "provider": {
-            "useOriginalName": false,
-            "type": "FileSystem",
-            "path": "E:\\test\\ethel-test\\sp-staging",
-          },
-          "size": 520,
-          "sourceValues": {
-            "VersionLabel": "1.0",
-          },
-          systemId: "4e04301e5cf0ebb3c8d36a65e9819d5db05aefab",
-        },
-      ],
-    }
-    </pre>
+    <table class="table is-fullwidth">
+      <thead>
+        <th>Option</th>
+        <th>Data type</th>
+        <th>Default</th>
+        <th>Description</th>
+      </thead>
+      <tbody>
+        <tr>
+          <td>extractItem</td>
+          <td>string</td>
+          <td><code>extractItem</code></td>
+          <td>The message attribute containing the extracted item</td>
+        </tr>
+        <tr>
+          <td>loadRoot</td>
+          <td>string | SPLoadRoot, <strong>mandatory</strong></td>
+          <td>none</td>
+          <td>Either the target SharePoint list URL or the SPLoadRoot object, if a target subfolder is used</td>
+        </tr>
+        <tr>
+          <td>sourceFile</td>
+          <td>string</td>
+          <td><code>sourceFile</code></td>
+          <td>The message attribute with the extracted file information</td>
+        </tr>
+      </tbody>
+    </table>
+    <hr>
 
-  <p id="sp-loader" class="subtitle is-5 docs-subhead">SharePointLoader</p>
-  <p><a href="pages/runner-config/runner-status/"><span class="tag is-link">Developed</span></a></p>
+    <h5 class="title is-5">Message attributes</h5>
 
-  <p>This runner will copy files from SharePoint to the specified storage location. It has the following configuration options:</p>
-  <ul>
-    <li><code>addHash</code> <i>boolean</i> - whether to add the currentHash lookup, defaults to true</li>
-    <li><code>connection</code> <strong>mandatory</strong> <i>object</i> - <a href="pages/runner-config/sharepoint/#sp-connection">SharePoint connection object</a></li>
-    <li><code>listName</code> <i>string</i> - the message attribute with the list name, defaults to listName</li>
-    <li><code>loadItem</code> <i>string</i> - the message attribute containing the item to be loaded, defaults to loadItem</li>
-    <li><code>siteRelativeUrl</code> <i>string</i> - the message attribute with the server relative URL to the site, defaults to siteRelativeUrl</li>
-    <li><code>overwrite</code> <i>boolean</i> - whether to add the document as a new version if it already exists, defaults to false</li>
-  </ul>
-  <p>It uses the following message attributes:</p>
-  <ul>
-    <li><code>item</code> <strong>mandatory</strong> <i>object</i> - the item object from the SharePoint API</li>
-    <li><code>listName</code> <strong>mandatory</strong> <i>number</i> - the name of the list</li>
-    <li><code>siteRelativeUrl</code> <strong>mandatory</strong> <i>number</i> - the URL to the site, minus the host name</li>
-  </ul>
-  <p>Message attribute names can be changed in the config section.</p>
-  <hr>
-  <p>Example runner and message configuration:</p>
-  <pre class="code">
-  {
-    "id": "6UQtP8-CdXAMg_GQCOSLd",
-    "name": "Test migration",
-    "runner": {
-      "type": "SharePointStaging",
-      "config": {
-        "connection": {"name": "connections", "key": "sp.dev"},
-        "hashName":"ProdMigrationOne",
-        "stagingProvider": {
-          "type": "FileSystem",
-          "path": "E:\\data\\staging",
-        }
-      }
-    },
-    "runners": {...},
-    "message": {
-      "item": {...},
-      "listName": "Documents",
-      "siteRelativeUrl": "/sites/Project Anthrax"
-    }
-  }
-  </pre>
-  <p>It populates the following attributes in the new tasks it creates:</p>
-  <ul>
-    <li><code>sourceFile</code> an array of versions that were staged</li>
-  </ul>
-  <pre class="code">
-  {
-    "message": {
-      "sourceFile": [
-        {
-          "createdDate": "2024-03-25T04:31:47Z",
-          "filename": "data.txt",
-          "id": "G2KlXr06Gg6Q1lck38TU0",
-          "mimeType": "text/plain",
-          "modifiedDate": "2024-03-25T05:52:07Z",
-          "provider": {
-            "useOriginalName": false,
-            "type": "FileSystem",
-            "path": "E:\\test\\ethel-test\\sp-staging",
-          },
-          "size": 520,
-          "sourceValues": {
-            "VersionLabel": "1.0",
-          },
-          "systemId": "4e04301e5cf0ebb3c8d36a65e9819d5db05aefab",
-        },
-      ],
-    }
-  }
-  </pre>
+    <table class="table is-fullwidth">
+      <thead>
+        <th>Option</th>
+        <th>Data type</th>
+        <th>Description</th>
+      </thead>
+      <tbody>
+        <tr>
+          <td>extractItem</td>
+          <td>FSExtractItem, <strong>mandatory</strong></td>
+          <td>The file system object</td>
+        </tr>
+        <tr>
+          <td>sourceFile</td>
+          <td>string | SourceFile</td>
+          <td>The extracted file information</td>
+        </tr>
+      </tbody>
+    </table>
 
-  <p id="fs-sp" class="subtitle is-5 docs-subhead">FSToSPTransformer</p>
-  <p><a href="pages/runner-config/runner-status/"><span class="tag is-link">Developed</span></a></p>
+    <p>Message attribute names can be changed in the configuration options.</p>
 
-  <p>This runner transforms file system extractor messages to the SPLoadItem format. It has the following configuration options:</p>
-  <ul>
-    <li><code>extractRoot</code> <i>string</i> - the message attribute containing the root file path for the extraction, defaults to extractRoot</li>
-    <li><code>listName</code> <strong>mandatory</strong> <i>string</i> - the list or library name, i.e. the name from the URL, not the title</li>
-    <li><code>item</code> <i>string</i> - the message attribute containing the file system object, defaults to item</li>
-    <li><code>siteRelativeUrl</code> <strong>mandatory</strong> <i>string</i> - the URL to the site, minus the host name</li>
-    <li><code>sourceFile</code> <i>string</i> - the message attribute containing the sourceFile information, defaults to sourceFile</li>
-  </ul>
-  <p>It uses the following message attributes:</p>
-  <ul>
-    <li><code>extractRoot</code> <strong>mandatory</strong> <i>string</i> - the root file path for the extraction</li>
-    <li><code>item</code> <strong>mandatory</strong> <i>object</i> - the file system stats object</li>
-    <li><code>sourceFile</code> <i>string | StagedFile</i> - the file to be added, either path or StagedFile object</li>
-  </ul>
-  <hr>
-  <p>Example runner and message configuration:</p>
-  <pre class="code">
-  {
-    "id": "6UQtP8-CdXAMg_GQCOSLd",
-    "name": "Test migration",
-    "runner":  {
-      "type": "FSToSPTransformer",
-      "config": {
-        "listName": "Ethel testing",
-        "siteRelativeUrl": "/sites/ethel-test/Ethel%20testing/Forms/AllItems.aspx",
-      },
-    },
-    "runners": ...,
-    "message": {
-      "extractRoot": "C:\\code\\test\\fs-extract",
-      "item": {...},
-      "sourceFile": {...}
-    }
-  }
-  </pre>
-  <p>It populates the following attributes in the new tasks it creates:</p>
-  <ul>
-    <li><code>loadItem</code> an array of versions that were staged</li>
-  </ul>
-  <pre class="code">
-  {
-    "message": {
-      "loadItem": {
-        "update": false,
-        "type": "File",
-        "name": "File name",
-        "listPath": "/folder 1/subfolder 1/subfolder 2/",
-        "fields": { description: "Description text" },
-        "sourceFile": {...}
-      }
-    }
-  }
-  </pre>
+    <p>It populates the following attributes in the new tasks it creates:</p>
+    <ul>
+      <li><code>loadItem</code> an array of versions that were staged</li>
+    </ul>
+    <hr>
 
-  <p id="otcs-sp" class="subtitle is-5 docs-subhead">OTCSToSPTransformer</p>
-  <p><a href="pages/runner-config/runner-status/"><span class="tag is-link">Developed</span></a></p>
+  </section>
 
-  <p>This runner transforms OTCS extractor messages to the SPLoadItem format. It has the following configuration options:</p>
-  <ul>
-    <li><code>extractRoot</code> <i>string</i> - the message attribute containing the root file path for the extraction, defaults to extractRoot</li>
-    <li><code>listName</code> <strong>mandatory</strong> <i>string</i> - the list or library name, i.e. the name from the URL, not the title</li>
-    <li><code>metadata</code> <i>object</i> - the mappings of CS attribute ids to SharePoint field names, key-value pairs with CS attribute id as the key</li>
-    <li><code>node</code> <i>string</i> - the message attribute containing the Content Server object, defaults to node</li>
-    <li><code>siteRelativeUrl</code> <strong>mandatory</strong> <i>string</i> - the URL to the site, minus the host name</li>
-    <li><code>sourceFile</code> <i>string</i> - the message attribute containing the sourceFile information, defaults to sourceFile</li>
-  </ul>
-  <p>It uses the following message attributes:</p>
-  <ul>
-    <li><code>extractRoot</code> <strong>mandatory</strong> <i>string</i> - the root file path for the extraction</li>
-    <li><code>node</code> <strong>mandatory</strong> <i>object</i> - the file system stats object</li>
-    <li><code>sourceFile</code> <i>string | StagedFile</i> - the file to be added, either path or StagedFile object</li>
-  </ul>
-  <hr>
-  <p>Example runner and message configuration:</p>
-  <pre class="code">
-  {
-    "id": "6UQtP8-CdXAMg_GQCOSLd",
-    "name": "Test migration",
-    "runner":  {
-      "type": "OTCSToSPTransformer",
-      "config": {
-        "listName": "Ethel testing",
-        "siteRelativeUrl": "/sites/ethel-test/Ethel%20testing/Forms/AllItems.aspx",
-      },
-    },
-    "runners": ...,
-    "message": {
-      "extractRoot": "C:\\code\\test\\fs-extract",
-      "node": {...},
-      "sourceFile": {...}
-    }
-  }
-  </pre>
-  <p>It populates the following attributes in the new tasks it creates:</p>
-  <ul>
-    <li><code>loadItem</code> an array of versions that were staged</li>
-  </ul>
-  <pre class="code">
-  {
-    "message": {
-      "loadItem": {
-        "update": false,
-        "type": "File",
-        "name": "File name",
-        "listPath": "/folder 1/subfolder 1/subfolder 2/",
-        "fields": { description: "Description text" },
-        "sourceFile": {...}
-      }
-    }
-  }
-  </pre>
+  <section class="OTCSToSPTransformer">
 
-  <p id="sp-sp" class="subtitle is-5 docs-subhead">SPToSPTransformer</p>
-  <p><a href="pages/runner-config/runner-status/"><span class="tag is-link">Developed</span></a></p>
+    <p id="otcs-sp" class="title is-4 docs-subhead">OTCSToSPTransformer</p>
+    <p><a href="pages/runner-config/runner-status/"><span class="tag is-link">Developed</span></a></p>
 
-  <p>This runner transforms SharePoint to the SPLoadItem format. It has the following configuration options:</p>
-  <ul>
-    <li><code>item</code> <i>string</i> - the message attribute containing the SharePoint item, defaults to item</li>
-    <li><code>listName</code> <i>string</i> - the message attribute containing the original list or library name, defaults to listName</li>
-    <li><code>listNameMapping</code> <i>object</i> - key value pairs mapping an existing list name to a new list name, can also specify a subfolder as the target for the load</li>
-    <li><code>metadataMapping</code> <i>object</i> - mapping object for field names, key-value pairs with source field name as the key and target field name as the value</li>
-    <li><code>siteRelativeUrl</code> <i>string</i> - the message attribute containing the original siteRelativeUrl, defaults to siteRelativeUrl</li>
-    <li><code>siteUrlMapping</code> <strong>mandatory</strong> <i>object</i> - key value pairs mapping an existing site URL to a new site URL</li>
-    <li><code>sourceFile</code> <i>string</i> - the message attribute containing the sourceFile information, defaults to sourceFile</li>
-  </ul>
-  <p>It uses the following message attributes:</p>
-  <ul>
-    <li><code>item</code> <strong>mandatory</strong> <i>object</i> - the sharepoint list item object</li>
-    <li><code>listName</code> <strong>mandatory</strong> <i>string</i> - the list or library name, i.e. the name from the URL, not the title</li>
-    <li><code>siteRelativeUrl</code> <strong>mandatory</strong> <i>string</i> - the URL to the site, minus the host name</li>
-    <li><code>sourceFile</code> <i>string | StagedFile</i> - the file to be added, either path or StagedFile object</li>
-  </ul>
-  <hr>
-  <p>Example runner and message configuration:</p>
-  <pre class="code">
-  {
-    "id": "6UQtP8-CdXAMg_GQCOSLd",
-    "name": "Test migration",
-    "runner":  {
-      "type": "SPToSPTransformer",
-      "config": {
-        siteUrlMapping: { '/sites/ethel-test/': '/sites/Testteamsite/' },
-        listNameMapping: {
-          "Shared Documents": "Archive",
-          "Approvals": { "list": "Old Approvals" },
-          "Research": { list: "Archive", "subfolder": "/Research/" },
-        },
-      },
-    },
-    "runners": ...,
-    "message": {
-      "item": {...},
-      "siteRelativeUrl": "/sites/ethel-test/",
-      "listName": "Shared Documents",
-      "sourceFile": {...}
-    }
-  }
-  </pre>
-  <p>It populates the following attributes in the new tasks it creates:</p>
-  <ul>
-    <li><code>loadItem</code> an array of versions that were staged</li>
-  </ul>
-  <pre class="code">
-  {
-    "message": {
-      "loadItem": {
-        "update": false,
-        "type": "File",
-        "name": "File name",
-        "listPath": "/folder 1/subfolder 1/subfolder 2/",
-        "fields": { description: "Description text" },
-        "sourceFile": {...}
-      }
-    }
-  }
-  </pre>
+    <p>This runner transforms OTCS extractor messages to the SPLoadItem format</p>
+
+    <h5 class="title is-5">Configuration options</h5>
+
+    <table class="table is-fullwidth">
+      <thead>
+        <th>Option</th>
+        <th>Data type</th>
+        <th>Default</th>
+        <th>Description</th>
+      </thead>
+      <tbody>
+        <tr>
+          <td>extractItem</td>
+          <td>string</td>
+          <td><code>extractItem</code></td>
+          <td>The message attribute containing the extracted item</td>
+        </tr>
+        <tr>
+          <td>metadataMapping</td>
+          <td>{ [csAttId: string]: string }</td>
+          <td>none</td>
+          <td>key-value pairs with CS attribute id as the key and the SP field title as the value</td>
+        </tr>
+        <tr>
+          <td>sourceFile</td>
+          <td>string</td>
+          <td><code>sourceFile</code></td>
+          <td>The message attribute with the extracted file information</td>
+        </tr>
+        <tr>
+          <td>targetList</td>
+          <td>string | SPList, <strong>mandatory</strong></td>
+          <td>none</td>
+          <td>Either the target SharePoint list URL or the SPList object, if a target subfolder is used</td>
+        </tr>
+      </tbody>
+    </table>
+    <hr>
+
+    <h5 class="title is-5">Message attributes</h5>
+
+    <table class="table is-fullwidth">
+      <thead>
+        <th>Option</th>
+        <th>Data type</th>
+        <th>Description</th>
+      </thead>
+      <tbody>
+        <tr>
+          <td>extractItem</td>
+          <td>CSNode, <strong>mandatory</strong></td>
+          <td>The Content Server object</td>
+        </tr>
+        <tr>
+          <td>sourceFile</td>
+          <td>SourceFile[]</td>
+          <td>The extracted file information</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p>Message attribute names can be changed in the configuration options.</p>
+
+    <p>It populates the following attributes in the new tasks it creates:</p>
+    <ul>
+      <li><code>loadItem</code> an array of versions that were staged</li>
+    </ul>
+    <hr>
+
+  </section>
+
+  <section class="SPToSPTransformer">
+
+    <p id="sp-sp" class="title is-4 docs-subhead">SPToSPTransformer</p>
+    <p><a href="pages/runner-config/runner-status/"><span class="tag is-link">Developed</span></a></p>
+
+    <p>This runner transforms SharePoint extract items to the SPLoadItem format</p>
+
+    <h5 class="title is-5">Configuration options</h5>
+
+    <table class="table is-fullwidth">
+      <thead>
+        <th>Option</th>
+        <th>Data type</th>
+        <th>Default</th>
+        <th>Description</th>
+      </thead>
+      <tbody>
+        <tr>
+          <td>extractFields</td>
+          <td>string</td>
+          <td><code>extractFields</code></td>
+          <td>The message attribute containing the extracted field definitions</td>
+        </tr>
+        <tr>
+          <td>extractItem</td>
+          <td>string</td>
+          <td><code>extractItem</code></td>
+          <td>The message attribute containing the extracted item</td>
+        </tr>
+        <tr>
+          <td>extractRoot</td>
+          <td>string</td>
+          <td><code>extractRoot</code></td>
+          <td>The message attribute with the initial extractor config</td>
+        </tr>
+        <tr>
+          <td>extractValues</td>
+          <td>string</td>
+          <td><code>extractValues</code></td>
+          <td>The message attribute containing the extracted field values</td>
+        </tr>
+        <tr>
+          <td>handleMetadataError</td>
+          <td>string</td>
+          <td><code>error</code></td>
+          <td>Whether to throw an error or log a warning if there is an error in mapping the metadata. Use
+            <code>warning</code> to log the error
+          </td>
+        </tr>
+        <tr>
+          <td>loadRoot</td>
+          <td>SPLoadRoot</td>
+          <td>none</td>
+          <td>Only required if load details are not in the extract config, either the target SharePoint list URL or the
+            SPLoadRoot object, if a target subfolder is used</td>
+        </tr>
+        <tr>
+          <td>sourceFile</td>
+          <td>string</td>
+          <td><code>sourceFile</code></td>
+          <td>The message attribute with the extracted file information</td>
+        </tr>
+      </tbody>
+    </table>
+    <hr>
+
+    <h5 class="title is-5">Message attributes</h5>
+
+    <table class="table is-fullwidth">
+      <thead>
+        <th>Option</th>
+        <th>Data type</th>
+        <th>Description</th>
+      </thead>
+      <tbody>
+        <tr>
+          <td>extractFields</td>
+          <td>SPField[]</td>
+          <td>The extracted SharePoint field definitions</td>
+        </tr>
+        <tr>
+          <td>extractItem</td>
+          <td>SPListItem, <strong>mandatory</strong></td>
+          <td>The SharePoint list item object</td>
+        </tr>
+        <tr>
+          <td>extractRoot</td>
+          <td>SPExtractRoot, <strong>mandatory</strong></td>
+          <td>The configuration used for the extract item</td>
+        </tr>
+        <tr>
+          <td>extractValues</td>
+          <td>{ [EntityPropertyName: string]: any }</td>
+          <td>The extracted SharePoint field values</td>
+        </tr>
+        <tr>
+          <td>sourceFile</td>
+          <td>SourceFile[]</td>
+          <td>The extracted file information</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p>Message attribute names can be changed in the configuration options.</p>
+
+    <p>It populates the following attributes in the new tasks it creates:</p>
+    <ul>
+      <li><code>loadItem</code> the SharePoint item to be created</li>
+    </ul>
+    <hr>
+
+  </section>
+
 </div>
         </div>
         <div class="container is-fluid dl-footer">
           <a href="https://driverlane.com.au">Driver Lane</a>
-          &copy; 2020-2024
+          &copy; 2020-2025
         </div>
       </div>
     </div>

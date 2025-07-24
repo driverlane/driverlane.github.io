@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="Description" content="Documentation for Ethel">
     <title>Ethel Docs</title>
-    <base href="/ethel/">
+    <base href="/">
     <link rel="icon" type="image/x-icon" href="favicon.ico">
     <link rel="stylesheet" href="assets/styles.css">
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.6.0/styles/default.min.css">
@@ -39,7 +39,7 @@
                 
               </li>
               <li>
-                <a href="pages/basic/running-ethel/">Running ethel</a>
+                <a href="pages/basic/deployment/">Deployment</a>
                 
               </li>
               <li>
@@ -50,11 +50,11 @@
           <p class="menu-label">Runner config</p>
           <ul class="menu-list">
               <li>
-                <a href="pages/runner-config/runners/">Runner types</a>
+                <a href="pages/runner-config/common-options/">Common options</a>
                 
               </li>
               <li>
-                <a href="pages/runner-config/common-options/">Common options</a>
+                <a href="pages/runner-config/runners/">Runner types</a>
                 
               </li>
               <li>
@@ -107,15 +107,19 @@
           <p class="menu-label">Development</p>
           <ul class="menu-list">
               <li>
+                <a href="pages/development/design/">Design</a>
+                
+              </li>
+              <li>
                 <a href="pages/development/repository/">Repository</a>
                 
               </li>
               <li>
-                <a href="pages/development/runners/">Runners</a>
+                <a href="pages/development/server/">Server</a>
                 
               </li>
               <li>
-                <a href="pages/development/architecture/">Architecture</a>
+                <a href="pages/development/runners/">Runners</a>
                 
               </li>
           </ul>
@@ -125,11 +129,11 @@
       <div class="section">
         <div class="container is-fluid">
           
-<p class="title is-4">Mock runners</p>
+<h3 class="title is-3">Mock runners</h3>
 <div class="content">
 
   <p>These runners are generally used in testing and getting to know how ethel works. They don't contact any source
-    or target information, they just update the message object and generate other tasks if other runners are configured.
+    or target system, they just update the message object and generate other tasks if other runners are configured.
   </p>
   <p>The runners are:</p>
   <ul>
@@ -138,88 +142,205 @@
     <li><a href="pages/runner-config/mock/#mock-loader">MockLoader</a></li>
   </ul>
 
-  <p id="mock-extractor" class="subtitle is-5 docs-subhead">MockExtractor</p>
-  <p><a href="pages/runner-config/runner-status/"><span class="tag is-black">Demo only</span></a></p>
+  <section class="MockExtractor">
 
-  <p>This runner mocks extracting objects from a source system. It has the following configuration options:</p>
-  <ul>
-    <li><code>generateError</code> <i>number</i> - whether to generate a random error. The smaller the number the more
-      likely an error. 1 gives an error every time.</li>
-    <li><code>messages</code> <i>number</i> - how many tasks to create, defaults to 10</li>
-    <li><code>randomiseWait</code> <i>boolean</i> - whether to randomise the configured wait value, defaults to true
-    </li>
-    <li><code>wait</code> <i>number</i> - milliseconds to wait before raising the next extract task</li>
-  </ul>
-  <hr>
-  <p>Example runner configuration:</p>
-  <pre class="code">
-  {
-    "type": "MockExtractor",
-    "config": {
-      "generateError": 10,
-      "messages": 100,
-    }
-  }
-  </pre>
+    <h4 id="mock-extractor" class="title is-4 docs-subhead">MockExtractor</h4>
+    <p><a href="pages/runner-config/runner-status/"><span class="tag is-black">Demo only</span></a></p>
 
-  <p>Tasks raised by this runner will have empty message objects.</p>
+    <p>This runner mocks extracting objects from a source system</p>
 
-  <p id="mock-transformer" class="subtitle is-5 docs-subhead">MockTransformer</p>
-  <p><a href="pages/runner-config/runner-status/"><span class="tag is-black">Demo only</span></a></p>
+    <h5 class="title is-5">Configuration options</h5>
 
-  <p>This runner mocks transforming the message. It has the following configuration options:</p>
-  <ul>
-    <li><code>generateError</code> <i>number</i> - whether to generate a random error. The smaller the
-      number the more likely an error. 1 gives an error every time.</li>
-    <li><code>randomiseWait</code> <i>boolean</i> - whether to randomise the configured wait value, defaults to false
-    </li>
-    <li><code>wait</code> <i>number</i> - milliseconds to wait before raising the next extract task</li>
-  </ul>
-  <hr>
-  <p>Example runner configuration:</p>
-  <pre class="code">
-  {
-    "type": "MockTransformer",
-    "config": {
-      "generateError": 10
-    }
-  }
-  </pre>
+    <table class="table is-fullwidth">
+      <thead>
+        <th>Attribute</th>
+        <th>Data type</th>
+        <th>Default</th>
+        <th>Description</th>
+      </thead>
+      <tbody>
+        <tr>
+          <td>addMessage</td>
+          <td>boolean</td>
+          <td><code>false</code></td>
+          <td>Whether to add an object to the body to simulate larger extractors</td>
+        </tr>
+        <tr>
+          <td>batchConfig</td>
+          <td>number | BatchConfig</td>
+          <td>none</td>
+          <td>See <a href="pages/runner-config/common-options/#batches">batches</a></td>
+        </tr>
+        <tr>
+          <td>cancelCheckNumber</td>
+          <td>number</td>
+          <td><code>100</code></td>
+          <td>How often, in tasks raised, to check if the extract should be cancelled</td>
+        </tr>
+        <tr>
+          <td>generateError</td>
+          <td>number</td>
+          <td>none</td>
+          <td>Whether to generate a random error. The smaller the number the more likely an error. 1 gives an error
+            every time.</td>
+        </tr>
+        <tr>
+          <td>messages</td>
+          <td>number</td>
+          <td><code>10</code></td>
+          <td>The number of tasks to create</td>
+        </tr>
+        <tr>
+          <td>randomiseWait</td>
+          <td>boolean</td>
+          <td><code>false</code></td>
+          <td>Whether to randomise the wait number</td>
+        </tr>
+        <tr>
+          <td>wait</td>
+          <td>number</td>
+          <td>none</td>
+          <td>Milliseconds to wait before raising the next task</td>
+        </tr>
+      </tbody>
+    </table>
+    <hr>
 
-  <p>Tasks raised by this runner will have empty message objects.</p>
+    <h5 class="title is-5">Message attributes</h5>
+    <p>If configured, it adds the following from a SharePoint message to the message object of raised tasks:</p>
+    <ul>
+      <li><code>extractItem</code> metadata for the item extracted</li>
+      <li><code>quarantine</code> quarantine lookup for the item</li>
+      <li><code>extractHash</code> lookup name used to store the extract hash, if hashName is configured</li>
+    </ul>
+    <hr>
 
-  <p id="mock-loader" class="subtitle is-5 docs-subhead">MockLoader</p>
-  <p><a href="pages/runner-config/runner-status/"><span class="tag is-black">Demo only</span></a></p>
+  </section>
 
-  <p>This runner mocks loading objects into a target system. It has the following configuration options:</p>
-  <ul>
-    <li><code>addHash</code> <i>boolean</i> - whether to add the currentHash lookup, defaults to true</li>
-    <li><code>generateError</code> <i>number</i> - whether to generate a random error. The smaller the
-      number the more likely an error. 1 gives an error every time.</li>
-    <li><code>randomiseWait</code> <i>boolean</i> - whether to randomise the configured wait value, defaults to false
-    </li>
-    <li><code>wait</code> <i>number</i> - milliseconds to wait before finishing the load step, defaults to 0</li>
-  </ul>
-  <hr>
-  <p>Example runner configuration:</p>
-  <pre class="code">
-  {
-    "type": "MockLoader",
-    "config": {
-      "generateError": 10,
-      "randomiseWait": true,
-      "wait": 1000
-    }
-  }
-  </pre>
+  <section class="MockTransformer">
 
-  <p>It will raise the next task with the existing message object unchanged.</p>
+    <h4 id="mock-transformer" class="title is-4 docs-subhead">MockTransformer</h4>
+    <p><a href="pages/runner-config/runner-status/"><span class="tag is-black">Demo only</span></a></p>
+
+    <p>This runner mocks transforming the message</p>
+
+    <h5 class="title is-5">Configuration options</h5>
+
+    <table class="table is-fullwidth">
+      <thead>
+        <th>Attribute</th>
+        <th>Data type</th>
+        <th>Default</th>
+        <th>Description</th>
+      </thead>
+      <tbody>
+        <tr>
+          <td>crash</td>
+          <td>boolean</td>
+          <td><code>false</code></td>
+          <td>Generate a node crash event to test how the system goes down and recovers</td>
+        </tr>
+        <tr>
+          <td>generateError</td>
+          <td>number</td>
+          <td>none</td>
+          <td>Whether to generate a random error. The smaller the number the more likely an error. 1 gives an error
+            every time.</td>
+        </tr>
+        <tr>
+          <td>randomiseWait</td>
+          <td>boolean</td>
+          <td><code>false</code></td>
+          <td>Whether to randomise the wait number</td>
+        </tr>
+        <tr>
+          <td>wait</td>
+          <td>number</td>
+          <td>none</td>
+          <td>Milliseconds to wait before raising the next task</td>
+        </tr>
+      </tbody>
+    </table>
+    <hr>
+
+    <h5 class="title is-5">Message attributes</h5>
+    <p>This runner does not use or update the message object.</p>
+    <hr>
+
+  </section>
+
+  <section class="MockLoader">
+
+    <p id="mock-loader" class="title is-4 docs-subhead">MockLoader</p>
+    <p><a href="pages/runner-config/runner-status/"><span class="tag is-black">Demo only</span></a></p>
+
+    <p>This runner mocks loading objects into a target system</p>
+
+    <h5 class="title is-5">Configuration options</h5>
+
+    <table class="table is-fullwidth">
+      <thead>
+        <th>Attribute</th>
+        <th>Data type</th>
+        <th>Default</th>
+        <th>Description</th>
+      </thead>
+      <tbody>
+        <tr>
+          <td>addHash</td>
+          <td>boolean</td>
+          <td><code>true</code></td>
+          <td>Whether to save the extractHash lookup</td>
+        </tr>
+        <tr>
+          <td>generateError</td>
+          <td>number</td>
+          <td><code>false</code></td>
+          <td>Whether to generate a random error. The smaller the number the more likely an error. 1 gives an error
+            every time.</td>
+        </tr>
+        <tr>
+          <td>randomiseWait</td>
+          <td>boolean</td>
+          <td><code>false</code></td>
+          <td>Whether to randomise the wait number</td>
+        </tr>
+        <tr>
+          <td>wait</td>
+          <td>number</td>
+          <td>none</td>
+          <td>Milliseconds to wait before raising the next task.</td>
+        </tr>
+      </tbody>
+    </table>
+    <hr>
+
+    <h5 class="title is-5">Message attributes</h5>
+
+    <table class="table is-fullwidth">
+      <thead>
+        <th>Option</th>
+        <th>Data type</th>
+        <th>Description</th>
+      </thead>
+      <tr>
+        <td>extractHash</td>
+        <td>Lookup</td>
+        <td>The extract hash object</td>
+      </tr>
+      </tbody>
+    </table>
+
+    <p>This runner does not update the message object.</p>
+    <hr>
+
+  </section>
 
 </div>
         </div>
         <div class="container is-fluid dl-footer">
           <a href="https://driverlane.com.au">Driver Lane</a>
-          &copy; 2020-2024
+          &copy; 2020-2025
         </div>
       </div>
     </div>
