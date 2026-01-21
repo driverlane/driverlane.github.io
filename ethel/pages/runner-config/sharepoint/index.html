@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="Description" content="Documentation for Ethel">
     <title>Ethel Docs</title>
-    <base href="/">
+    <base href="/ethel/">
     <link rel="icon" type="image/x-icon" href="favicon.ico">
     <link rel="stylesheet" href="assets/styles.css">
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.6.0/styles/default.min.css">
@@ -50,11 +50,11 @@
           <p class="menu-label">Runner config</p>
           <ul class="menu-list">
               <li>
-                <a href="pages/runner-config/common-options/">Common options</a>
+                <a href="pages/runner-config/runners/">Runner types</a>
                 
               </li>
               <li>
-                <a href="pages/runner-config/runners/">Runner types</a>
+                <a href="pages/runner-config/common-options/">Common options</a>
                 
               </li>
               <li>
@@ -234,7 +234,7 @@
   <section class="SPListItemExtractor">
 
     <h4 id="sp-extractor" class="title is-4 docs-subhead">SPListItemExtractor</h4>
-    <p><a href="pages/runner-config/runner-status/"><span class="tag is-link">Production</span></a></p>
+    <p><a href="pages/runner-config/runner-status/"><span class="tag is-link">Developed</span></a></p>
 
     <p>This runner will extract information from SharePoint. It will not extract any files from SharePoint. To
       extract files from SharePoint to upload to other systems use the SharePointStaging runner.</p>
@@ -282,17 +282,17 @@
             object</td>
         </tr>
         <tr>
+          <td>filters</td>
+          <td>string | string[]</td>
+          <td>['extractItem.type=ne|File']</td>
+          <td>The extract items to be ignored or included. See <a
+              href="pages/runner-config/common-options/#ignore">Ignoring extract items</a> for more information.</td>
+        </tr>
+        <tr>
           <td>hashName</td>
           <td>string, <strong>mandatory</strong></td>
           <td>none</td>
-          <td>The lookup name used to store the extract hash</td>
-        </tr>
-        <tr>
-          <td>ignore</td>
-          <td>any</td>
-          <td>none</td>
-          <td>See <a href="pages/runner-config/common-options/#ignore">ignore items</a>. This runner only supports file
-            system based ignore options</td>
+          <td>The lookup name for the extract hash</td>
         </tr>
         <tr>
           <td>quarantinedLookupName</td>
@@ -318,7 +318,7 @@
   <section class="SharePointStaging">
 
     <h4 id="sp-staging" class="title is-4 docs-subhead">SharePointStaging</h4>
-    <p><a href="pages/runner-config/runner-status/"><span class="tag is-link">Developed</span></a></p>
+    <p><a href="pages/runner-config/runner-status/"><span class="tag is-primary">Production</span></a></p>
 
     <p>This runner will copy files from SharePoint to the specified storage location</p>
 

@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="Description" content="Documentation for Ethel">
     <title>Ethel Docs</title>
-    <base href="/">
+    <base href="/ethel/">
     <link rel="icon" type="image/x-icon" href="favicon.ico">
     <link rel="stylesheet" href="assets/styles.css">
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.6.0/styles/default.min.css">
@@ -50,11 +50,11 @@
           <p class="menu-label">Runner config</p>
           <ul class="menu-list">
               <li>
-                <a href="pages/runner-config/common-options/">Common options</a>
+                <a href="pages/runner-config/runners/">Runner types</a>
                 
               </li>
               <li>
-                <a href="pages/runner-config/runners/">Runner types</a>
+                <a href="pages/runner-config/common-options/">Common options</a>
                 
               </li>
               <li>
@@ -185,13 +185,6 @@
           <td>{"type":"BetterQueue"}</td>
           <td>The queue type to be used, more options in the <a href="pages/basic/core-config/#queue">queue</a> section
             below</td>
-        </tr>
-        <tr>
-          <td>ETHEL_CONSUMERS</td>
-          <td>JSON stringified array of queue names or QueueConfig objects</td>
-          <td>'["Tasks"]'</td>
-          <td>The queues being consumed by this instance, <a
-              href="pages/basic/core-config/#queue-config">QueueConfig</a> options detailed below.</td>
         </tr>
         <tr>
           <td>ETHEL_LOGS_PATH</td>
@@ -409,9 +402,7 @@ ETHEL_DATA={"type":"SQLServer","user":"ethel","password":"WyWU5$vU1AQME2u#L","da
         </tbody>
       </table>
 
-      <p>If you are using any queues other than the Tasks queue, you will need to specify
-        <strong>all</strong> queues in the ETHEL_CONSUMERS environment variable, including the Tasks queue if you are
-        still using it.
+      <p>If you are using any queues other than the Tasks queue, you will need to update these via the API or client.
       </p>
 
       <p>Example adapter configuration:</p>
@@ -444,9 +435,7 @@ ETHEL_DATA={"type":"SQLServer","user":"ethel","password":"WyWU5$vU1AQME2u#L","da
         </tbody>
       </table>
 
-      <p>If you are using any queues other than the Tasks queue, you will need to specify
-        <strong>all</strong> queues in the ETHEL_CONSUMERS environment variable, including the Tasks queue if you are
-        still using it.
+      <p>If you are using any queues other than the Tasks queue, you will need to update these via the API or client.
       </p>
 
       <p>An example adapter configuration:</p>
@@ -512,8 +501,6 @@ This creates a consumer that stops at 6am Monday to Friday and starts at 6pm Mon
 {"name":"Load","operatingHours":[{"enabled":true,"cron":"0 18 * * 1-5"},{"enabled":false,"cron":"0 6 * * 1-5"}]}
 </pre>
 
-
-
   </section>
 
   <section class="subhead other">
@@ -541,19 +528,6 @@ This creates a consumer that stops at 6am Monday to Friday and starts at 6pm Mon
           <td>number</td>
           <td>50</td>
           <td>The number of errors per runner before a run is suspended</td>
-        </tr>
-        <tr>
-          <td>ETHEL_QUEUES</td>
-          <td>JSON stringified array of queue names or QueueConfig objects</td>
-          <td>'[]'</td>
-          <td>The queues being populated with tasks by this instance. This is only for queues without a consumer in the
-            instance.</td>
-        </tr>
-        <tr>
-          <td>ETHEL_QUEUE_LIMIT</td>
-          <td>integer</td>
-          <td>1000</td>
-          <td>The number of tasks to add to the queue in a batch</td>
         </tr>
         <tr>
           <td>ETHEL_RUNS_LIMIT</td>

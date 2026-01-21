@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="Description" content="Documentation for Ethel">
     <title>Ethel Docs</title>
-    <base href="/">
+    <base href="/ethel/">
     <link rel="icon" type="image/x-icon" href="favicon.ico">
     <link rel="stylesheet" href="assets/styles.css">
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.6.0/styles/default.min.css">
@@ -50,11 +50,11 @@
           <p class="menu-label">Runner config</p>
           <ul class="menu-list">
               <li>
-                <a href="pages/runner-config/common-options/">Common options</a>
+                <a href="pages/runner-config/runners/">Runner types</a>
                 
               </li>
               <li>
-                <a href="pages/runner-config/runners/">Runner types</a>
+                <a href="pages/runner-config/common-options/">Common options</a>
                 
               </li>
               <li>
@@ -134,33 +134,92 @@
 
   <p>This page details a number of common configuration options that are available within many or all runners.</p>
   <ul>
-    <li><a href="pages/runner-config/common-options/#retry-policy">Error handling and retry</a></li>
-    <li><a href="pages/runner-config/common-options/#queues">Runner queues</a></li>
+    <li><a href="pages/runner-config/common-options/#filters">Filters</a></li>
+    <li><a href="pages/runner-config/common-options/#errors">Error handling and retry</a></li>
     <li><a href="pages/runner-config/common-options/#batches">Batches</a></li>
-    <li><a href="pages/runner-config/common-options/#repeating-runs">Repeating runs</a></li>
-    <li><a href="pages/runner-config/common-options/#quarantine">Quarantine</a></li>
-    <li><a href="pages/runner-config/common-options/#ignore">Ignoring items</a></li>
+    <li><a href="pages/runner-config/common-options/#repeat">Repeating jobs</a></li>
     <li><a href="pages/runner-config/common-options/#text-replacement">Text replacement</a></li>
+    <li><a href="pages/runner-config/common-options/#queues">Queues</a></li>
   </ul>
 
-  <p id="retry-policy" class="title is-4 docs-subhead">Error handling and retry</p>
-  <p>By default, when a runner hits an error it records the error message and stops processing the task, setting it's
-    status to suspended. You can then manually restart the task via the client or API.</p>
-  <p>By adding a retry policy the runner can automatically retry the task. Retries can be configured to control the
-    number of retries, the delay between the retries and what error messages would not be retried. This configuration
-    option is available for all runners.</p>
-  <p>This simplest retry policy is to set a number of retry attempts. There will be a five second delay between each
-    retry by default. Example of this with two retry attempts:</p>
-  <pre class="code">{
+  <section class="filters">
+
+    <h4 id="filters" class="title is-4 docs-subhead">Ignoring extract items</h4>
+
+    <p>All extractors have the filters configuration option to control which extract items are ignored or included.
+      Filters tell the extractor which items should not be raised as a task and use a syntax based on the URL
+      search paramters. The paramter name is the attribute in the task message containing the value used in the filter
+      and the paramter value holds the filter arguments.
+    </p>
+
+    <h5>Filter arguments</h5>
+    <p>Filter arguments are made up of up to three components:</p>
+    <ul>
+      <li>case sensitive - whether the test is case sensitive or not, defaults to true</li>
+      <li>comparison operator - what test is used, defaults to equal. Support operators are:</li>
+      <ul>
+        <li>in - includes</li>
+        <li>ni - not includes</li>
+        <li>eq - equals</li>
+        <li>ne - not equals</li>
+        <li>gt - greater than</li>
+        <li>ge - greater than or equal to</li>
+        <li>lt - less than</li>
+        <li>le - less than or equal to</li>
+        <li>sw - starts with</li>
+        <li>!sw - not starts with</li>
+        <li>ew - ends with</li>
+        <li>!ew - not ends with</li>
+        <li>re - regular expresion - not implemented yet</li>
+      </ul>
+      <li>test value - mandatory, the value to be tested against</li>
+    </ul>
+
+    <h5>Filter joins</h5>
+    <p>By default multiple filter parameters are evaluated as <code>or</code> combinations. To evaluate as an
+      <code>and</code>combination use <code>&join=and&</code> to join the filters.
+    </p>
+
+    <h5>Examples</h5>
+    <p><code>extractItem.name=in|.txt</code><br>
+      Exclude all items that include <code>.txt</code> in the name field</p>
+
+    <p><code>extractItem.name=false|!ew|.pdf</code><br>
+      Exclude items where the name field does not end with .pdf, case insensitive</p>
+
+    <p><code>extractItem.name=ew|.txt&join=and&extractItem.path=in|DRAFTS</code><br>
+      Exclude all items that end with .txt in the name field and have DRAFTS in the path</p>
+
+    <p><code>extractItem.name=ew|[".txt",".pdf"]</code><br>
+      Exclude all items where the name ends in .txt or .pdf</p>
+
+    <p><code>extractItem.stats.size=lt|100</code><br>
+      Exclude all files with a size less than 100 bytes</p>
+
+  </section>
+
+  <section class="errors">
+
+    <h4 id="errors" class="title is-4 docs-subhead">Error handling and retry</h4>
+
+    <p>By default, when a runner hits an error it records the error message and stops processing the task, setting it's
+      status to suspended. You can then manually restart the task via the client or API.</p>
+    <p>By adding a retry policy the runner can automatically retry the task. Retries can be configured to control the
+      number of retries, the delay between the retries and what error messages would not be retried. This configuration
+      option is available for all runners.</p>
+    <p>This simplest retry policy is to set a number of retry attempts. There will be a five second delay between each
+      retry by default. Example of this with two retry attempts:</p>
+    <pre class="code">{
   "type": "PSTLoader",
   "config": {...},
   "retry": {
     "limit": 2
   }
 }</pre>
-  <p>You can also specify a different amount of delay, as well as the ability to increase the delay between each retry.
-    The delay is specified in milliseconds and the backoff option multiplies the delay by the number of retries.</p>
-  <pre class="code">{
+    <p>You can also specify a different amount of delay, as well as the ability to increase the delay between each
+      retry.
+      The delay is specified in milliseconds and the backoff option multiplies the delay by the number of retries.</p>
+    <pre class="code">{
   "type": "PSTLoader",
   "config": {...},
   "retry": {
@@ -169,12 +228,12 @@
     "pattern": "backoff"
   }
 }</pre>
-  <p>In addition to changing the number of retries and the delay between retries you can also specify error messages
-    that will not be retried and can either be suspended or quarantined. A task with an error message matching a
-    quarantined message is stopped and a quarantine lookup is created. An item with a quarantine lookup will not be
-    processed again until the quarantine is removed by deleting the lookup. Suspended errors can be retried by
-    restarting the task via the client or API.</p>
-  <pre class="code">{
+    <p>In addition to changing the number of retries and the delay between retries you can also specify error messages
+      that will not be retried and can either be suspended or quarantined. A task with an error message matching a
+      quarantined message is stopped and a quarantine lookup is created. An item with a quarantine lookup will not be
+      processed again until the quarantine is removed by deleting the lookup. Suspended errors can be retried by
+      restarting the task via the client or API.</p>
+    <pre class="code">{
   "type": "PSTLoader",
   "config": {...},
   "retry": {
@@ -190,108 +249,25 @@
   }
 }</pre>
 
-  <p id="queues" class="title is-4 docs-subhead">Runner queues</p>
-  <p>By default all tasks are sent to a message queue called <strong>Tasks</strong> and all instances create a
-    <strong>Tasks</strong> consumer. In some situations you may want a runner to use an alternative queue or configure
-    an instance to consume queues other than <strong>Tasks</strong>.
-  </p>
-  <p>A common example is that one of the target or source systems is only available after working hours. In this case
-    you can create a queue, say <i>AfterHours</i>. Consumers of this queue can then be configured to only process tasks
-    after working hours. To send tasks for a particular runner to the other queue, update the queue attribute of the
-    runner</p>
-  <pre class="code">"runners":{
-    ...
-  "load": [
-    {
-      "type": "PSTLoader",
-      "config": {
-        ...
-      },
-      "queue": "AfterHours"
-    }
-  ]
-}</pre>
-  <p>In the ETHEL_CONSUMERS environment variable an AfterHours consumer would be defined:</p>
-  <pre
-    class="code">ETHEL_CONSUMERS='["Tasks",{"name":"AfterHours","operatingHours":[{"enabled":true,"cron":"0 18 * * 1-5"},{"enabled":false,"cron":"0 6 * * 1-5"}]}]'</pre>
-
-
-  <p id="batches" class="title is-4 docs-subhead">Batches</p>
-  <p>Most extractors provide the option to split a large job into multiple batches. This can be useful when multiple
-    different run types are being processed and a very large run will block the queue from processing other smaller
-    runs.
-  </p>
-  <p>To set up batches the config will require a batch config object and a hash name in the runner config. The batch
-    config object has the following values:</p>
-  <ul>
-    <li><code>queueNextRun</code> boolean - whether the next run is automatically generated. Defaults to false</li>
-    <li><code>size</code> <strong>mandatory</strong> number - how many tasks generated in the batch</li>
-  </ul>
-
-  <p>Example config is:</p>
-  <pre class="code">{
+    <p>The quarantine functionality allows you to stop a particular item in the migration from being processed. This
+      would
+      be used when there's a problem that needs to be resolved before another attempt is made to process the item.</p>
+    <p>Quarantining a task creates a lookup using the extractId created by the extract runner and the quarantine
+      name specified in the extractor configuration. Once quarantined, the item will not be extracted again until the
+      quarantine lookup is deleted.</p>
+    <p>Items can be quarantined via the client, via an error retry configuration or via the API. To quarantine an item
+      in
+      the client find the task that has the issue and click the Quarantine button.</p>
+    <p>Example extract configuration is:</p>
+    <pre class="code">{
   "type": "PSTLoader",
   "config": {
-    "hashName": "DevHRMigration",
-    "batchConfig": {
-      "size": 50000,
-      "queueNextRun": true
-    },
+    "quarantinedLookupName": "HRMigrationQuarantined",
   }
 }</pre>
 
-  <p id="repeating-runs" class="title is-4 docs-subhead">Repeating runs</p>
-  <p>Most extract runners provide the ability to repeat the extract and ignore unchanged data. To allow this to happen
-    the configuration section requires a hashName. The hashName will be used to store a value as a lookup that is used
-    to compare the data on later runs to see if it has changed.</p>
-  <p>The lookup is made up of:</p>
-  <ul>
-    <li>name - the hashName supplied in the runner config</li>
-    <li>key - a unique identifier to the piece of data</li>
-    <li>value - the value used to compare if the item has changed between runs</li>
-  </ul>
-  <p>Each runner will generate the value used for the comparison based on the data structures of the extract system. For
-    example the FileSystemExtractor generates uses these values:</p>
-  <ul>
-    <li>name - the hashName supplied in the runner config</li>
-    <li>key - a hash of the path to the file or directory</li>
-    <li>value - a hash of an object with the following information:
-      <ul>
-        <li>size - the file size in bytes</li>
-        <li>mtimeMs - the time the file was last modified</li>
-        <li>birthtimeMs - the time the file was created</li>
-      </ul>
-    </li>
-  </ul>
-  <p>To support the ability to ignore unchanged items in multiple runs add the following to the runner config:</p>
-  <pre class="code">{
-  "type": "PSTLoader",
-  "config": {
-      ...
-    "hashName": "DevHRMigration",
-  ...
-  }
-}</pre>
-  <p>As these values are lookups they can be reset by using the Lookups section in the client. Find the lookups with
-    the name specified and delete these lookups to reset the check.</p>
-
-  <p id="quarantine" class="title is-4 docs-subhead">Quarantine</p>
-  <p>The quarantine functionality allows you to stop a particular item in the migration from being processed. This would
-    be used when there's a problem that needs to be resolved before another attempt is made to process the item.</p>
-  <p>Quarantining a task creates a lookup using the item identifier created by the extract runner and the quarantine
-    name specified and uses the quarantine name supplied in the extractor configuration. Once quarantined, the item will
-    not be extracted or loaded until the quarantine lookup is deleted.</p>
-  <p>Items can be quarantined via the client, via an error retry configuration or via the API. To quarantine an item in
-    the client find the task that has the issue and click the Quarantine button.</p>
-  <p>Example extract configuration is:</p>
-  <pre class="code">{
-  "type": "PSTLoader",
-  "config": {
-    "quarantinedLookupName": "DevHRMigrationQuarantine",
-  }
-}</pre>
-  <p>Example error handling config for a runner is:</p>
-  <pre class="code">{
+    <p>To quarantine an item based on error message use the retry object in the runner config:</p>
+    <pre class="code">{
   "type": "OTCSLoader",
   "config": {...},
   "retry": {
@@ -302,48 +278,194 @@
   }
 }</pre>
 
-  <p id="ignore" class="title is-4 docs-subhead">Ignoring items</p>
-  <p>There are two sets of ignore functionality. For extractors that process arrays of data you can use the object
-    ignore option. The other ignore options can be used for file system type extractors.</p>
-  <p>Ignore options are:</p>
-  <ul>
-    <li>object - ignore an item based on the value in an object attribute, used for tabular data</li>
-    <li>maxSize - ignore a item larger than a configured value</li>
-    <li>minSize - ignore a item smaller than a configured value</li>
-    <li>name - ignore an item that contains the specified string</li>
-    <li>objectTypes - ignore an item based on it's object type, the types will depend on the extractor</li>
-    <li>path - ignore an item based on it's path</li>
-  </ul>
-  <p>Example ignore configuration:</p>
-  <pre class="code">{
-  "type": "OTCSLoader",
-  "config": {
-    "ignore": {
-      "minSize": 350,
-      "name": [{"names": ["system.ini","Superseded"], "caseSensitive": true}],
-      "path": [{"paths": ["drafts"]}]
-    },
-  }
-}</pre>
-  <pre class="code">{
-  "type": "OTCSLoader",
-  "config": {
-    "ignore": {
-      "object": [{"Name": "fred"}, {"field3": "abcd"}],
-    },
-  }
-}</pre>
-  <p>The minSize and maxSize options do not have any unit of measure assumed. Supply the ignore value in the units
-    that the system uses. For example, the FileSystemExtractor and ContentServerExtractor runners both use bytes.</p>
+  </section>
 
-  <p id="text-replacement" class="title is-4 docs-subhead">Text replacement</p>
-  <p>Strings can be processed by the parseTemplateString function from the task-runner base class.
-    This function will find all occurences of <code>${.*}</code> in the supplied text string.</p>
-  <p>For each occurrence it will assume the value is in the message attribute of the task and will split the value by
-    periods. It will then iterate through the segments to check if that attribute exists in the message object.</p>
-  <p>For example the query <code>UPDATE status SET updated = '${MockLoaderCompleted}' WHERE id = '${item.id}'</code>
-    will look for <code>this.task.message.MockLoaderCompleted</code> and <code>this.task.message.item.id</code> and
-    replace these with the values of the attributes.</p>
+  <section class="batches">
+
+    <h4 id="batches" class="title is-4 docs-subhead">Batches</h4>
+
+    <p>All extractors provide the option to split a large job into multiple runs. To set up batches specify the batch
+      size and whether the next run is automatically queued:</p>
+    <ul>
+      <li><code>size</code> <strong>mandatory</strong> number - how many tasks generated in the batch</li>
+      <li><code>queueNextRun</code> boolean - whether the next run is automatically generated. Defaults to false</li>
+    </ul>
+
+    <p>Example config is:</p>
+    <pre class="code">{
+  "type": "PSTLoader",
+  "config": {
+    "hashName": "HRMigration",
+    "batchConfig": {
+      "size": 5000,
+      "queueNextRun": true
+    },
+  }
+}</pre>
+
+    <p class="title is-5 docs-subhead">Database batch skipping</p>
+
+    <p>When using batch config the runner will automatically skip records that were processed in previous batches. For
+      database extractors this may not be required as the tracking of what has been extracted can be handled by the
+      database. In this scenario set the <code>disableSkip</code> config option to true and batch skipping will be
+      disabled.</p>
+
+  </section>
+
+  <section class="repeat">
+
+    <h4 id="repeat" class="title is-4 docs-subhead">Repeating runs</h4>
+
+    <p>Most extract runners provide the ability to repeat the extract and ignore unchanged data. To allow this to happen
+      the configuration section requires a hashName. The hashName will be used to store a value as a lookup that is used
+      to compare the data on later runs to see if it has changed.</p>
+    <p>The lookup is made up of:</p>
+    <ul>
+      <li>name - the hashName supplied in the runner config</li>
+      <li>key - a unique identifier to the piece of data</li>
+      <li>value - the value used to compare if the item has changed between runs</li>
+    </ul>
+    <p>Each runner will generate the value used for the comparison based on the data structures of the extract system.
+      For
+      example the FileSystemExtractor generates uses these values:</p>
+    <ul>
+      <li>name - the hashName supplied in the runner config</li>
+      <li>key - a hash of the path to the file or directory</li>
+      <li>value - a hash of an object with at least the following information:
+        <ul>
+          <li>size - the file size in bytes</li>
+          <li>mtimeMs - the time the file was last modified</li>
+          <li>birthtimeMs - the time the file was created</li>
+        </ul>
+      </li>
+    </ul>
+
+    <p>To support the ability to ignore unchanged items in multiple runs add the following to the runner config:</p>
+    <pre class="code">{
+  "type": "PSTLoader",
+  "config": {
+      ...
+    "hashName": "HRMigration",
+  ...
+  }
+}</pre>
+
+    <p>This would create an extract hash object in the message like:</p>
+    <pre class="code">{
+  "message": {
+      ...
+    "extractHash": {
+      "name": "HRMigration",
+      "key": "ef15711093fce44857f960c27f239414ee7beaaa",
+      "value": {
+        "source": "C:\\code\\test\\fs-extract\\built-file3.txt",
+        "hash": "78e983c58916366b6534c63b96d28cfccf00aaf9",
+      },
+    },
+    ...
+}</pre>
+
+    <p>As these values are lookups they can be reset by using the Lookups section in the client. Find the lookups with
+      the name specified and delete these lookups to reset the check.</p>
+
+    <h5 class="title is-5 docs-subhead">Disable extract hash checking</h5>
+
+    <p>By default, an extractor checks each item being extracted to see if it has already been extracted. It does this
+      by
+      checking to see if there is a lookup with the extractHash name and the extractId of the item being extracted. If
+      there is a lookup for each loader in the run, no task is raised for the item.
+    </p>
+    <p>In some jobs a transformer may raise multiple tasks per extractId. In this scenario the extractor is unable to
+      determine if all the tasks were raised in a previous task. The <code>isProcessed</code> check by the extractor
+      should be cancelled and the transformer should determine if all tasks have been raised. To do this set
+      <code>checkProcessed</code> to false in the extractor config object
+    </p>
+    <pre class="code">{
+  "type": "SQLLiteExtractor",
+  "config": {
+    "hashName": "HRMigration",
+    "batchConfig": {
+      "checkProcessed": false,
+      "size": 50000,
+      "queueNextRun": true
+    },
+  }
+}</pre>
+
+  </section>
+
+  <section class="text-replacement">
+
+    <h4 id="text-replacement" class="title is-4 docs-subhead">Text replacement</h4>
+
+    <p>Strings can be processed by the parseTemplateString function from the task-runner base class.
+      This function will find all occurences of <code>${.*}</code> in the supplied text string.</p>
+    <p>For each occurrence it will assume the value is in the message attribute of the task and will split the value by
+      periods. It will then iterate through the segments to check if that attribute exists in the message object.</p>
+    <p>For example the query <code>UPDATE status SET updated = '${MockLoaderCompleted}' WHERE id = '${item.id}'</code>
+      will look for <code>this.task.message.MockLoaderCompleted</code> and <code>this.task.message.item.id</code> and
+      replace these with the values of the attributes.</p>
+
+  </section>
+
+  <section class="queues">
+
+    <h4 id="queues" class="title is-4 docs-subhead">Queues</h4>
+
+    <p>By default all tasks are sent to a message queue called <strong>Tasks</strong> and all instances create a
+      <strong>Tasks</strong> consumer. In some situations you may want a runner to use an alternative queue or configure
+      an instance to consume queues other than <strong>Tasks</strong>.
+    </p>
+    <p>An example is a queue for tasks processed after working hours. In this case you create a queue, say
+      <i>AfterHours</i>. Consumers of this queue can then be configured to only process tasks after working hours. To
+      send tasks for a particular runner to the other queue, update the queue attribute of the runner
+    </p>
+    <pre class="code">"runners":{
+    ...
+  "load": [
+    {
+      "type": "OTCSLoader",
+      "config": {
+        ...
+      },
+      "queue": "AfterHours"
+    }
+  ]
+}</pre>
+    <p>Then using the client or API create a consumer with the operating hours defined. In the example below tasks using
+      the AterHours queue will only run after 6pm and before 8am Monday to Friday.</p>
+    <pre class="code">[
+  ...,
+  {
+    "name": "AfterHours",
+    "configCheck": 60000,
+    "isConsumer": true,
+    "limit": 1000,
+    "operatingHours": [
+      {
+        "running": false,
+        "prefetch": 4,
+        "cron": "0 8 * * 1-5"
+      },
+      {
+        "running": true,
+        "prefetch": 4,
+        "cron": "0 18 * * 1-5"
+      }
+    ],
+    "prefetch": 4,
+    "reconnect": {
+      "attempts": 0,
+      "enabled": false,
+      "maxAttempts": 5,
+      "wait": 1000,
+      "backoff": 2
+    },
+    "type": "BetterQueue"
+  }
+]</pre>
+
+  </section>
 
 </div>
         </div>

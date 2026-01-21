@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="Description" content="Documentation for Ethel">
     <title>Ethel Docs</title>
-    <base href="/">
+    <base href="/ethel/">
     <link rel="icon" type="image/x-icon" href="favicon.ico">
     <link rel="stylesheet" href="assets/styles.css">
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.6.0/styles/default.min.css">
@@ -50,11 +50,11 @@
           <p class="menu-label">Runner config</p>
           <ul class="menu-list">
               <li>
-                <a href="pages/runner-config/common-options/">Common options</a>
+                <a href="pages/runner-config/runners/">Runner types</a>
                 
               </li>
               <li>
-                <a href="pages/runner-config/runners/">Runner types</a>
+                <a href="pages/runner-config/common-options/">Common options</a>
                 
               </li>
               <li>
@@ -146,7 +146,7 @@
     <a href="https://github.com/driverlane/ethel/releases" target="_blank">github</a>. You should use these unless
     testing a proposed fix.
   </p>
-  <p>Use the <code>build-current.ps1</code> script in the root of the repository to create core and client archives of
+  <p>Use <code>npm run build-current</code> in the repository root to create core and client archives of
     the current project state. This will transfer the state of any npm link based updates for the shared or runners
     projects.</p>
 
@@ -159,7 +159,8 @@
   </p>
   <p>A starter project for custom runners is available in <a href="https://github.com/driverlane/ethel-plugins"
       target="_blank">github</a>. If you are using this project the simplest approach is to add the path to the dist
-    folder of that project to the <strong>ETHEL_PLUGINS_PATHS</strong> array.</p>
+    folder of that project to the <strong>ETHEL_PLUGINS_PATHS</strong> array. This also is the best way if there are any
+    NPM modules used by your plugins that are not in the core project.</p>
 
   <h4 id="database" class="title is-4 docs-subhead">Database options</h4>
   <p>Ethel supports SQLite, SQL Server and Postgres. SQLite is the default option and by far the most performant

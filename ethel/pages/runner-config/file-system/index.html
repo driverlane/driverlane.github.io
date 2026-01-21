@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="Description" content="Documentation for Ethel">
     <title>Ethel Docs</title>
-    <base href="/">
+    <base href="/ethel/">
     <link rel="icon" type="image/x-icon" href="favicon.ico">
     <link rel="stylesheet" href="assets/styles.css">
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.6.0/styles/default.min.css">
@@ -50,11 +50,11 @@
           <p class="menu-label">Runner config</p>
           <ul class="menu-list">
               <li>
-                <a href="pages/runner-config/common-options/">Common options</a>
+                <a href="pages/runner-config/runners/">Runner types</a>
                 
               </li>
               <li>
-                <a href="pages/runner-config/runners/">Runner types</a>
+                <a href="pages/runner-config/common-options/">Common options</a>
                 
               </li>
               <li>
@@ -189,22 +189,21 @@
           <td>Whether to use the target of a link object as the object or not</td>
         </tr>
         <tr>
+          <td>filters</td>
+          <td>string | string[]</td>
+          <td>[<br>
+            'extractItem.name=true|eq|[".DS_Store","Thumbs.db"]',<br>
+            'extractItem.name=sw|~$',<br>
+            'extractItem.type=ne|File',<br>
+            ]</td>
+          <td>The extract items to be ignored or included. See <a
+              href="pages/runner-config/common-options/#ignore">Ignoring extract items</a> for more information.</td>
+        </tr>
+        <tr>
           <td>hashName</td>
           <td>string, <strong>mandatory</strong></td>
           <td>none</td>
-          <td>The lookup name used to store the extract hash</td>
-        </tr>
-        <tr>
-          <td>ignore</td>
-          <td>object</td>
-          <td><code>name: [{ names: ['.DS_Store', 'Thumbs.db', '~$'], caseSensitive: false }],
-            <br>objectTypes: ['Directory', 'SymbolicLink', 'Unsupported'],</code>
-          </td>
-          <td>See <a href="pages/runner-config/common-options/#ignore">ignore items</a>. This runner only supports file
-            system based ignore options.<br>Object types are <code>File</code>,
-            <code>Directory</code>,
-            <code>SymbolicLink</code> and <code>Unsupported</code>.
-          </td>
+          <td>The lookup name for the extract hash</td>
         </tr>
         <tr>
           <td>quarantinedLookupName</td>
@@ -297,7 +296,7 @@
         <tr>
           <td>extractHash</td>
           <td>Lookup</td>
-          <td>The current extract hash object</td>
+          <td>The extract hash object</td>
         </tr>
         <tr>
           <td>loadItem, <strong>mandatory</strong></td>

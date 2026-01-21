@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="Description" content="Documentation for Ethel">
     <title>Ethel Docs</title>
-    <base href="/">
+    <base href="/ethel/">
     <link rel="icon" type="image/x-icon" href="favicon.ico">
     <link rel="stylesheet" href="assets/styles.css">
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.6.0/styles/default.min.css">
@@ -50,11 +50,11 @@
           <p class="menu-label">Runner config</p>
           <ul class="menu-list">
               <li>
-                <a href="pages/runner-config/common-options/">Common options</a>
+                <a href="pages/runner-config/runners/">Runner types</a>
                 
               </li>
               <li>
-                <a href="pages/runner-config/runners/">Runner types</a>
+                <a href="pages/runner-config/common-options/">Common options</a>
                 
               </li>
               <li>
@@ -184,6 +184,13 @@
           <td>The delimiter between columns</td>
         </tr>
         <tr>
+          <td>filters</td>
+          <td>string | string[]</td>
+          <td>None</td>
+          <td>The extract items to be ignored or included. See <a
+              href="pages/runner-config/common-options/#ignore">Ignoring extract items</a> for more information.</td>
+        </tr>
+        <tr>
           <td>hasHeaders</td>
           <td>boolean</td>
           <td><code>true</code></td>
@@ -193,20 +200,13 @@
           <td>hashName</td>
           <td>string, <strong>mandatory</strong></td>
           <td>none</td>
-          <td>The lookup name used to store the extract hash</td>
+          <td>The lookup name for the extract hash</td>
         </tr>
         <tr>
           <td>headers</td>
           <td>string</td>
           <td>none</td>
           <td>Override the headers in the document, or supply missing headers.</td>
-        </tr>
-        <tr>
-          <td>ignore</td>
-          <td>any</td>
-          <td>none</td>
-          <td>See <a href="pages/runner-config/common-options/#ignore">ignore items</a>. This runner only supports
-            object based ignore options.</td>
         </tr>
         <tr>
           <td>ignoreHeaders</td>
@@ -347,17 +347,17 @@
           <td>The path to the CSV file.</td>
         </tr>
         <tr>
+          <td>filters</td>
+          <td>string | string[]</td>
+          <td>None</td>
+          <td>The extract items to be ignored or included. See <a
+              href="pages/runner-config/common-options/#ignore">Ignoring extract items</a> for more information.</td>
+        </tr>
+        <tr>
           <td>hashName</td>
           <td>string, <strong>mandatory</strong></td>
           <td>none</td>
-          <td>The lookup name used to store the extract hash</td>
-        </tr>
-        <tr>
-          <td>ignore</td>
-          <td>any</td>
-          <td>none</td>
-          <td>See <a href="pages/runner-config/common-options/#ignore">ignore items</a>. This runner only supports
-            object based ignore options.</td>
+          <td>The lookup name for the extract hash</td>
         </tr>
         <tr>
           <td>quarantinedLookupName</td>
@@ -453,7 +453,7 @@
   <section class="XMLExtractor">
 
     <h4 id="xml-extractor" class="title is-4 docs-subhead">XMLExtractor</h4>
-    <p><a href="pages/runner-config/runner-status/"><span class="tag is-info">Tested</span></a></p>
+    <p><a href="pages/runner-config/runner-status/"><span class="tag is-primary">Production</span></a></p>
 
     <p>This runner extracts data from a CSV file. It will raise one new task per row</p>
 
@@ -486,17 +486,17 @@
           <td>The path to the CSV file.</td>
         </tr>
         <tr>
+          <td>filters</td>
+          <td>string | string[]</td>
+          <td>None</td>
+          <td>The extract items to be ignored or included. See <a
+              href="pages/runner-config/common-options/#ignore">Ignoring extract items</a> for more information.</td>
+        </tr>
+        <tr>
           <td>hashName</td>
           <td>string, <strong>mandatory</strong></td>
           <td>none</td>
-          <td>The lookup name used to store the extract hash</td>
-        </tr>
-        <tr>
-          <td>ignore</td>
-          <td>any</td>
-          <td>none</td>
-          <td>See <a href="pages/runner-config/common-options/#ignore">ignore items</a>. This runner only supports
-            object based ignore options.</td>
+          <td>The lookup name for the extract hash</td>
         </tr>
         <tr>
           <td>quarantinedLookupName</td>

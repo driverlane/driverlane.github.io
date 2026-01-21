@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="Description" content="Documentation for Ethel">
     <title>Ethel Docs</title>
-    <base href="/">
+    <base href="/ethel/">
     <link rel="icon" type="image/x-icon" href="favicon.ico">
     <link rel="stylesheet" href="assets/styles.css">
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.6.0/styles/default.min.css">
@@ -50,11 +50,11 @@
           <p class="menu-label">Runner config</p>
           <ul class="menu-list">
               <li>
-                <a href="pages/runner-config/common-options/">Common options</a>
+                <a href="pages/runner-config/runners/">Runner types</a>
                 
               </li>
               <li>
-                <a href="pages/runner-config/runners/">Runner types</a>
+                <a href="pages/runner-config/common-options/">Common options</a>
                 
               </li>
               <li>
@@ -137,6 +137,7 @@
   <ul>
     <li><a href="pages/runner-config/content-server/#otcs-extractor">OTCSExtractor</a></li>
     <li><a href="pages/runner-config/content-server/#otcs-staging">OTCSStaging</a></li>
+    <li><a href="pages/runner-config/content-server/#otcsbws-loader">OTCSBWSLoader</a></li>
     <li><a href="pages/runner-config/content-server/#otcs-loader">OTCSLoader</a></li>
     <li><a href="pages/runner-config/content-server/#fs-otcs">FSToOTCSTransformer</a></li>
     <li><a href="pages/runner-config/content-server/#sp-otcs">SPToOTCSTransformer</a></li>
@@ -147,7 +148,7 @@
     <li><a href="pages/runner-config/sharepoint/#otcs-sp">OTCSToSPTransformer</a></li>
   </ul>
 
-  <section>
+  <section class="otcs-connection">
 
     <h4 id="otcs-connection" class="title is-4 docs-subhead">OTCS connection</h4>
     <p>The connection object for all OTCS runners supports the following attributes:</p>
@@ -232,7 +233,7 @@
 
   </section>
 
-  <section>
+  <section class="otcs-extractor">
 
     <h4 id="otcs-extractor" class="title is-4 docs-subhead">OTCSExtractor</h4>
     <p><a href="pages/runner-config/runner-status/"><span class="tag is-primary">Production</span></a></p>
@@ -282,23 +283,17 @@
           <td>The id numbers of containers to extract.</td>
         </tr>
         <tr>
+          <td>filters</td>
+          <td>string | string[]</td>
+          <td>['extractItem.properties.type=ne|[144,749]']</td>
+          <td>The extract items to be ignored or included. See <a
+              href="pages/runner-config/common-options/#ignore">Ignoring extract items</a> for more information.</td>
+        </tr>
+        <tr>
           <td>hashName</td>
           <td>string, <strong>mandatory</strong></td>
           <td>none</td>
-          <td>The lookup name used to store the extract hash</td>
-        </tr>
-        <tr>
-          <td>ignore</td>
-          <td>any</td>
-          <td>none</td>
-          <td>See <a href="pages/runner-config/common-options/#ignore">ignore items</a>. This runner only supports file
-            system based ignore options.</td>
-        </tr>
-        <tr>
-          <td>include</td>
-          <td>any</td>
-          <td><code>{ objectTypes: [144, 170] }</code></td>
-          <td>Value for the object types to extract</td>
+          <td>The lookup name for the extract hash</td>
         </tr>
         <tr>
           <td>quarantinedLookupName</td>
@@ -320,7 +315,7 @@
 
   </section>
 
-  <section>
+  <section class="otcs-staging">
 
     <h4 id="otcs-staging" class="title is-4 docs-subhead">OTCSStaging</h4>
     <p><a href="pages/runner-config/runner-status/"><span class="tag is-primary">Production</span></a></p>
@@ -395,7 +390,110 @@
 
   </section>
 
-  <section>
+  <section class="otcsbws-loader">
+
+    <h4 id="otcsbws-loader" class="title is-4 docs-subhead">OTCSBWSLoader</h4>
+    <p><a href="pages/runner-config/runner-status/"><span class="tag is-primary">Production</span></a></p>
+
+    <p>This runner will create business workspace objects in Content Server. Often used with database or text file extractors to create business workspaces.</p>
+
+    <h5 class="title is-5">Configuration options</h5>
+
+    <table class="table is-fullwidth">
+      <thead>
+        <th>Option</th>
+        <th>Data type</th>
+        <th>Default</th>
+        <th>Description</th>
+      </thead>
+      <tbody>
+        <tr>
+          <td>addFullItem</td>
+          <td>boolean</td>
+          <td><code>false</code></td>
+          <td>Whether to add the full created item to the message or just the node ID.</td>
+        </tr>
+        <tr>
+          <td>addHash</td>
+          <td>boolean</td>
+          <td><code>true</code></td>
+          <td>Whether to save the extractHash lookup</td>
+        </tr>
+        <tr>
+          <td>connection</td>
+          <td>LookupDetails, <strong>mandatory</strong></td>
+          <td>none</td>
+          <td>The name and key to the lookup with the <a href="pages/runner-config/content-server/#otcs-connection">OTCS
+              connection</a> details.</td>
+        </tr>
+        <tr>
+          <td>handleExisting</td>
+          <td>string</td>
+          <td><code>error</code></td>
+          <td>This runner supports three options:
+            <ul>
+              <li><code>complete</code> - complete the task and add the hash</li>
+              <li><code>error</code> - throw an error</li>
+            </ul>
+          </td>
+        </tr>
+        <tr>
+          <td>ignoreCase</td>
+          <td>boolean</td>
+          <td><code>false</code></td>
+          <td>When checking for existing items, use case sensitive or insenstive checks</td>
+        </tr>
+        <tr>
+          <td>loadItem</td>
+          <td>stromg</td>
+          <td><code>loadItem</code></td>
+          <td>The message attribute that contains the OTCSLoadItem object</td>
+        </tr>
+        <tr>
+          <td>loadItemTemplate</td>
+          <td>stromg</td>
+          <td><code>loadItem</code></td>
+          <td>The load item object with template literals. If populated loadItem is ignored.</td>
+        </tr>
+        <tr>
+          <td>loadedItemLabel</td>
+          <td>string</td>
+          <td><code>OTCSLoadedItem</code></td>
+          <td>The label to use for the loaded item in the message</td>
+        </tr>
+      </tbody>
+    </table>
+    <hr>
+
+    <h5 class="title is-5">Message attributes</h5>
+
+    <table class="table is-fullwidth">
+      <thead>
+        <th>Option</th>
+        <th>Data type</th>
+        <th>Description</th>
+      </thead>
+      <tbody>
+        <tr>
+          <td>loadItem</td>
+          <td>OTCSLoadItem, <strong>mandatory</strong></td>
+          <td>The information used by the loader to create the item.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p>Message attribute names can be changed in the configuration options.</p>
+
+    <p>It adds the following attributes to the message object:</p>
+    <ul>
+      <li><code>OTCSLoadedItem</code> the created object, either the ID number of the full object depending on
+        configuration</li>
+    </ul>
+    <hr>
+
+  </section>
+
+  <section class="otcs-loader">
 
     <h4 id="otcs-loader" class="title is-4 docs-subhead">OTCSLoader</h4>
     <p><a href="pages/runner-config/runner-status/"><span class="tag is-primary">Production</span></a></p>
@@ -504,7 +602,7 @@
 
   </section>
 
-  <section>
+  <section class="fs-otcs">
 
     <h4 id="fs-otcs" class="title is-4 docs-subhead">FSToOTCSTransformer</h4>
     <p><a href="pages/runner-config/runner-status/"><span class="tag is-primary">Production</span></a></p>
@@ -582,7 +680,7 @@
 
   </section>
 
-  <section>
+  <section class="sp-otcs">
 
     <h4 id="sp-otcs" class="title is-4 docs-subhead">SPToOTCSTransformer</h4>
     <p><a href="pages/runner-config/runner-status/"><span class="tag is-primary">Production</span></a></p>
